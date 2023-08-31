@@ -3,13 +3,13 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
-export class ProductService {
+export class ProductsService {
   create(createProductDto: CreateProductDto) {
     return 'This action adds a new product';
   }
 
   findAll() {
-    return `Saludos desde el controlador: product`;
+    return `Este es el controlador del catálogo de productos (products)`;
   }
 
   findOne(id: number) {
