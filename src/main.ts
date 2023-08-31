@@ -7,6 +7,7 @@ import { SigninModule } from './signin/signin.module';
 import { SignupModule } from './signup/signup.module';
 
 async function bootstrap() {
+  console.log('Listen on port: 3000');
   const app = await NestFactory.create(AppModule);
 
   let documentBuilderhome = new DocumentBuilder()

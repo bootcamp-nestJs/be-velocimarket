@@ -5,9 +5,11 @@ import { SigninModule } from './signin/signin.module';
 import { SignupModule } from './signup/signup.module';
 import { HomeModule } from './home/home.module';
 import { ProductsModule } from './products/products.module';
+import { CartModule } from './cart/cart.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
-  imports: [SigninModule, SignupModule, HomeModule, ProductsModule],
+  imports: [CartModule, ReportsModule, SigninModule, SignupModule, HomeModule, ProductsModule],
   controllers: [AppController],
   providers: [AppService],
 })
