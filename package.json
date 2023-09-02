@@ -1,8 +1,8 @@
 {
   "name": "be-velocimarket",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Backend aplicación Velocimarket",
+  "author": "Equipo Backend Bootcamp NestJs",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
