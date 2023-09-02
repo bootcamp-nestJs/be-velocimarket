@@ -9,8 +9,6 @@ import { CartModule } from './cart/cart.module';
 import { ReportsModule } from './reports/reports.module';
 import { UsersModule } from './users/users.module';
 
-
-
 async function bootstrap() {
   console.log('Listen on port: 3000');
   const app = await NestFactory.create(AppModule);
