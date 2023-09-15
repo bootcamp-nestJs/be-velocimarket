@@ -89,7 +89,7 @@ export class CreateProductDto {
         description: "ID del producto",
         title: "ID"
     })
-    @IsDateString({message: "El atributo fechaCreacion presenta error, revise que es string"})
+    @IsDateString()
     @MinLength(3,{message: "El atributo fechaCreacion presenta error, necesita minimo 3 caracteres"})
     @MaxLength(15,{message: "El atributo fechaCreacion presenta error, necesita como maximo 15 caracteres"})
     readonly fechaCreacion:string;
@@ -102,7 +102,7 @@ export class CreateProductDto {
         description: "ID del producto",
         title: "ID"
     })
-    @IsDateString({message: "El atributo model presenta error, revise que es string"})
+    @IsDateString()
     @MinLength(3,{message: "El atributo model presenta error, necesita minimo 3 caracteres"})
     @MaxLength(15,{message: "El atributo model presenta error, necesita como maximo 15 caracteres"})
     readonly fechaModificacion:string;

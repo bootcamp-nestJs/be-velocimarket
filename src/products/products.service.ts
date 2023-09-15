@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { IProducts, Products } from './interfaces/products-interfaces';
@@ -18,8 +18,12 @@ export class ProductsService implements IProducts{
     return this.listaProductos;
   }
 
-  findProduct(nombre: string) {
-    return `This action returns a #${nombre} product`;
+  findProduct(nombre: string): Products {
+    let producto = this.listaProductos.find( product => product.nombre === nombre);
+    if(!producto){
+        throw new NotFoundException(`el producto con nombre ${nombre} no se encontro!`); 
+    }
+    return producto;
   }
 
 
@@ -30,4 +34,9 @@ export class ProductsService implements IProducts{
   removeProduct(id: string) {
     return `This action removes a #${id} product`;
   }
+
+  llenarListaConSeedData(productos:Products[]){
+    this.listaProductos = productos;
+}
+
 }
