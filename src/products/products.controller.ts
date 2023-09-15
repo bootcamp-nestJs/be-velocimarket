@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -17,9 +17,9 @@ export class ProductsController {
     return this.productsService.findAllProducts();
   }
 
-  @Get('/search/:nombre')
-  buscarProducto(@Param('nombre') nombre: string) {
-    return this.productsService.findProduct(nombre);
+  @Get('/search/:id')
+  buscarProducto(@Param('id', new ParseUUIDPipe({version: '4'})) id: string) {
+    return this.productsService.findProduct(id);
   }
 
   @Get('/searchby/:nombre')
@@ -28,7 +28,7 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  updateProduct(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+  updateProduct(@Param('id', new ParseUUIDPipe({version: '4'})) id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.updateProduct(id, updateProductDto);
   }
 

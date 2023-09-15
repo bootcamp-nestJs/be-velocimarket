@@ -42,9 +42,9 @@ export class HomeController {
     return this.homeService.menuPerfil();
   }
 
-  @Get('/search/:id')
-  buscarProducto(@Param('id') id: string) {
-    return this.ProductsService.findProduct(id);
+  @Get('/searchby/:nombre')
+  buscarProductoPorCoincidencia(@Param('nombre') nombre: string) {
+    return this.ProductsService.findProductByInclude(nombre);
   }
 
   @Get()

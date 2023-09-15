@@ -16,7 +16,9 @@ export interface Products {
 export interface IProducts {
     findAllProducts():any;
     findProduct(carId:string);
-    updateProduct(id: string, updateProductDto: UpdateProductDto)  
+    updateProduct(id: string, updateProductDto: UpdateProductDto);  
     removeProduct(id: string);  
     crearProducto(crearProductoDto: CreateProductDto);
+    llenarListaConSeedData(productos:Products[]);
+    findProductByInclude(nombre: string): any;
 }
