@@ -1,26 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { IProducts, Products } from './interfaces/products-interfaces';
 
 @Injectable()
-export class ProductsService {
-  create(createProductDto: CreateProductDto) {
+export class ProductsService implements IProducts{
+
+  private listaProductos:Products[] = [];
+  constructor(){}
+
+  crearProducto(crearProductoDto: CreateProductDto) {
+
     return 'This action adds a new product';
   }
 
-  findAll() {
-    return `Este es el controlador del catálogo de productos (products)`;
+  findAllProducts() {
+    return this.listaProductos;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  findProduct(nombre: string) {
+    return `This action returns a #${nombre} product`;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
+
+  updateProduct(id: string, updateProductDto: UpdateProductDto) {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: number) {
+  removeProduct(id: string) {
     return `This action removes a #${id} product`;
   }
 }
