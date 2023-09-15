@@ -7,7 +7,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Post()
+  @Post('/create')
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.crearProducto(createProductDto);
   }
@@ -17,9 +17,14 @@ export class ProductsController {
     return this.productsService.findAllProducts();
   }
 
-  @Get(':nombre')
+  @Get('/search/:nombre')
   buscarProducto(@Param('nombre') nombre: string) {
     return this.productsService.findProduct(nombre);
+  }
+
+  @Get('/searchby/:nombre')
+  buscarProductoPorCoincidencia(@Param('nombre') nombre: string) {
+    return this.productsService.findProductByInclude(nombre);
   }
 
   @Patch(':id')

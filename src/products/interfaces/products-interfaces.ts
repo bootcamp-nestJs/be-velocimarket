@@ -7,8 +7,8 @@ export interface Products {
     descripcion? : string;
     id? : string;
     precio : number;
-    fechaCreacion: string;
-    fechaActualizacion: string;
+    fechaCreacion?: string;
+    fechaModificacion?: string;
     marca: string;
     imagen: string;
 }

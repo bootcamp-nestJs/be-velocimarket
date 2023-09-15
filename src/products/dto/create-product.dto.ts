@@ -1,4 +1,4 @@
-import { IsDateString, IsInt, IsPositive, IsString, IsUUID, MaxLength, Min, MinLength, isDate, isDateString } from "@nestjs/class-validator";
+import { IsDateString, IsInt, IsOptional, IsPositive, IsString, IsUUID, MaxLength, Min, MinLength, isDate, isDateString } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { version } from "os";
 
@@ -68,7 +68,7 @@ export class CreateProductDto {
     @MaxLength(100,{message: "El atributo imagen presenta error, necesita como maximo 100 caracteres"})
     readonly imagen:string;
 
-    @ApiProperty({
+   /* @ApiProperty({
         type: 'string',
         example: '123213123',
         minimum: 3,
@@ -78,35 +78,38 @@ export class CreateProductDto {
     })
     @IsString({message: "El atributo id presenta error, revise que es string"})
     @MinLength(3,{message: "El atributo id presenta error, necesita minimo 3 caracteres"})
-    @MaxLength(15,{message: "El atributo id presenta error, necesita como maximo 15 caracteres"})
+    @MaxLength(100,{message: "El atributo id presenta error, necesita como maximo 100 caracteres"})
+    @IsOptional()
     readonly id?:string;
 
     @ApiProperty({
         type: 'string',
-        example: '123213123',
+        example: 'Fri Sep 15 2023 09:57:14 GMT-0300 (hora de verano de Chile)',
         minimum: 3,
         required: true,
-        description: "ID del producto",
-        title: "ID"
+        description: "Fecha de creación del producto",
+        title: "Fecha de creación"
     })
-    @IsDateString()
+    // @IsDateString()
     @MinLength(3,{message: "El atributo fechaCreacion presenta error, necesita minimo 3 caracteres"})
-    @MaxLength(15,{message: "El atributo fechaCreacion presenta error, necesita como maximo 15 caracteres"})
-    readonly fechaCreacion:string;
+    @MaxLength(100,{message: "El atributo fechaCreacion presenta error, necesita como maximo 100 caracteres"})
+    @IsOptional()
+    readonly fechaCreacion?:string;
 
     @ApiProperty({
         type: 'string',
-        example: '123213123',
+        example: 'Fri Sep 15 2023 09:57:14 GMT-0300 (hora de verano de Chile)',
         minimum: 3,
-        required: true,
-        description: "ID del producto",
-        title: "ID"
+        required: false,
+        description: "Fecha de creación del producto",
+        title: "Fecha de modificación"
     })
-    @IsDateString()
-    @MinLength(3,{message: "El atributo model presenta error, necesita minimo 3 caracteres"})
-    @MaxLength(15,{message: "El atributo model presenta error, necesita como maximo 15 caracteres"})
-    readonly fechaModificacion:string;
-
+    //@IsDateString()
+    @MinLength(3,{message: "El atributo fechaModificacion presenta error, necesita minimo 3 caracteres"})
+    @MaxLength(100,{message: "El atributo fechaModificacion presenta error, necesita como maximo 100 caracteres"})
+    @IsOptional()
+    readonly fechaModificacion?:string;
+    */
     @ApiProperty({
         type: 'number',
         example: 20000,

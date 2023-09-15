@@ -9,7 +9,7 @@ export const ProductSeed: Products[] =  [
     id : uuid(),
     precio : 25000,
     fechaCreacion: Date().toString(),
-    fechaActualizacion: Date().toString(),
+    fechaModificacion: Date().toString(),
     marca: "Trek",
     imagen: ""
     }
