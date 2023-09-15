@@ -8,6 +8,7 @@ import { SignupModule } from './signup/signup.module';
 import { CartModule } from './cart/cart.module';
 import { ReportsModule } from './reports/reports.module';
 import { UsersModule } from './users/users.module';
+import { ValidationPipe } from '@nestjs/common';
 
 
 
@@ -15,6 +16,13 @@ async function bootstrap() {
   console.log('Listen on port: 3000');
   const app = await NestFactory.create(AppModule);
 
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true
+    })
+  );
+  
   let documentBuilderhome = new DocumentBuilder()
   .setTitle("Documentacion de la API VelociMRKT - Home")
   .setDescription("Descripcion de la API")

@@ -2,14 +2,49 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { HomeService } from './home.service';
 import { CreateHomeDto } from './dto/create-home.dto';
 import { UpdateHomeDto } from './dto/update-home.dto';
+import { ProductsService } from '../products/products.service';
 
 @Controller('home')
 export class HomeController {
-  constructor(private readonly homeService: HomeService) {}
+  constructor(private readonly homeService: HomeService, private readonly ProductsService: ProductsService) {}
 
   @Post()
   create(@Body() createHomeDto: CreateHomeDto) {
     return this.homeService.create(createHomeDto);
+  }
+  @Get()
+  menuHome() {
+    return this.homeService.menuHome();
+  }
+
+  @Get('/search')
+  menuBusqueda() {
+    return this.homeService.menuSearch();
+  }
+
+  @Get('/publish')
+  menuPublicar() {
+    return this.homeService.menuPublish();
+  }
+
+  @Get('/cart')
+  menuCart() {
+    return this.homeService.menuCart();
+  }
+
+  @Get('/messages')
+  menuMensajes() {
+    return this.homeService.menuMensajes();
+  }
+
+  @Get('/profile')
+  menuPerfil() {
+    return this.homeService.menuPerfil();
+  }
+
+  @Get('/searchby/:nombre')
+  buscarProductoPorCoincidencia(@Param('nombre') nombre: string) {
+    return this.ProductsService.findProductByInclude(nombre);
   }
 
   @Get()
