@@ -2,23 +2,23 @@ import { CreateProductDto } from "../dto/create-product.dto";
 import { UpdateProductDto } from "../dto/update-product.dto";
 
 export interface Products {
+    id? : string;
     nombre : string;
     categoria : string;
     descripcion? : string;
-    id? : string;
     precio : number;
-    fechaCreacion?: string;
-    fechaModificacion?: string;
     marca: string;
     imagen: string;
+    fechaModificacion?: string;
+    fechaCreacion?: string;
 }
 
 export interface IProducts {
+    createProduct(crearProductoDto: CreateProductDto);
     findAllProducts():any;
-    findProduct(carId:string);
+    findProductById(carId:string);
+    findProductByInclude(nombre: string): any;
     updateProduct(id: string, updateProductDto: UpdateProductDto);  
     removeProduct(id: string);  
-    crearProducto(crearProductoDto: CreateProductDto);
-    llenarListaConSeedData(productos:Products[]);
-    findProductByInclude(nombre: string): any;
+    fillProductWithSeed(productos:Products[]);
 }

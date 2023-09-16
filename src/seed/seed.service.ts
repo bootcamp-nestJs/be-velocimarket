@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ProductsService } from '../products/products.service';
-import { ProductSeed } from './data/products.seed';
+import { PRODUCT_SEED } from './data/products.seed';
 
 @Injectable()
 export class SeedService {
-  constructor(
-    private readonly ProductsService:ProductsService){}
+  constructor(private readonly productsService: ProductsService){}
     
-  llenarProductsDb(){
-    this.ProductsService.llenarListaConSeedData(ProductSeed);
-    return "SEED EXECUTED.."
+  fillProductsDb(){
+    this.productsService.fillProductWithSeed(PRODUCT_SEED);
+    return "SEED EXECUTED"
   }
 }

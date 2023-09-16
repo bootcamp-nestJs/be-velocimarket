@@ -14,8 +14,8 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     })
     @IsOptional()
     @IsString({message: "El atributo nombre presenta error,revise que es string"})
-    @MinLength(3,{message: "El atributo brand presenta error, necesita minimo 3 caracteres"})
-    @MaxLength(20,{message: "El atributo brand presenta error, necesita como maximo 20 caracteres"})
+    @MinLength(3,{message: "El atributo nombre presenta error, necesita minimo 3 caracteres"})
+    // @MaxLength(20,{message: "El atributo nombre presenta error, necesita como maximo 20 caracteres"})
     readonly nombre?:string;
 
     @ApiProperty({
@@ -71,22 +71,22 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     @IsOptional()
     @IsString({message: "El atributo imagen presenta error, revise que es string/url"})
     @MinLength(3,{message: "El atributo imagen presenta error, necesita minimo 3 caracteres"})
-    @MaxLength(100,{message: "El atributo imagen presenta error, necesita como maximo 100 caracteres"})
+    // @MaxLength(100,{message: "El atributo imagen presenta error, necesita como maximo 100 caracteres"})
     readonly imagen?:string;
 
-   @ApiProperty({
-        type: 'string',
-        example: '123213123',
-        minimum: 3,
-        required: false,
-        description: "ID del producto",
-        title: "ID"
-    })
-    @IsString({message: "El atributo id presenta error, revise que es string"})
-    @MinLength(3,{message: "El atributo id presenta error, necesita minimo 3 caracteres"})
-    @MaxLength(100,{message: "El atributo id presenta error, necesita como maximo 100 caracteres"})
-    @IsOptional()
-    readonly id:string;
+//    @ApiProperty({
+//         type: 'string',
+//         example: '123213123',
+//         minimum: 3,
+//         required: false,
+//         description: "ID del producto",
+//         title: "ID"
+//     })
+//     @IsString({message: "El atributo id presenta error, revise que es string"})
+//     @MinLength(3,{message: "El atributo id presenta error, necesita minimo 3 caracteres"})
+//     @MaxLength(100,{message: "El atributo id presenta error, necesita como maximo 100 caracteres"})
+//     @IsOptional()
+//     readonly id:string;
     /*
     @ApiProperty({
         type: 'string',
