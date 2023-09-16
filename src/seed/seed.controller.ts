@@ -7,9 +7,7 @@ export class SeedController {
 
   @Get()
   runSeed() {
-    this.seedService.llenarProductsDb()
-    return this.seedService.llenarProductsDb();
-
+    return this.seedService.fillProductsDb();
   }
 
 }

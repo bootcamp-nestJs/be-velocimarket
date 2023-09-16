@@ -65,7 +65,7 @@ export class CreateProductDto {
     })
     @IsString({message: "El atributo imagen presenta error, revise que es string/url"})
     @MinLength(3,{message: "El atributo imagen presenta error, necesita minimo 3 caracteres"})
-    @MaxLength(100,{message: "El atributo imagen presenta error, necesita como maximo 100 caracteres"})
+    // @MaxLength(100,{message: "El atributo imagen presenta error, necesita como maximo 100 caracteres"})
     readonly imagen:string;
 
    /* @ApiProperty({

@@ -9,6 +9,7 @@ import { CartModule } from './cart/cart.module';
 import { ReportsModule } from './reports/reports.module';
 import { UsersModule } from './users/users.module';
 import { ValidationPipe } from '@nestjs/common';
+import { SeedModule } from './seed/seed.module';
 
 
 
@@ -72,6 +73,13 @@ let documentBuilderProducts = new DocumentBuilder()
   .setContact("Javiera Quiñones", "", "java.sandoval@gmail.com")
   .build();
 
+  let documentBuilderSeed = new DocumentBuilder()
+  .setTitle("Documentacion de la API VelociMRKT - Seed")
+  .setDescription("Descripcion de la API")
+  .setVersion('0.0.1')
+  .setContact("Javiera Quiñones", "", "java.sandoval@gmail.com")
+  .build();
+
   const documentHome = SwaggerModule.createDocument(app, documentBuilderhome, {
     include: [ HomeModule ]
   });
@@ -93,6 +101,9 @@ let documentBuilderProducts = new DocumentBuilder()
   const documentUsers = SwaggerModule.createDocument(app, documentBuilderUsers, {
     include: [ UsersModule ]
   });
+  const documentSeed = SwaggerModule.createDocument(app, documentBuilderUsers, {
+    include: [ SeedModule ]
+  });
 
   SwaggerModule.setup('docs/home', app, documentHome);
   SwaggerModule.setup('docs/products', app, documentProducts);
@@ -101,6 +112,7 @@ let documentBuilderProducts = new DocumentBuilder()
   SwaggerModule.setup('docs/cart', app, documentCart);
   SwaggerModule.setup('docs/reports', app, documentReports);
   SwaggerModule.setup('docs/users', app, documentUsers);
+  SwaggerModule.setup('docs/seed', app, documentSeed);
 
   await app.listen(3000);
 }

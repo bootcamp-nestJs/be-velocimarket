@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { IProducts, Products } from './interfaces/products-interfaces';
@@ -7,65 +7,104 @@ import { v4 as uuid } from 'uuid';
 @Injectable()
 export class ProductsService implements IProducts{
 
-  private listaProductos:Products[] = [];
+  private listProducts: Products[] = [];
+  
   constructor(){}
 
-  crearProducto(productoNuevo: CreateProductDto) {
-
-    const ProductoNuevoDto = {
-      id: uuid(),
-      fechaCreacion: Date(),
-      ...productoNuevo
-  }
-  this.listaProductos.push(ProductoNuevoDto);
-  return this.listaProductos ;
+  createProduct( newProduct: CreateProductDto) {
+    try {
+      const newProductDto = {
+        id: uuid(),
+        fechaCreacion: Date(),
+        ...newProduct
+      }
+      this.listProducts.push(newProductDto);
+      return this.listProducts ;
+      
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
   }
 
   findAllProducts() {
-    return this.listaProductos;
+    try {
+      const { listProducts } = this;
+      return listProducts;
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
   }
 
-  findProduct(id: string): Products {
-    let producto = this.listaProductos.find( product => product.id === id);
+  findProductById(id: string): Products {
+    const { listProducts } = this;
+    
+    const producto = listProducts.find( product => product.id === id);
     if(!producto){
-        throw new NotFoundException(`el producto con nombre ${id} no se encontro!`); 
+      throw new NotFoundException(`el producto con id ${id} no se encontro!`); 
     }
     return producto;
   }
 
-  productoInclude: Products[] = [];
-  findProductByInclude(nombre: string): any {
+  findProductByInclude(name: string): any {
+    const { listProducts } = this;
+
+    // for (const iterator of this.listProducts) {
+    //   if(iterator.nombre.toLowerCase().includes(name.toLowerCase())== false){
+      //     //console.log(iterator.nombre.includes(nombre))
+      //     throw new NotFoundException(`No hay coincidencias con el texto ${name}`); 
+      //   }
+      //   //crear otro ciclo que recorra productoinclude para que no se repitan por ID!!! cuando tenga tiempo le doy :)
+      //   productoInclude.push(iterator)
+      // }
+      // //console.log(this.productoInclude)
+      // return productoInclude;
+    const productsInclude = listProducts.filter( ({ nombre }) => nombre.toLowerCase().includes(name.toLowerCase()) );
     
-    for (const iterator of this.listaProductos) {
-      if(iterator.nombre.toLowerCase().includes(nombre.toLowerCase())== false){
-        //console.log(iterator.nombre.includes(nombre))
-        throw new NotFoundException(`No hay coincidencias con el texto ${nombre}`); 
-      }
-      //crear otro ciclo que recorra productoinclude para que no se repitan por ID!!! cuando tenga tiempo le doy :)
-    this.productoInclude.push(iterator)
-    }
-    //console.log(this.productoInclude)
-    return this.productoInclude;
+    if(!productsInclude || productsInclude.length === 0) throw new NotFoundException(`No se encontraron coincidencias con el nombre: ${name}`);
+    
+    return productsInclude;
   }
 
-  updateProduct(id: string, datosActualizar: UpdateProductDto) {
-    for (const iterator of this.listaProductos) {
-            if (iterator.id == id){
-                let newProduct : Products = {...iterator, ...datosActualizar, fechaModificacion: Date()}
-                return newProduct
-            }
-            throw new NotFoundException(`no existe el Producto con el id ${id}`)
+  updateProduct(id: string, updateData: UpdateProductDto) {
+    // for (const iterator of this.listProducts) {
+    //   if (iterator.id == id){
+    //     let newProduct : Products = {...iterator, ...updateData, fechaModificacion: Date()}
+    //     return newProduct
+    //   }
+    //   throw new NotFoundException(`no existe el Producto con el id ${id}`)
+    // }
+    
+    const product = this.findProductById(id);
+    if( !product ) throw new NotFoundException(`El producto ${id} que esta tratando de actualizar no existe`);
+    
+    try {
+      this.listProducts = this.listProducts.map( product => {
+        if( product.id === id ){
+          const newProduct = {...product, ...updateData, fechaModificacion: Date()}
+          return newProduct;
         }
+        return product;
+      } );
+      return this.listProducts;
+      
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
   }
 
   removeProduct(id: string) {
-    let product = this.findProduct(id);
-        this.listaProductos = this.listaProductos.filter(product => product.id !== id);
-        return `Producto de ID ${id} eliminado`
+    const product = this.findProductById(id);
+    if( !product ) throw new NotFoundException(`El producto que esta tratando de eliminar no existe ${id}`);
+
+    try {
+      this.listProducts = this.listProducts.filter(product => product.id !== id);
+      
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
   }
 
-  llenarListaConSeedData(productos:Products[]){
-    this.listaProductos = productos;
-}
-
+  fillProductWithSeed(products: Products[]){
+    this.listProducts = products;
+  }
 }
