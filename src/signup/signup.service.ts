@@ -1,26 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateSignupDto } from './dto/create-signup.dto';
-import { UpdateSignupDto } from './dto/update-signup.dto';
+import { Signup, SignupI } from './interfaces/signup-interfaces';
+import { v4 as uuid } from 'uuid';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
-export class SignupService {
-  create(createSignupDto: CreateSignupDto) {
-    return 'This action adds a new signup';
+export class SignupService implements SignupI{
+constructor(private readonly UsersService: UsersService){}
+  createUser( newUser: CreateSignupDto) {
+    try {
+      const newUserDto = {
+        id: uuid(),
+        fechaCreacion: Date(),
+        ...newUser
+      }
+      this.UsersService.listUsers.push(newUserDto);
+      return "creado" ;
+      
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
   }
 
-  findAll() {
-    return `Este es el controlador de registro de usuario (Signup)`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} signup`;
-  }
-
-  update(id: number, updateSignupDto: UpdateSignupDto) {
-    return `This action updates a #${id} signup`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} signup`;
-  }
+ 
 }

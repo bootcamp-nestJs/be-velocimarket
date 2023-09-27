@@ -1,15 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Users } from './interfaces/users-interfaces';
 
 @Injectable()
 export class UsersService {
+
+  listUsers: Users[] = [];
+
   create(createUserDto: CreateUserDto) {
     return 'This action adds a new user';
   }
 
   findAll() {
-    return `Saludos desde el controlador: users`;
+    return this.listUsers;
   }
 
   findOne(id: number) {
@@ -22,5 +26,9 @@ export class UsersService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  fillUsersWithSeed(users: Users[]){
+    this.listUsers = users;
   }
 }

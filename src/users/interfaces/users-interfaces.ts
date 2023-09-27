@@ -1,8 +1,10 @@
-export class CreateSignupDto {
-   readonly nombre: string;
+export interface Users {
+    id: string;
+    nombre: string;
     apellido: string;
     mail: string;
     user: string;
     password: string;
     telefono: number;
+    fechaCreacion: string;
 }
