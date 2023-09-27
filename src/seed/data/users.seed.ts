@@ -10,6 +10,6 @@ export const user_seed: Users[] =  [
     user : "AlfonsoCS",
     fechaCreacion: Date().toString(),
     password: "password",
-    telefono: 972085027,
+    telefono: "972085027",
   }
 ];

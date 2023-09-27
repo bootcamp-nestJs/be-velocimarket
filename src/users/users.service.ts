@@ -1,18 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Users } from './interfaces/users-interfaces';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class UsersService {
 
   listUsers: Users[] = [];
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+      crearUser( newUser: CreateUserDto) {
+      try {
+        const newUserDto = {
+          id: uuid(),
+          fechaCreacion: Date(),
+          ...newUser
+        }
+        console.log(newUserDto)
+        this.listUsers.push(newUserDto);
+        return "Usuario creado con éxito" ;
+        
+      } catch (error) {
+        throw new InternalServerErrorException(`Error: ${error}`);
+      }
+    }
 
-  findAll() {
+  listaUsuarios() {
     return this.listUsers;
   }
 

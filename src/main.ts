@@ -4,7 +4,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HomeModule } from './home/home.module';
 import { ProductsModule } from './products/products.module';
 import { SigninModule } from './signin/signin.module';
-import { SignupModule } from './signup/signup.module';
 import { CartModule } from './cart/cart.module';
 import { ReportsModule } from './reports/reports.module';
 import { UsersModule } from './users/users.module';
@@ -89,9 +88,6 @@ let documentBuilderProducts = new DocumentBuilder()
   const documentSignin = SwaggerModule.createDocument(app, documentBuilderSignin, {
     include: [ SigninModule ]
   });
-  const documentSignup = SwaggerModule.createDocument(app, documentBuilderSignup, {
-    include: [ SignupModule ]
-  });
   const documentCart = SwaggerModule.createDocument(app, documentBuilderCart, {
     include: [ CartModule ]
   });
@@ -108,7 +104,6 @@ let documentBuilderProducts = new DocumentBuilder()
   SwaggerModule.setup('docs/home', app, documentHome);
   SwaggerModule.setup('docs/products', app, documentProducts);
   SwaggerModule.setup('docs/signin', app, documentSignin);
-  SwaggerModule.setup('docs/signup', app, documentSignup);
   SwaggerModule.setup('docs/cart', app, documentCart);
   SwaggerModule.setup('docs/reports', app, documentReports);
   SwaggerModule.setup('docs/users', app, documentUsers);

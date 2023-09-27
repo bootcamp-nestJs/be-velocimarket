@@ -5,6 +5,6 @@ export interface Users {
     mail: string;
     user: string;
     password: string;
-    telefono: number;
+    telefono: string;
     fechaCreacion: string;
 }
