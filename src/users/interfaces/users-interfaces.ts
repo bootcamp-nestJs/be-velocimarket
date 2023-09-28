@@ -7,4 +7,5 @@ export interface Users {
     password: string;
     telefono: string;
     fechaCreacion: string;
+    fechaModificacion?: string;
 }
