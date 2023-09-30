@@ -68,48 +68,6 @@ export class CreateProductDto {
     // @MaxLength(100,{message: "El atributo imagen presenta error, necesita como maximo 100 caracteres"})
     readonly imagen:string;
 
-   /* @ApiProperty({
-        type: 'string',
-        example: '123213123',
-        minimum: 3,
-        required: false,
-        description: "ID del producto",
-        title: "ID"
-    })
-    @IsString({message: "El atributo id presenta error, revise que es string"})
-    @MinLength(3,{message: "El atributo id presenta error, necesita minimo 3 caracteres"})
-    @MaxLength(100,{message: "El atributo id presenta error, necesita como maximo 100 caracteres"})
-    @IsOptional()
-    readonly id?:string;
-
-    @ApiProperty({
-        type: 'string',
-        example: 'Fri Sep 15 2023 09:57:14 GMT-0300 (hora de verano de Chile)',
-        minimum: 3,
-        required: true,
-        description: "Fecha de creación del producto",
-        title: "Fecha de creación"
-    })
-    // @IsDateString()
-    @MinLength(3,{message: "El atributo fechaCreacion presenta error, necesita minimo 3 caracteres"})
-    @MaxLength(100,{message: "El atributo fechaCreacion presenta error, necesita como maximo 100 caracteres"})
-    @IsOptional()
-    readonly fechaCreacion?:string;
-
-    @ApiProperty({
-        type: 'string',
-        example: 'Fri Sep 15 2023 09:57:14 GMT-0300 (hora de verano de Chile)',
-        minimum: 3,
-        required: false,
-        description: "Fecha de creación del producto",
-        title: "Fecha de modificación"
-    })
-    //@IsDateString()
-    @MinLength(3,{message: "El atributo fechaModificacion presenta error, necesita minimo 3 caracteres"})
-    @MaxLength(100,{message: "El atributo fechaModificacion presenta error, necesita como maximo 100 caracteres"})
-    @IsOptional()
-    readonly fechaModificacion?:string;
-    */
     @ApiProperty({
         type: 'number',
         example: 20000,
@@ -121,6 +79,70 @@ export class CreateProductDto {
     @IsInt({ message: "El atributo precio presenta error, revise que es numerico" })
     @IsPositive({ message: "El atributo precio presenta error, debe ser mayor a cero" })
     readonly precio: number;
+
+    @ApiProperty({
+        type: 'string',
+        example: 'XL',
+        minimum: 3,
+        required: true,
+        description: "informacion adicional: tamaño",
+        title: "Tamaño"
+    })
+    @IsString({message: "El atributo tamaño presenta error, revise que es string"})
+    @MinLength(3,{message: "El atributo tamaño presenta error, necesita minimo 3 caracteres"})
+    // @MaxLength(100,{message: "El atributo tamaño presenta error, necesita como maximo 100 caracteres"})
+    readonly tamaño:string;
+
+    @ApiProperty({
+        type: 'string',
+        example: 'usado',
+        minimum: 3,
+        required: true,
+        description: "informacion adicional: estado",
+        title: "estado"
+    })
+    @IsString({message: "El atributo estado presenta error, revise que es string"})
+    @MinLength(3,{message: "El atributo estado presenta error, necesita minimo 3 caracteres"})
+    // @MaxLength(100,{message: "El atributo estado presenta error, necesita como maximo 100 caracteres"})
+    readonly estado:string;
+
+    @ApiProperty({
+        type: 'string',
+        example: 'adamantium',
+        minimum: 3,
+        required: true,
+        description: "informacion adicional: material_cuadro",
+        title: "material_cuadro"
+    })
+    @IsString({message: "El atributo material_cuadro presenta error, revise que es string"})
+    @MinLength(3,{message: "El atributo material_cuadro presenta error, necesita minimo 3 caracteres"})
+    // @MaxLength(100,{message: "El atributo material_cuadro presenta error, necesita como maximo 100 caracteres"})
+    readonly material_cuadro:string;
+
+    @ApiProperty({
+        type: 'string',
+        example: 'cosas',
+        minimum: 3,
+        required: true,
+        description: "informacion adicional: compontes",
+        title: "compontes"
+    })
+    @IsString({message: "El atributo compontes presenta error, revise que es string"})
+    @MinLength(3,{message: "El atributo compontes presenta error, necesita minimo 3 caracteres"})
+    // @MaxLength(100,{message: "El atributo compontes presenta error, necesita como maximo 100 caracteres"})
+    readonly compontes:string;
+
+    // @ApiProperty({
+    //     type: 'number',
+    //     example: 40,
+    //     minimum: 3,
+    //     required: true,
+    //     description: "likes",
+    //     title: "likes"
+    // })
+    // @IsInt({ message: "El atributo likes presenta error, revise que es numerico" })
+    // @IsPositive({ message: "El atributo likes presenta error, debe ser mayor a cero" })
+    // readonly likes: number;
 }
 
     

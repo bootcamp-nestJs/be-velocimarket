@@ -9,6 +9,10 @@ export interface Products {
     precio : number;
     marca: string;
     imagen: string;
+    tamaño: string;
+    estado: string;
+    material_cuadro: string;
+    compontes: string;
     fechaModificacion?: string;
     fechaCreacion?: string;
 }
