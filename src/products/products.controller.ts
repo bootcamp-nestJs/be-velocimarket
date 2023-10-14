@@ -7,6 +7,7 @@ import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiQuery
 @Controller('products')
 export class ProductsController {
   constructor( private readonly productsService: ProductsService) {}
+  
   @ApiBody({
     description: "Datos del usuario que se va a crear",
     type: CreateProductDto

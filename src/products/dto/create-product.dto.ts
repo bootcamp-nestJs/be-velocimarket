@@ -12,8 +12,8 @@ export class CreateProductDto {
         title: "Nombre"
     })
     @IsString({message: "El atributo nombre presenta error,revise que es string"})
-    @MinLength(3,{message: "El atributo brand presenta error, necesita minimo 3 caracteres"})
-    @MaxLength(20,{message: "El atributo brand presenta error, necesita como maximo 20 caracteres"})
+    @MinLength(3,{message: "El atributo nombre presenta error, necesita minimo 3 caracteres"})
+    @MaxLength(20,{message: "El atributo nombre presenta error, necesita como maximo 20 caracteres"})
     readonly nombre:string;
 
     @ApiProperty({
@@ -61,12 +61,12 @@ export class CreateProductDto {
         minimum: 3,
         required: true,
         description: "url de imágen del producto",
-        title: "Imágen"
+        title: "Avatar"
     })
-    @IsString({message: "El atributo imagen presenta error, revise que es string/url"})
-    @MinLength(3,{message: "El atributo imagen presenta error, necesita minimo 3 caracteres"})
+    @IsString({message: "El atributo avatar presenta error, revise que es string/url"})
+    @MinLength(3,{message: "El atributo avatar presenta error, necesita minimo 3 caracteres"})
     // @MaxLength(100,{message: "El atributo imagen presenta error, necesita como maximo 100 caracteres"})
-    readonly imagen:string;
+    readonly avatar:string;
 
     @ApiProperty({
         type: 'number',
@@ -91,7 +91,7 @@ export class CreateProductDto {
     @IsString({message: "El atributo tamaño presenta error, revise que es string"})
     @MinLength(3,{message: "El atributo tamaño presenta error, necesita minimo 3 caracteres"})
     // @MaxLength(100,{message: "El atributo tamaño presenta error, necesita como maximo 100 caracteres"})
-    readonly tamaño:string;
+    readonly tamanio:string;
 
     @ApiProperty({
         type: 'string',
@@ -132,17 +132,6 @@ export class CreateProductDto {
     // @MaxLength(100,{message: "El atributo compontes presenta error, necesita como maximo 100 caracteres"})
     readonly compontes:string;
 
-    // @ApiProperty({
-    //     type: 'number',
-    //     example: 40,
-    //     minimum: 3,
-    //     required: true,
-    //     description: "likes",
-    //     title: "likes"
-    // })
-    // @IsInt({ message: "El atributo likes presenta error, revise que es numerico" })
-    // @IsPositive({ message: "El atributo likes presenta error, debe ser mayor a cero" })
-    // readonly likes: number;
 }
 
     

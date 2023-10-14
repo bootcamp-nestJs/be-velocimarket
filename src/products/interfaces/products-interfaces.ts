@@ -3,13 +3,13 @@ import { UpdateProductDto } from "../dto/update-product.dto";
 
 export interface Products {
     id? : string;
-    nombre : string;
-    categoria : string;
-    descripcion? : string;
-    precio : number;
+    nombre: string;
+    categoria: string;
+    descripcion?: string;
+    precio: number;
     marca: string;
-    imagen: string;
-    tamaño: string;
+    avatar: string;
+    tamanio: string;
     estado: string;
     material_cuadro: string;
     compontes: string;
@@ -23,6 +23,5 @@ export interface IProducts {
     findProductById(carId:string);
     findProductByInclude(nombre: string): any;
     updateProduct(id: string, updateProductDto: UpdateProductDto);  
-    removeProduct(id: string);  
-    fillProductWithSeed(productos:Products[]);
+    removeProduct(id: string);
 }
