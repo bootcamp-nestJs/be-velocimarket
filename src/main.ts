@@ -1,12 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ProductsModule } from './products/products.module';
-import { CartModule } from './cart/cart.module';
-import { ReportsModule } from './reports/reports.module';
-import { UsersModule } from './users/users.module';
+import { ProductsModule } from './controllers/products/products.module';
+import { CartModule } from './controllers/cart/cart.module';
+import { ReportsModule } from './controllers/reports/reports.module';
+import { UsersModule } from './controllers/users/users.module';
 import { ValidationPipe } from '@nestjs/common';
-import { MensajesModule } from './mensajes/mensajes.module';
+import { MensajesModule } from './controllers/mensajes/mensajes.module';
+import { HelperModule } from './helpers/helper.module';
 
 async function bootstrap() {
   console.log('Listen on port: 3000');
@@ -54,6 +55,13 @@ async function bootstrap() {
   .setContact("Javiera Quiñones", "", "java.sandoval@gmail.com")
   .build();
 
+  let documentBuilderCommon = new DocumentBuilder()
+  .setTitle("Documentacion de la API VelociMRKT - Helpers")
+  .setDescription("Descripcion de la API")
+  .setVersion('0.0.1')
+  .setContact("Javiera Quiñones", "", "java.sandoval@gmail.com")
+  .build();
+
   const documentProducts = SwaggerModule.createDocument(app, documentBuilderProducts, {
     include: [ ProductsModule ]
   });
@@ -69,12 +77,17 @@ async function bootstrap() {
   const documentMensaje = SwaggerModule.createDocument(app, documentBuilderMensajes, {
     include: [ MensajesModule ]
   });
+  const documentCommon = SwaggerModule.createDocument(app, documentBuilderCommon, {
+    include: [ HelperModule ]
+  });
+
 
   SwaggerModule.setup('docs/products', app, documentProducts);
   SwaggerModule.setup('docs/cart', app, documentCart);
   SwaggerModule.setup('docs/reports', app, documentReports);
   SwaggerModule.setup('docs/users', app, documentUsers);
   SwaggerModule.setup('docs/messagges', app, documentMensaje);
+  SwaggerModule.setup('docs/common', app, documentCommon);
 
   await app.listen(3000);
 }
