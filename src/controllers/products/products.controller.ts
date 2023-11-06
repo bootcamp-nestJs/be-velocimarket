@@ -59,4 +59,10 @@ export class ProductsController {
     this.productsService.removeProduct(id);
     return { message: `Producto de ID ${id} eliminado`}
   }
+
+  @Get('orm')
+  mostrar_todo_orm() {
+    const data = this.productsService.find_by_orm();
+    return { message: 'Productos obtenidos exitosamente', data };
+  }
 }

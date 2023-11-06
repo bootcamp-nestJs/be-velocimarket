@@ -3,13 +3,23 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { IProducts, Products } from './interfaces/products-interfaces';
 import { v4 as uuid } from 'uuid';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
+import { Product } from './entities/Product.entity';
 
 @Injectable()
 export class ProductsService implements IProducts{
+  constructor(
+    @InjectDataSource() private dataSource: DataSource,
+    @InjectRepository(Product)
+      private Product_Repository: Repository<Product>
+    ) {}
 
+    prueba(){
+      const em : EntityManager = this.dataSource.manager;
+    }
+    
   private listProducts: Products[] = [];
-  
-  constructor(){}
 
   createProduct( newProduct: CreateProductDto) {
     try {
@@ -33,6 +43,12 @@ export class ProductsService implements IProducts{
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
+  }
+
+  async find_by_orm(): Promise<Product[]>{
+    const mostrar: Product[] = await this.Product_Repository.find()
+    console.log(mostrar)
+    return mostrar;
   }
 
   findProductById(id: string): Products {
