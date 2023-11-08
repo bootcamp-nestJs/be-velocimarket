@@ -6,13 +6,16 @@ import { v4 as uuid } from 'uuid';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Product } from './entities/Product.entity';
+import { Imagen } from './entities/Imagen.entity';
 
 @Injectable()
 export class ProductsService implements IProducts{
   constructor(
     @InjectDataSource() private dataSource: DataSource,
     @InjectRepository(Product)
-      private Product_Repository: Repository<Product>
+      private Product_Repository: Repository<Product>,
+    @InjectRepository(Imagen)
+      private Imagen_Repository: Repository<Imagen>
     ) {}
 
     prueba(){
@@ -51,6 +54,11 @@ export class ProductsService implements IProducts{
     return mostrar;
   }
 
+  async find_img_by_orm(): Promise<Imagen[]>{
+    const mostrar: Imagen[] = await this.Imagen_Repository.find()
+    console.log(mostrar)
+    return mostrar;
+  }
   findProductById(id: string): Products {
     const { listProducts } = this;
     

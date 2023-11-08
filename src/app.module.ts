@@ -11,6 +11,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './controllers/products/entities/Product.entity';
 import { Categoria } from './controllers/products/entities/Categoria.entity';
 import { Subcategoria } from './controllers/products/entities/Subcategoria.entity';
+import { Usuario } from './controllers/users/entities/user.entity';
+import { Imagen } from './controllers/products/entities/Imagen.entity';
+import { Reclamos } from './controllers/reports/entities/Reclamos.entity';
+import { Direccion } from './controllers/users/entities/direccion.entity';
 @Module({
   imports: [TypeOrmModule.forRoot({
     type: 'mysql',
@@ -19,7 +23,7 @@ import { Subcategoria } from './controllers/products/entities/Subcategoria.entit
     username: 'root',
     password: 'clave123',
     database: 'VELOCIMARKET',
-    entities: [Product, Categoria, Subcategoria]
+    entities: [Product, Categoria, Subcategoria, Usuario, Imagen, Reclamos, Direccion]
   }),
     ProductsModule, 
     UsersModule,

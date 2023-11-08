@@ -62,7 +62,7 @@ export class ProductsController {
 
   @Get('orm')
   mostrar_todo_orm() {
-    const data = this.productsService.find_by_orm();
+    const data = this.productsService.find_img_by_orm();
     return { message: 'Productos obtenidos exitosamente', data };
   }
 }

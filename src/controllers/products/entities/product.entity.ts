@@ -1,6 +1,7 @@
 import { Usuario } from "src/controllers/users/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { Subcategoria } from "./Subcategoria.entity";
+import { Imagen } from "./Imagen.entity";
 
 @Entity({ name: 'Producto'})
 export class Product {
@@ -35,12 +36,15 @@ export class Product {
     @Column({name: 'fecha_modificacion'})
     fecha_modificacion: string;
 
+    @ManyToOne((() => Usuario))
     @JoinColumn({ name: 'usuario_id' })
     usuario: Usuario;
-    @ManyToOne((() => Usuario))
 
     @ManyToOne((() => Subcategoria))
     @JoinColumn({ name: 'categoria_id' })
-    subcategoria: Subcategoria[] ;
+    subcategoria: Subcategoria ;
+
+    // @OneToMany(() => Imagen, i => i.producto)
+    // img: Imagen[];
    
 }

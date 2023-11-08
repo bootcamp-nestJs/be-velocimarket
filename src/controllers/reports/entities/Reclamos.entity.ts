@@ -1,8 +1,9 @@
 import { Usuario } from "src/controllers/users/entities/user.entity";
-import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 
-@Entity({ name: 'Mensaje'})
-export class Mensaje {
+
+    @Entity({ name: 'Reclamo'})
+export class Reclamos {
 
     @PrimaryColumn({name: 'id'})
     id: number;
@@ -10,15 +11,14 @@ export class Mensaje {
     producto_id: number;
     @Column({name: 'emisor_id'})
     emisor_id: number;
-    @Column({name: 'mensaje'})
-    mensaje: string;
+    @Column({name: 'descripcion'})
+    descripcion: string;
     @Column({name: 'fecha_creacion'})
     fecha_creacion: string;
     @Column({name: 'fecha_modificacion'})
     fecha_modificacion: string;
 
-    @ManyToMany(() => Usuario)
-    @JoinTable({ name: 'Conversacion'})
-    user: Usuario[];
-
-    }
+    @ManyToOne((() => Usuario))
+    @JoinColumn({ name: 'emisor_id' })
+    user: Usuario ;
+}

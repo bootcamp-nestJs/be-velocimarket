@@ -56,4 +56,10 @@ export class UsersController {
     this.usersService.removeUser(id);
     return { message: `Usuario de ID ${id} eliminado`}
   }
+
+  @Get('orm')
+  mostrar_todo_orm() {
+    const data = this.usersService.find_by_orm();
+    return { message: 'Productos obtenidos exitosamente', data };
+  }
 }

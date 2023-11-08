@@ -3,10 +3,19 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Users } from './interfaces/users-interfaces';
 import { v4 as uuid } from 'uuid';
+import { Usuario } from './entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Reclamos } from '../reports/entities/Reclamos.entity';
 
 @Injectable()
 export class UsersService {
-
+  constructor(
+    @InjectRepository(Usuario)
+      private Product_Repository: Repository<Usuario>,
+    @InjectRepository(Reclamos)
+    private Reclamos_Repository: Repository<Reclamos>
+    ) {}
   listUsers: Users[] = [];
 
   crearUser( newUser: CreateUserDto) {
@@ -56,6 +65,12 @@ export class UsersService {
     return usersInclude;
   }
 
+  async find_by_orm(): Promise<Usuario[]>{
+    const mostrar: Usuario[] = await this.Product_Repository.find()
+    console.log(mostrar)
+    return mostrar;
+  }
+
   updateUser(id: string, updateData: UpdateUserDto) {
     const user = this.findUserById(id);
     if( !user ) throw new NotFoundException(`El producto ${id} que esta tratando de actualizar no existe`);
@@ -85,5 +100,6 @@ export class UsersService {
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
+    
   }
 }
