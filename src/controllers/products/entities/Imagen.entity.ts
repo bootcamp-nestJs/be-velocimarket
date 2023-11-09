@@ -15,8 +15,8 @@ export class Imagen {
     @Column({name: 'fecha_modificacion'})
     fecha_modificacion: string;
 
-    // @ManyToOne(() => Product, p => p.img)
-    // @JoinColumn({ name: 'producto_id' })
-    // producto: Product ;
+    //  @ManyToOne(() => Product)
+    //  @JoinColumn({ name: 'producto_id' })
+    //  product: Product ;
    
 }

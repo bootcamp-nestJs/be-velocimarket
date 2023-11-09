@@ -6,9 +6,12 @@ import { Usuario } from './entities/user.entity';
 import { Reclamos } from '../reports/entities/Reclamos.entity';
 import { Direccion } from './entities/direccion.entity';
 import { Mensaje } from '../mensajes/entities/mensaje.entity';
+import { Follower } from './entities/follower.entity';
+import { Following } from './entities/following.entity';
+import { Calificacion } from '../reports/entities/calificacion.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Usuario, Reclamos, Direccion, Mensaje])],
+  imports: [TypeOrmModule.forFeature([Usuario, Reclamos, Direccion, Mensaje, Follower, Following, Calificacion])],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService]

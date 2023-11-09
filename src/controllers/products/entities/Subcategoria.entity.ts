@@ -15,11 +15,11 @@ export class Subcategoria {
     @Column({name: 'fecha_modificacion'})
     fecha_modificacion: string;
 
-    // @OneToMany(() => Product, (p) => p.subcategoria)
-    // producto: Product[];
-
     @ManyToOne((() => Categoria))
     @JoinColumn({ name: 'categoria_id' })
     categ: Categoria ;
+
+    // @OneToMany(() => Product, (p) => p.subcat)
+    // product: Product[];
    
 }

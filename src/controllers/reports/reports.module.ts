@@ -3,9 +3,10 @@ import { ReportsService } from './reports.service';
 import { ReportsController } from './reports.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Reclamos } from './entities/Reclamos.entity';
+import { Calificacion } from './entities/calificacion.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Reclamos])],
+  imports: [TypeOrmModule.forFeature([Reclamos, Calificacion])],
   controllers: [ReportsController],
   providers: [ReportsService],
 })

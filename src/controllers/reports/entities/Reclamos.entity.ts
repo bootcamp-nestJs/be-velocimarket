@@ -1,3 +1,4 @@
+import { Product } from "src/controllers/products/entities/Product.entity";
 import { Usuario } from "src/controllers/users/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 
@@ -21,4 +22,7 @@ export class Reclamos {
     @ManyToOne((() => Usuario))
     @JoinColumn({ name: 'emisor_id' })
     user: Usuario ;
+    @ManyToOne((() => Product))
+    @JoinColumn({ name: 'producto_id' })
+    product: Product ;
 }

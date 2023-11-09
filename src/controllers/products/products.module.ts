@@ -6,9 +6,10 @@ import { Product } from './entities/Product.entity';
 import { Subcategoria } from './entities/Subcategoria.entity';
 import { Imagen } from './entities/Imagen.entity';
 import { Categoria } from './entities/Categoria.entity';
+import { Calificacion } from '../reports/entities/calificacion.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, Subcategoria, Imagen, Categoria ])],
+  imports: [TypeOrmModule.forFeature([Product, Subcategoria, Imagen, Categoria, Calificacion ])],
   controllers: [ProductsController],
   providers: [ProductsService],
   exports: [ProductsService]

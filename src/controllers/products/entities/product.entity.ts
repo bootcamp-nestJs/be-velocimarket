@@ -1,7 +1,11 @@
 import { Usuario } from "src/controllers/users/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { Subcategoria } from "./Subcategoria.entity";
 import { Imagen } from "./Imagen.entity";
+import { Calificacion } from "src/controllers/reports/entities/calificacion.entity";
+import { Mensaje } from "src/controllers/mensajes/entities/mensaje.entity";
+import { Cart } from "src/controllers/cart/entities/cart.entity";
+import { Reclamos } from "src/controllers/reports/entities/Reclamos.entity";
 
 @Entity({ name: 'Producto'})
 export class Product {
@@ -39,12 +43,23 @@ export class Product {
     @ManyToOne((() => Usuario))
     @JoinColumn({ name: 'usuario_id' })
     usuario: Usuario;
-
-    @ManyToOne((() => Subcategoria))
-    @JoinColumn({ name: 'categoria_id' })
-    subcategoria: Subcategoria ;
-
-    // @OneToMany(() => Imagen, i => i.producto)
+    
+    @OneToMany(() => Calificacion, (c) => c.user)
+    calificacion: Calificacion[];
+    
+    @ManyToMany(() => Mensaje, m=> m.product)
+    msg: Mensaje[];
+    
+    @ManyToMany(() => Cart, c=> c.product)
+    carrito: Cart[];
+    
+    @OneToMany(() => Reclamos, (r) => r.product)
+    reclamos: Reclamos[];
+    
+    // @ManyToOne(() => Subcategoria)
+    // @JoinColumn({ name: 'categoria_id' })
+    // subcat: Subcategoria ;
+    // @OneToMany(() => Imagen, (i) => i.product)
     // img: Imagen[];
-   
+    
 }

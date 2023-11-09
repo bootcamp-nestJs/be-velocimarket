@@ -3,6 +3,10 @@ import { Reclamos } from "src/controllers/reports/entities/Reclamos.entity";
 import { Column, Entity, ManyToMany, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
 import { Direccion } from "./direccion.entity";
 import { Mensaje } from "src/controllers/mensajes/entities/mensaje.entity";
+import { Follower } from "./follower.entity";
+import { Following } from "./following.entity";
+import { Calificacion } from "src/controllers/reports/entities/calificacion.entity";
+import { Cart } from "src/controllers/cart/entities/cart.entity";
 
 @Entity({ name: 'Usuario'})
 export class Usuario {
@@ -35,8 +39,20 @@ export class Usuario {
     @OneToOne(() => Direccion, d => d.user)
     direccion: Direccion;
 
-    // @ManyToMany(() => Mensaje, m=> m.user)
-    // msg: Mensaje[];
+    @ManyToMany(() => Mensaje, m=> m.user)
+    msg: Mensaje[];
+
+    @OneToMany(() => Follower, f => f.user)
+    follower: Follower[];
+
+    @OneToMany(() => Following, f => f.user)
+    following: Following[];
+
+    @OneToMany(() => Calificacion, (c) => c.user)
+    calificacion: Calificacion[];
+
+    @OneToMany(() => Cart, (c) => c.user)
+    carrito: Cart[];
     }
     
 

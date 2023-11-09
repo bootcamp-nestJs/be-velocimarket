@@ -15,6 +15,11 @@ import { Usuario } from './controllers/users/entities/user.entity';
 import { Imagen } from './controllers/products/entities/Imagen.entity';
 import { Reclamos } from './controllers/reports/entities/Reclamos.entity';
 import { Direccion } from './controllers/users/entities/direccion.entity';
+import { Mensaje } from './controllers/mensajes/entities/mensaje.entity';
+import { Follower } from './controllers/users/entities/follower.entity';
+import { Following } from './controllers/users/entities/following.entity';
+import { Calificacion } from './controllers/reports/entities/calificacion.entity';
+import { Cart } from './controllers/cart/entities/cart.entity';
 @Module({
   imports: [TypeOrmModule.forRoot({
     type: 'mysql',
@@ -23,7 +28,7 @@ import { Direccion } from './controllers/users/entities/direccion.entity';
     username: 'root',
     password: 'clave123',
     database: 'VELOCIMARKET',
-    entities: [Product, Categoria, Subcategoria, Usuario, Imagen, Reclamos, Direccion]
+    entities: [Product, Categoria, Subcategoria, Usuario, Imagen, Reclamos, Direccion, Mensaje, Follower, Following, Calificacion, Cart]
   }),
     ProductsModule, 
     UsersModule,
