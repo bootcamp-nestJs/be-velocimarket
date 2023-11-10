@@ -36,9 +36,9 @@ export class Product {
     @Column({name: 'valoracion'})
     valoracion: number;
     @Column({name: 'fecha_creacion'})
-    fecha_creacion: string;
+    fecha_creacion: Date;
     @Column({name: 'fecha_modificacion'})
-    fecha_modificacion: string;
+    fecha_modificacion: Date;
 
     @ManyToOne((() => Usuario))
     @JoinColumn({ name: 'usuario_id' })

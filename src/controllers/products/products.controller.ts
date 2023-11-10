@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiQuery } from '@nestjs/swagger';
+import { Product_Dto } from './dto/product.dto';
+import { Product_Mapper } from './mapper/mapper.products';
 
 @Controller('products')
 export class ProductsController {
@@ -16,53 +18,54 @@ export class ProductsController {
   @ApiCreatedResponse({ description: "El Producto se creó exitosamente", isArray: true, type: CreateProductDto})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    this.productsService.createProduct(createProductDto);
-    return { message: 'Producto creado exitosamente' };
+  async create(@Body() createProductDto: CreateProductDto): Promise<Product_Dto> {
+    try {
+      const producto_creado = await this.productsService.createProduct(createProductDto);
+      return producto_creado;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Get()
-  findAll() {
-    const data = this.productsService.findAllProducts();
-    return { message: 'Productos obtenidos exitosamente', data };
+  async findAll() : Promise<Product_Dto[]> {
+    try {
+      const data = await this.productsService.findAllProducts();
+    return  data;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
-  @ApiQuery({ name: "id", description: "Id del producto en UUIDv4" })
+  @ApiQuery({ name: "id", description: "Id del producto" })
   @Get('product')
-  findProductById(@Query('id', new ParseUUIDPipe({version: '4'})) id: string) {
-    const data = this.productsService.findProductById(id);
-    return { message: 'Producto encontrado', data };
+  async findProductById(@Query('id') id: number): Promise<Product_Dto> {
+    const data = await this.productsService.findProductById(id);
+    return data ;
   }
 
   @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
   @Get('search')
-  findProductByName(@Query('nombre') nombre: string) {
-    const data = this.productsService.findProductByInclude(nombre);
-    return { message: 'Productos encontrados', data };
+  async findProductByName(@Query('nombre') nombre: string): Promise<Product_Dto[]> {
+    const data = await this.productsService.findProductByInclude(nombre);
+    return data ;
   }
 
-  @ApiQuery({ name: "id", description: "Id del producto en UUIDv4" })
+  @ApiQuery({ name: "id", description: "Id del producto como numero entero" })
   @ApiBody({
     description: "Datos del producto que se van a modificar",
     type: UpdateProductDto
   })
   @Patch()
-  update(@Query('id', new ParseUUIDPipe({version: '4'})) id: string, @Body() updateProductDto: UpdateProductDto) {
-    this.productsService.updateProduct(id, updateProductDto);
-
-    return { message: `Producto ${id} actualizado exitosamente` };
+  async update(@Query('id') id: number, @Body() updateProductDto: UpdateProductDto): Promise<Product_Dto> {
+  const producto_actualizado = await this.productsService.updateProduct(id, updateProductDto);
+  return producto_actualizado;
   }
 
-  @ApiQuery({ name: "id", description: "Id del producto en UUIDv4" })
-  @Delete()
-  remove(@Query('id') id: string) {
-    this.productsService.removeProduct(id);
-    return { message: `Producto de ID ${id} eliminado`}
-  }
-
-  @Get('orm')
-  mostrar_todo_orm() {
-    const data = this.productsService.find_img_by_orm();
-    return { message: 'Productos obtenidos exitosamente', data };
-  }
+@ApiQuery({ name: "id", description: "Id del producto como numero entero" })
+@Delete()
+async remove(@Query('id') id: number): Promise<string> {
+  await this.productsService.removeProduct(id);
+  return `Producto de ID ${id} eliminado`
+}
 }

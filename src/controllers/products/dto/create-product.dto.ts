@@ -1,6 +1,5 @@
-import { IsDateString, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, IsUUID, MaxLength, Min, MinLength, isDate, isDateString } from "@nestjs/class-validator";
+import { IsInt, IsNotEmpty, IsPositive, IsString, Max, MaxLength, MinLength} from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { version } from "os";
 
 export class CreateProductDto {
     @ApiProperty({
@@ -13,34 +12,34 @@ export class CreateProductDto {
     })
     @IsString({message: "El atributo nombre presenta error,revise que es string"})
     @MinLength(3,{message: "El atributo nombre presenta error, necesita minimo 3 caracteres"})
-    @MaxLength(20,{message: "El atributo nombre presenta error, necesita como maximo 20 caracteres"})
+    @MaxLength(100,{message: "El atributo nombre presenta error, necesita como maximo 20 caracteres"})
     @IsNotEmpty({message: "El atributo nombre presenta error, no puede ser un campo vacío"})
     readonly nombre:string;
 
     @ApiProperty({
         type: 'string',
-        example: 'Cadenas',
+        example: '1',
         minimum: 3,
         required: true,
         description: "Categoría del producto",
         title: "Categoría"
     })
-    @IsString({message: "El atributo categoría presenta error, revise que es string"})
-    @MinLength(3,{message: "El atributo categoría presenta error, necesita minimo 3 caracteres"})
-    @MaxLength(15,{message: "El atributo categoría presenta error, necesita como maximo 15 caracteres"})
-    @IsNotEmpty({message: "El atributo categoría presenta error, no puede ser un campo vacío"})
-    readonly categoria:string;
+    @IsInt({ message: "El atributo precio presenta error, revise que es numerico" })
+    @IsPositive({ message: "El atributo precio presenta error, debe ser mayor a cero" })
+    @IsNotEmpty({message: "El atributo precio presenta error, no puede ser un campo vacío"})
+    @Max(26)
+    readonly categoria:number;
 
     @ApiProperty({
         type: 'string',
         example: 'Asiento para bicicleta marca XXXX',
-        minimum: 50,
+        minimum: 5,
         required: true,
         description: "Descripción del producto",
         title: "Descripción"
     })
     @IsString({message: "El atributo descripcion presenta error, revise que es string"})
-    @MinLength(50,{message: "El atributo descripcion presenta error, necesita minimo 50 caracteres"})
+    @MinLength(5,{message: "El atributo descripcion presenta error, necesita minimo 50 caracteres"})
     @MaxLength(200,{message: "El atributo descripcion presenta error, necesita como maximo 200 caracteres"})
     @IsNotEmpty({message: "El atributo descripción presenta error, no puede ser un campo vacío"})
     readonly descripcion:string;
@@ -55,7 +54,7 @@ export class CreateProductDto {
     })
     @IsString({message: "El atributo marca presenta error, revise que es string"})
     @MinLength(3,{message: "El atributo marca presenta error, necesita minimo 3 caracteres"})
-    @MaxLength(15,{message: "El atributo marca presenta error, necesita como maximo 15 caracteres"})
+    @MaxLength(20,{message: "El atributo marca presenta error, necesita como maximo 15 caracteres"})
     @IsNotEmpty({message: "El atributo marca presenta error, no puede ser un campo vacío"})
     readonly marca:string;
 
@@ -93,6 +92,7 @@ export class CreateProductDto {
         title: "Tamaño"
     })
     @IsString({message: "El atributo tamaño presenta error, revise que es string"})
+    @MaxLength(20,{message: "El atributo tamaño presenta error, necesita como maximo 15 caracteres"})
     readonly tamanio:string;
 
     @ApiProperty({
@@ -104,6 +104,7 @@ export class CreateProductDto {
         title: "estado"
     })
     @IsString({message: "El atributo estado presenta error, revise que es string"})
+    @MaxLength(20,{message: "El atributo estado presenta error, necesita como maximo 15 caracteres"})
     readonly estado:string;
 
     @ApiProperty({
@@ -115,6 +116,7 @@ export class CreateProductDto {
         title: "material_cuadro"
     })
     @IsString({message: "El atributo material_cuadro presenta error, revise que es string"})
+    @MaxLength(20,{message: "El atributo material_cuadro presenta error, necesita como maximo 15 caracteres"})
     readonly material_cuadro:string;
 
     @ApiProperty({
@@ -123,12 +125,12 @@ export class CreateProductDto {
         minimum: 3,
         required: false,
         description: "informacion adicional: compontes",
-        title: "compontes"
+        title: "componentes"
     })
     @IsString({message: "El atributo compontes presenta error, revise que es string"})
-    @MinLength(10,{message: "El atributo componentes presenta error, necesita minimo 10 caracteres"})
+    @MinLength(3,{message: "El atributo componentes presenta error, necesita minimo 10 caracteres"})
     @MaxLength(200,{message: "El atributo componentes presenta error, necesita como maximo 200 caracteres"})
-    readonly compontes:string;
+    readonly componentes:string;
 
     @ApiProperty({
         type: 'number',
@@ -140,6 +142,7 @@ export class CreateProductDto {
     })
     @IsInt({ message: "El atributo valoración presenta error, revise que es numérico" })
     @IsPositive({ message: "El atributo valoración presenta error, debe ser mayor a cero" })
+    @Max(5)
     readonly valoracion: number
 }
 
