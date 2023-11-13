@@ -1,5 +1,6 @@
+import { Imagen } from "../entities/Imagen.entity";
 
-export class Product_Dto {
+export class ProductDto {
     id: number;
     nombre: string;
     descripcion: string;
@@ -11,4 +12,6 @@ export class Product_Dto {
     material_cuadro: string;
     componentes: string;
     valoracion: number;
+    img: Imagen[];
+    cat:string;
 }

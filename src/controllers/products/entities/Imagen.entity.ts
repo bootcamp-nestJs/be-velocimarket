@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import { Product } from "./product.entity";
+import { Product } from "./Product.entity";
 
 
 @Entity({ name: 'Imagen'})
@@ -15,8 +15,8 @@ export class Imagen {
     @Column({name: 'fecha_modificacion'})
     fecha_modificacion: string;
 
-    //  @ManyToOne(() => Product)
-    //  @JoinColumn({ name: 'producto_id' })
-    //  product: Product ;
+    @ManyToOne(() => Product)
+    @JoinColumn({ name: 'producto_id' })
+    product: Product ;
    
 }

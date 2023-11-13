@@ -1,15 +1,16 @@
 import { CreateProductDto } from "../dto/create-product.dto";
-import { Product_Dto } from "../dto/product.dto";
+import { ProductDto } from "../dto/product.dto";
 import { UpdateProductDto } from "../dto/update-product.dto";
+import { Imagen } from "../entities/Imagen.entity";
 import { Product } from "../entities/Product.entity";
 
-export class Product_Mapper {
+export class ProductMapper {
 
-    static toDto(entity: Product): Product_Dto {
+    static toDto(entity: Product): ProductDto {
       if (!entity) {
         return null;
       }
-      const dto =  new Product_Dto();
+      const dto =  new ProductDto();
       dto.id = entity.id;
       dto.nombre= entity.nombre;
       dto.precio= entity.precio;
@@ -20,11 +21,12 @@ export class Product_Mapper {
       dto.material_cuadro= entity.material_cuadro;
       dto.componentes= entity.componentes;
       dto.valoracion= entity.valoracion;
-       
+      dto.img = entity.img;
+      dto.cat = entity.subcat.descripcion;
       return dto;
     }
 
-    static toDtoList(entities: Product[]): Product_Dto[] {
+    static toDtoList(entities: Product[]): ProductDto[] {
         return entities.map(entity => this.toDto(entity));
       }
 

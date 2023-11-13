@@ -3,8 +3,8 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiQuery } from '@nestjs/swagger';
-import { Product_Dto } from './dto/product.dto';
-import { Product_Mapper } from './mapper/mapper.products';
+import { ProductDto } from './dto/product.dto';
+import { ProductMapper } from './mapper/mapper.products';
 
 @Controller('products')
 export class ProductsController {
@@ -18,7 +18,7 @@ export class ProductsController {
   @ApiCreatedResponse({ description: "El Producto se creó exitosamente", isArray: true, type: CreateProductDto})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Post()
-  async create(@Body() createProductDto: CreateProductDto): Promise<Product_Dto> {
+  async create(@Body() createProductDto: CreateProductDto): Promise<ProductDto> {
     try {
       const producto_creado = await this.productsService.createProduct(createProductDto);
       return producto_creado;
@@ -28,7 +28,7 @@ export class ProductsController {
   }
 
   @Get()
-  async findAll() : Promise<Product_Dto[]> {
+  async findAll() : Promise<ProductDto[]> {
     try {
       const data = await this.productsService.findAllProducts();
     return  data;
@@ -39,14 +39,14 @@ export class ProductsController {
 
   @ApiQuery({ name: "id", description: "Id del producto" })
   @Get('product')
-  async findProductById(@Query('id') id: number): Promise<Product_Dto> {
+  async findProductById(@Query('id') id: number): Promise<ProductDto> {
     const data = await this.productsService.findProductById(id);
     return data ;
   }
 
   @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
   @Get('search')
-  async findProductByName(@Query('nombre') nombre: string): Promise<Product_Dto[]> {
+  async findProductByName(@Query('nombre') nombre: string): Promise<ProductDto[]> {
     const data = await this.productsService.findProductByInclude(nombre);
     return data ;
   }
@@ -57,7 +57,7 @@ export class ProductsController {
     type: UpdateProductDto
   })
   @Patch()
-  async update(@Query('id') id: number, @Body() updateProductDto: UpdateProductDto): Promise<Product_Dto> {
+  async update(@Query('id') id: number, @Body() updateProductDto: UpdateProductDto): Promise<ProductDto> {
   const producto_actualizado = await this.productsService.updateProduct(id, updateProductDto);
   return producto_actualizado;
   }

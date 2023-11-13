@@ -26,9 +26,9 @@ export class Usuario {
     @Column({name: 'telefono'})
     telefono: string;
     @Column({name: 'fecha_creacion'})
-    fecha_creacion: string;
+    fecha_creacion: Date;
     @Column({name: 'fecha_modificacion'})
-    fecha_modificacion: string;
+    fecha_modificacion: Date;
 
     @OneToMany(() => Product, (p) => p.usuario)
     producto: Product[];

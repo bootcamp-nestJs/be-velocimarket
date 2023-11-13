@@ -1,105 +1,141 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Users } from './interfaces/users-interfaces';
-import { v4 as uuid } from 'uuid';
 import { Usuario } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Reclamos } from '../reports/entities/Reclamos.entity';
+import { Like, Repository } from 'typeorm';
+import { UserDto } from './dto/user.dto';
+import { UserMapper } from './mapper/mapper.users';
+import { Direccion } from './entities/direccion.entity';
+import { UpdateDireccionDto } from './dto/update-direccion.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(Usuario)
-      private Product_Repository: Repository<Usuario>,
-    @InjectRepository(Reclamos)
-    private Reclamos_Repository: Repository<Reclamos>
+      private UserRepository: Repository<Usuario>,
+    @InjectRepository(Direccion)
+    private direccionRepository: Repository<Direccion>
     ) {}
-  listUsers: Users[] = [];
 
-  crearUser( newUser: CreateUserDto) {
-      try {
-        const newUserDto = {
-          id: uuid(),
-          fechaCreacion: Date(),
-          ...newUser
-        }
-        console.log(newUserDto)
-        this.listUsers.push(newUserDto);
-        return "Usuario creado con éxito" ;
-        
-      } catch (error) {
-        throw new InternalServerErrorException(`Error: ${error}`);
+  async createUser( newUser: CreateUserDto): Promise<UserDto> {
+    const findUser = await this.UserRepository.exist({
+      where: {
+        user_name: newUser.user
       }
-  }
-
-  listaUsuarios() {
+    });
+    if(findUser){
+      throw new BadRequestException(`El nombre de usuario ${newUser.user} ya existe, ingresar otro nombre de usuario`)
+    }
     try {
-      const { listUsers } = this;
-      return listUsers;
+      const newUserDto = UserMapper.toEntity(newUser);
+      const newUserCreated = await this.UserRepository.save(newUserDto);
+      const newUserDireccion = UserMapper.toEntityDireccion(newUser);
+      const findUser = await this.UserRepository.findOneBy({
+        user_name: newUser.user
+      })
+      newUserDireccion.usuario_id = findUser.id;
+      await this.direccionRepository.save(newUserDireccion);
+      
+      return UserMapper.toDto(newUserCreated) ;
+      
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
 
-  fillUsersWithSeed(users: Users[]){
-    this.listUsers = users;
-  }
-
-  findUserById(id: string): Users {
-    const { listUsers } = this;
-    
-    const usuario = listUsers.find( usuario => usuario.id === id);
-    if(!usuario){
-      throw new NotFoundException(`el usuario con id ${id} no se encontro!`); 
+  async findAllUsers(): Promise<UserDto[]> {
+    try {
+      const  listUsers  = await this.UserRepository.find({
+        relations: {
+          direccion: true
+        }
+      });
+      return UserMapper.toDtoList(listUsers);
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
     }
-    return usuario;
   }
 
-  findUserByInclude(name: string): any {
-    const { listUsers } = this;
-    const usersInclude = listUsers.filter( ({ nombre }) => nombre.toLowerCase().includes(name.toLowerCase()) );
+  async findUserById(id: number): Promise<UserDto> {
+    const userFinded  = await this.UserRepository.findOne({
+      where: {id: id}
+    });
+    const user = UserMapper.toDto(userFinded);
+    if(!user){
+      throw new NotFoundException(`el producto con id ${id} no se encontro!`); 
+    }
+    return user;
+  }
+
+  async findUserByInclude(name: string): Promise<UserDto[]> {
+    const listUsers = await this.UserRepository.find({
+      where: [{
+        nombre: Like(`%${name}%`)
+      },{
+        user_name: Like(`%${name}%`)
+      }, {
+        mail: Like(`%${name}%`)
+      }]
+    })
+
+    const usersInclude = UserMapper.toDtoList(listUsers);
     if(!usersInclude || usersInclude.length === 0) throw new NotFoundException(`No se encontraron coincidencias con el nombre: ${name}`);
-    //usar el nombre para la coincidencia o el nombre de usuario??
     return usersInclude;
   }
 
-  async find_by_orm(): Promise<Usuario[]>{
-    const mostrar: Usuario[] = await this.Product_Repository.find()
-    console.log(mostrar)
-    return mostrar;
-  }
-
-  updateUser(id: string, updateData: UpdateUserDto) {
-    const user = this.findUserById(id);
+  async updateUser(id: number, updateData: UpdateUserDto): Promise<UserDto> {
+    const user = await this.UserRepository.findOneBy({
+      id: id
+    });
     if( !user ) throw new NotFoundException(`El producto ${id} que esta tratando de actualizar no existe`);
     
     try {
-      this.listUsers = this.listUsers.map( user => {
-        if( user.id === id ){
-          const newUser = {...user, ...updateData, fechaModificacion: Date()}
-          return newUser;
+          const newUser: Usuario =UserMapper.toUpdateEntity(id, updateData)
+          const resultado = await this.UserRepository.update(id, newUser)
+          return UserMapper.toDto(newUser);
         }
-        return user;
-      } );
-      return this.listUsers;
-      
+     catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
+  }
+  
+  async removeUser(id: number): Promise<string> {
+    const user = await this.UserRepository.findOneBy({
+      id: id
+    })
+    if( !user ) throw new NotFoundException(`El producto que esta tratando de eliminar no existe ${id}`);
+
+    try {
+      const userDirection= await this.direccionRepository.findOneBy({
+        usuario_id: id
+      })
+      const idDireccion = userDirection.id;
+      await this.direccionRepository.delete(idDireccion);
+      await this.UserRepository.delete(id);   
+      return `Usuario con id ${id} eliminado`
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
 
-  removeUser(id: string) {
-    const user = this.findUserById(id);
-    if( !user ) throw new NotFoundException(`El producto que esta tratando de eliminar no existe ${id}`);
-
+  async updateDireccion(id: number, updateData: UpdateDireccionDto): Promise<string> {
+    const user = await this.UserRepository.findOneBy({
+      id: id
+    });
+    if( !user ) throw new NotFoundException(`El producto ${id} que esta tratando de actualizar no existe`);
+    
     try {
-      this.listUsers = this.listUsers.filter(user => user.id !== id);
-      
-    } catch (error) {
+          const userDirection= await this.direccionRepository.findOneBy({
+            usuario_id: id
+          })
+          const idDireccion = userDirection.id;
+          const newDirection: Direccion =UserMapper.toUpdateEntityDireccion(updateData);
+          const resultado = await this.direccionRepository.update(idDireccion, newDirection)
+          return `Dirección del producto con id ${id} ha sido actualizada`;
+        }
+     catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
-    
   }
 }

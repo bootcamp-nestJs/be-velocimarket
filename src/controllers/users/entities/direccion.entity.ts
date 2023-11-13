@@ -19,9 +19,9 @@ export class Direccion {
     @Column({name: 'region'})
     region: string;
     @Column({name: 'fecha_creacion'})
-    fecha_creacion: string;
+    fecha_creacion: Date;
     @Column({name: 'fecha_modificacion'})
-    fecha_modificacion: string;
+    fecha_modificacion: Date;
 
     @OneToOne(() => Usuario)
     @JoinColumn({ name: 'usuario_id'})

@@ -6,78 +6,82 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, EntityManager, Like, Repository } from 'typeorm';
 import { Product } from './entities/Product.entity';
 import { Imagen } from './entities/Imagen.entity';
-import { Product_Mapper } from './mapper/mapper.products';
-import { Product_Dto } from './dto/product.dto';
+import { ProductMapper } from './mapper/mapper.products';
+import { ProductDto } from './dto/product.dto';
 
 @Injectable()
 export class ProductsService implements IProducts{
   constructor(
     @InjectDataSource() private dataSource: DataSource,
     @InjectRepository(Product)
-      private Product_Repository: Repository<Product>,
+      private ProductRepository: Repository<Product>,
     @InjectRepository(Imagen)
-      private Imagen_Repository: Repository<Imagen>
+      private ImagenRepository: Repository<Imagen>
     ) {}
 
     prueba(){
       const em : EntityManager = this.dataSource.manager;
     }
 
-  async createProduct( newProduct: CreateProductDto): Promise<Product_Dto> {
+  async createProduct( newProduct: CreateProductDto): Promise<ProductDto> {
     try {
-      const newProductDto = Product_Mapper.toEntity(newProduct);
-      const new_product_created = await this.Product_Repository.save(newProductDto);
-      return Product_Mapper.toDto(new_product_created) ;
+      const newProductDto = ProductMapper.toEntity(newProduct);
+      const newProductCreated = await this.ProductRepository.save(newProductDto);
+      return ProductMapper.toDto(newProductCreated) ;
       
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
 
-  async findAllProducts(): Promise<Product_Dto[]> {
+  async findAllProducts(): Promise<ProductDto[]> {
     try {
-      const  listProducts  = await this.Product_Repository.find();
-      return Product_Mapper.toDtoList(listProducts);
+      const listProducts  = await this.ProductRepository.find({
+        relations: {
+          img: true,
+          subcat: true
+        }
+      });
+      console.log(listProducts)
+      return ProductMapper.toDtoList(listProducts);
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
 
-  // agregar img a los productos, también categoria.
-
-  async findProductById(id: number): Promise<Product_Dto> {
-    const product  = await this.Product_Repository.findOne({
+  async findProductById(id: number): Promise<ProductDto> {
+    const product  = await this.ProductRepository.findOne({
       where: {id: id}
     });
-    const product_dto = Product_Mapper.toDto(product);
+    const product_dto = ProductMapper.toDto(product);
     if(!product_dto){
       throw new NotFoundException(`el producto con id ${id} no se encontro!`); 
     }
     return product_dto;
   }
 
-  async findProductByInclude(name: string): Promise<Product_Dto[]> {
-    const listProducts = await this.Product_Repository.find({
+  async findProductByInclude(name: string): Promise<ProductDto[]> {
+    const listProducts = await this.ProductRepository.find({
       where: {
         nombre: Like(`%${name}%`)
       }
     })
 
-    const productsInclude = Product_Mapper.toDtoList(listProducts);
+    const productsInclude = ProductMapper.toDtoList(listProducts);
     if(!productsInclude || productsInclude.length === 0) throw new NotFoundException(`No se encontraron coincidencias con el nombre: ${name}`);
     return productsInclude;
   }
 
-  async updateProduct(id: number, updateData: UpdateProductDto): Promise<Product_Dto> {
-    const product = await this.Product_Repository.findOneBy({
+  async updateProduct(id: number, updateData: UpdateProductDto): Promise<ProductDto> {
+    const product = await this.ProductRepository.findOneBy({
       id: id
     });
     if( !product ) throw new NotFoundException(`El producto ${id} que esta tratando de actualizar no existe`);
     
     try {
-          const newProduct: Product =Product_Mapper.toUpdateEntity(id, updateData)
-          const resultado = await this.Product_Repository.update(id, newProduct)
-          return Product_Mapper.toDto(newProduct);
+          const newProduct: Product =ProductMapper.toUpdateEntity(id, updateData)
+          const resultado = await this.ProductRepository.update(id, newProduct)
+          return ProductMapper.toDto(newProduct);
         }
      catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
@@ -85,13 +89,13 @@ export class ProductsService implements IProducts{
   }
 
   async removeProduct(id: number): Promise<string> {
-    const product = await this.Product_Repository.findOneBy({
+    const product = await this.ProductRepository.findOneBy({
       id: id
     })
     if( !product ) throw new NotFoundException(`El producto que esta tratando de eliminar no existe ${id}`);
 
     try {
-      this.Product_Repository.delete(id)
+      this.ProductRepository.delete(id)
       return `Producto con id ${id} eliminado`
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);

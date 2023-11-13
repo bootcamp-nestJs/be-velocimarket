@@ -56,10 +56,11 @@ export class Product {
     @OneToMany(() => Reclamos, (r) => r.product)
     reclamos: Reclamos[];
     
-    // @ManyToOne(() => Subcategoria)
-    // @JoinColumn({ name: 'categoria_id' })
-    // subcat: Subcategoria ;
-    // @OneToMany(() => Imagen, (i) => i.product)
-    // img: Imagen[];
+    @ManyToOne(() => Subcategoria)
+    @JoinColumn({ name: 'categoria_id' })
+    subcat: Subcategoria ;
+    
+    @OneToMany(() => Imagen, (i) => i.product)
+    img: Imagen[];
     
 }

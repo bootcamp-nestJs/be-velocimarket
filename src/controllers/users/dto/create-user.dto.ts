@@ -76,7 +76,7 @@ export class CreateUserDto {
     readonly password: string;
 
     @ApiProperty({
-        type: 'number',
+        type: 'string',
         example: '972085027',
         minimum: 9,
         required: true,
@@ -115,10 +115,8 @@ export class CreateUserDto {
         title: "Numeración"
     })
     @IsInt({message: "El atributo número debe ser un entero positivo"})
-    @MinLength(1,{message: "El atributo número presenta error, necesita minimo 1 caracteres"})
-    @MaxLength(6,{message: "El atributo número presenta error, necesita como maximo 6 caracteres"})
     @IsNotEmpty({message: "El atributo número presenta error, no puede ser un campo vacío"})
-    readonly número: string;
+    readonly número: number;
 
     @ApiProperty({
         type: 'string',
