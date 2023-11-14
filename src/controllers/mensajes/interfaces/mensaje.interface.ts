@@ -10,6 +10,6 @@ export interface Mensaje {
 export interface IMensaje {
     createMensaje(crearMensajeoDto: CreateMensajeDto);
     findAllMensajes():any;
-    findMensajeById(carId: string);
-    removeMensaje(id: string);
+    findMensajeById(msgId: number);
+    removeMensaje(id: number);
 }

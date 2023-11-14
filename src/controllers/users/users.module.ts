@@ -9,7 +9,6 @@ import { Mensaje } from '../mensajes/entities/mensaje.entity';
 import { Follower } from './entities/follower.entity';
 import { Following } from './entities/following.entity';
 import { Calificacion } from '../reports/entities/calificacion.entity';
-import { UserMapper } from './mapper/mapper.users';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Usuario, Reclamos, Direccion, Mensaje, Follower, Following, Calificacion])],

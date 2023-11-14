@@ -48,9 +48,11 @@ export class UsersService {
     try {
       const  listUsers  = await this.UserRepository.find({
         relations: {
-          direccion: true
+          direccion: true,
+          msg: false
         }
       });
+      console.log(listUsers)
       return UserMapper.toDtoList(listUsers);
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);

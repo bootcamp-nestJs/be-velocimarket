@@ -1,9 +1,9 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { IProducts, Products } from './interfaces/products-interfaces';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import { DataSource, EntityManager, Like, Repository } from 'typeorm';
+import { IProducts } from './interfaces/products-interfaces';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Like, Repository } from 'typeorm';
 import { Product } from './entities/Product.entity';
 import { Imagen } from './entities/Imagen.entity';
 import { ProductMapper } from './mapper/mapper.products';
@@ -12,16 +12,11 @@ import { ProductDto } from './dto/product.dto';
 @Injectable()
 export class ProductsService implements IProducts{
   constructor(
-    @InjectDataSource() private dataSource: DataSource,
     @InjectRepository(Product)
       private ProductRepository: Repository<Product>,
     @InjectRepository(Imagen)
       private ImagenRepository: Repository<Imagen>
     ) {}
-
-    prueba(){
-      const em : EntityManager = this.dataSource.manager;
-    }
 
   async createProduct( newProduct: CreateProductDto): Promise<ProductDto> {
     try {
@@ -95,7 +90,7 @@ export class ProductsService implements IProducts{
     if( !product ) throw new NotFoundException(`El producto que esta tratando de eliminar no existe ${id}`);
 
     try {
-      this.ProductRepository.delete(id)
+      await this.ProductRepository.delete(id)
       return `Producto con id ${id} eliminado`
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);

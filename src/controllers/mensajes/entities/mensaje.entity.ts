@@ -14,9 +14,9 @@ export class Mensaje {
     @Column({name: 'mensaje'})
     mensaje: string;
     @Column({name: 'fecha_creacion'})
-    fecha_creacion: string;
+    fecha_creacion: Date;
     @Column({name: 'fecha_modificacion'})
-    fecha_modificacion: string;
+    fecha_modificacion: Date;
 
     @ManyToMany(() => Usuario)
     @JoinTable({ name: 'Conversacion'})
