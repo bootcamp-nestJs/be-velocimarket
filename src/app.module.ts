@@ -26,7 +26,7 @@ import { Cart } from './controllers/cart/entities/cart.entity';
     host: 'localhost',
     port: 3306,
     username: 'root',
-    password: 'clave123',
+    password: 'Clave123',
     database: 'VELOCIMARKET',
     entities: [Product, Categoria, Subcategoria, Usuario, Imagen, Reclamos, Direccion, Mensaje, Follower, Following, Calificacion, Cart]
   }),

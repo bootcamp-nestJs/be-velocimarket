@@ -107,11 +107,6 @@ export class UsersService {
     if( !user ) throw new NotFoundException(`El producto que esta tratando de eliminar no existe ${id}`);
 
     try {
-      const userDirection= await this.direccionRepository.findOneBy({
-        usuario_id: id
-      })
-      const idDireccion = userDirection.id;
-      await this.direccionRepository.delete(idDireccion);
       await this.UserRepository.delete(id);   
       return `Usuario con id ${id} eliminado`
     } catch (error) {
