@@ -1,86 +1,97 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { IProducts, Products } from './interfaces/products-interfaces';
-import { v4 as uuid } from 'uuid';
+import { IProducts } from './interfaces/products-interfaces';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Like, Repository } from 'typeorm';
+import { Product } from './entities/Product.entity';
+import { Imagen } from './entities/Imagen.entity';
+import { ProductMapper } from './mapper/mapper.products';
+import { ProductDto } from './dto/product.dto';
 
 @Injectable()
 export class ProductsService implements IProducts{
+  constructor(
+    @InjectRepository(Product)
+      private ProductRepository: Repository<Product>,
+    @InjectRepository(Imagen)
+      private ImagenRepository: Repository<Imagen>
+    ) {}
 
-  private listProducts: Products[] = [];
-  
-  constructor(){}
-
-  createProduct( newProduct: CreateProductDto) {
+  async createProduct( newProduct: CreateProductDto): Promise<ProductDto> {
     try {
-      const newProductDto = {
-        id: uuid(),
-        fechaCreacion: Date(),
-        ...newProduct
-      }
-      this.listProducts.push(newProductDto);
-      return this.listProducts ;
+      const newProductDto = ProductMapper.toEntity(newProduct);
+      const newProductCreated = await this.ProductRepository.save(newProductDto);
+      return ProductMapper.toDto(newProductCreated) ;
       
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
 
-  findAllProducts() {
+  async findAllProducts(): Promise<ProductDto[]> {
     try {
-      const { listProducts } = this;
-      return listProducts;
+      const listProducts  = await this.ProductRepository.find({
+        relations: {
+          img: true,
+          subcat: true
+        }
+      });
+      console.log(listProducts)
+      return ProductMapper.toDtoList(listProducts);
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
 
-  findProductById(id: string): Products {
-    const { listProducts } = this;
-    
-    const producto = listProducts.find( product => product.id === id);
-    if(!producto){
+  async findProductById(id: number): Promise<ProductDto> {
+    const product  = await this.ProductRepository.findOne({
+      where: {id: id}
+    });
+    const product_dto = ProductMapper.toDto(product);
+    if(!product_dto){
       throw new NotFoundException(`el producto con id ${id} no se encontro!`); 
     }
-    return producto;
+    return product_dto;
   }
 
-  findProductByInclude(name: string): any {
-    const { listProducts } = this;
+  async findProductByInclude(name: string): Promise<ProductDto[]> {
+    const listProducts = await this.ProductRepository.find({
+      where: {
+        nombre: Like(`%${name}%`)
+      }
+    })
 
-    const productsInclude = listProducts.filter( ({ nombre }) => nombre.toLowerCase().includes(name.toLowerCase()) );
-    
+    const productsInclude = ProductMapper.toDtoList(listProducts);
     if(!productsInclude || productsInclude.length === 0) throw new NotFoundException(`No se encontraron coincidencias con el nombre: ${name}`);
-    
     return productsInclude;
   }
 
-  updateProduct(id: string, updateData: UpdateProductDto) {
-    const product = this.findProductById(id);
+  async updateProduct(id: number, updateData: UpdateProductDto): Promise<ProductDto> {
+    const product = await this.ProductRepository.findOneBy({
+      id: id
+    });
     if( !product ) throw new NotFoundException(`El producto ${id} que esta tratando de actualizar no existe`);
     
     try {
-      this.listProducts = this.listProducts.map( product => {
-        if( product.id === id ){
-          const newProduct = {...product, ...updateData, fechaModificacion: Date()}
-          return newProduct;
+          const newProduct: Product =ProductMapper.toUpdateEntity(id, updateData)
+          const resultado = await this.ProductRepository.update(id, newProduct)
+          return ProductMapper.toDto(newProduct);
         }
-        return product;
-      } );
-      return this.listProducts;
-      
-    } catch (error) {
+     catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
 
-  removeProduct(id: string) {
-    const product = this.findProductById(id);
+  async removeProduct(id: number): Promise<string> {
+    const product = await this.ProductRepository.findOneBy({
+      id: id
+    })
     if( !product ) throw new NotFoundException(`El producto que esta tratando de eliminar no existe ${id}`);
 
     try {
-      this.listProducts = this.listProducts.filter(product => product.id !== id);
-      
+      await this.ProductRepository.delete(id)
+      return `Producto con id ${id} eliminado`
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }

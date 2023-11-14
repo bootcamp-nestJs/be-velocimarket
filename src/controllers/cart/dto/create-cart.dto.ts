@@ -1,5 +1,6 @@
 import { IsDateString, IsInt, IsNumber, IsOptional, IsPositive, IsString, IsUUID, MaxLength, Min, MinLength, isDate, isDateString } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { Product } from "src/controllers/products/entities/Product.entity";
 export class CreateCartDto {
   @ApiProperty({
     type: 'number',
@@ -11,7 +12,6 @@ export class CreateCartDto {
   })
   @IsInt({message: "El atributo valorEnvio presenta error,revise que es numerico"})
   @IsPositive({ message: "El atributo valorEnvio presenta error, debe ser mayor a cero" })
-  @MinLength(3,{message: "El atributo valorEnvio presenta error, necesita una cifra de minima 3 digitos"})
   readonly valorEnvio: number;
 
   @ApiProperty({
@@ -24,7 +24,6 @@ export class CreateCartDto {
   })
   @IsInt({message: "El atributo totalCarrito presenta error,revise que es numerico"})
   @IsPositive({ message: "El atributo totalCarrito presenta error, debe ser mayor a cero" })
-  @MinLength(3,{message: "El atributo totalCarrito presenta error, necesita una cifra de minima 3 digitos"})
 	readonly totalCarrito: number
 
   @ApiProperty({
@@ -36,7 +35,21 @@ export class CreateCartDto {
     title: "medioPago"
   })
   @IsString({message: "El atributo medioPago presenta error,revise que es string"})
-  @MinLength(10,{message: "El atributo medioPago presenta error, necesita minimo 10 caracteres"})
+  @MinLength(3,{message: "El atributo medioPago presenta error, necesita minimo 3 caracteres"})
   @MaxLength(20,{message: "El atributo medioPago presenta error, necesita como maximo 20 caracteres"})
 	readonly medioPago: string;
+
+  @ApiProperty({
+    type: 'number',
+    example: 1,
+    minimum: 1,
+    required: true,
+    description: "Id del usuario",
+    title: "usuarioiD"
+  })
+
+  @IsInt({message: "El atributo usuarioiD presenta error,revise que es numerico"})
+  @IsPositive({ message: "El atributo usuarioiD presenta error, debe ser mayor a cero" })
+	readonly usuarioId: number;
+
 }
