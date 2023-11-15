@@ -4,7 +4,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { IProducts } from './interfaces/products-interfaces';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
-import { Product } from './entities/Product.entity';
+import { Product } from './entities/product.entity';
 import { Imagen } from './entities/Imagen.entity';
 import { ProductMapper } from './mapper/mapper.products';
 import { ProductDto } from './dto/product.dto';

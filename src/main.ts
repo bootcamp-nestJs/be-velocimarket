@@ -12,6 +12,7 @@ import { HelperModule } from './helpers/helper.module';
 async function bootstrap() {
   console.log('Listen on port: 3000');
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
 
   app.useGlobalPipes(
     new ValidationPipe({
