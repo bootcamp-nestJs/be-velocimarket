@@ -1,4 +1,4 @@
-import { Product } from "src/controllers/products/entities/Product.entity";
+import { Product } from "src/controllers/products/entities/product.entity";
 import { Usuario } from "src/controllers/users/entities/user.entity";
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryColumn } from "typeorm";
 

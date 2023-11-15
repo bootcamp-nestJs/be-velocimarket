@@ -1,4 +1,4 @@
-import { Product } from "src/controllers/products/entities/Product.entity";
+import { Product } from "src/controllers/products/entities/product.entity";
 import { Reclamos } from "src/controllers/reports/entities/Reclamos.entity";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
 import { Usuario } from "./user.entity";

@@ -1,6 +1,6 @@
 import { IsDateString, IsInt, IsNumber, IsOptional, IsPositive, IsString, IsUUID, MaxLength, Min, MinLength, isDate, isDateString } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { Product } from "src/controllers/products/entities/Product.entity";
+import { Product } from "src/controllers/products/entities/product.entity";
 export class CreateCartDto {
   @ApiProperty({
     type: 'number',
