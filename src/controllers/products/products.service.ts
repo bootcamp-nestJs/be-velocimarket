@@ -22,7 +22,7 @@ export class ProductsService implements IProducts{
     try {
       const newProductDto = ProductMapper.toEntity(newProduct);
       const newProductCreated = await this.ProductRepository.save(newProductDto);
-      return ProductMapper.toDto(newProductCreated) ;
+      return this.findProductById(newProductCreated.id) ;
       
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
@@ -46,7 +46,11 @@ export class ProductsService implements IProducts{
 
   async findProductById(id: number): Promise<ProductDto> {
     const product  = await this.ProductRepository.findOne({
-      where: {id: id}
+      where: {id: id},
+      relations: {
+        subcat: true,
+        img: true
+      }
     });
     const product_dto = ProductMapper.toDto(product);
     if(!product_dto){
@@ -76,7 +80,7 @@ export class ProductsService implements IProducts{
     try {
           const newProduct: Product =ProductMapper.toUpdateEntity(id, updateData)
           const resultado = await this.ProductRepository.update(id, newProduct)
-          return ProductMapper.toDto(newProduct);
+          return this.findProductById(id);
         }
      catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
