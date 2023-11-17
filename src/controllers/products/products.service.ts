@@ -34,7 +34,7 @@ export class ProductsService implements IProducts{
       const listProducts  = await this.ProductRepository.find({
         relations: {
           img: true,
-          subcat: true
+          subcat: true,
         }
       });
       console.log(listProducts)
@@ -63,6 +63,10 @@ export class ProductsService implements IProducts{
     const listProducts = await this.ProductRepository.find({
       where: {
         nombre: Like(`%${name}%`)
+      },
+      relations: {
+        subcat: true,
+        img: true
       }
     })
 
