@@ -60,7 +60,7 @@ export class CreateProductDto {
 
     @ApiProperty({
         type: 'string',
-        example: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fla.network%2Fprimera-bicicleta-antirrobo-lanza-nuevos-modelos%2F&psig=AOvVaw3keQlHPLfqhpka-SI-nwn6&ust=1694829917516000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCNiBtMvDq4EDFQAAAAAdAAAAABAE',
+        example: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fla.network%2Fprimera-bicicleta-antirrobo-lanza-nuevos-',
         minimum: 3,
         required: false,
         description: "url de imágen del producto",
