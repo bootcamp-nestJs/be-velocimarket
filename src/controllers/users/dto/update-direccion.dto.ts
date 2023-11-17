@@ -3,11 +3,6 @@ import { CreateUserDto } from './create-user.dto';
 import { IsAlphanumeric, IsEmail, IsEmpty, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPhoneNumber, IsPositive, IsString, MaxLength, MinLength } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
-export class UpdateDireccionDto extends PartialType(CreateUserDto) {
-    calle?: string;
-    número?: number;
-    comuna?: string;
-    region?: string;
-}
+export class UpdateDireccionDto extends PartialType(CreateUserDto) {}
 
 

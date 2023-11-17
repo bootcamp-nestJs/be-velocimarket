@@ -17,8 +17,8 @@ export class CreateProductDto {
     readonly nombre:string;
 
     @ApiProperty({
-        type: 'string',
-        example: '1',
+        type: 'number',
+        example: 1,
         minimum: 3,
         required: true,
         description: "Categoría del producto",
@@ -28,7 +28,7 @@ export class CreateProductDto {
     @IsPositive({ message: "El atributo precio presenta error, debe ser mayor a cero" })
     @IsNotEmpty({message: "El atributo precio presenta error, no puede ser un campo vacío"})
     @Max(26)
-    readonly categoria:number;
+    readonly categoria: number;
 
     @ApiProperty({
         type: 'string',
