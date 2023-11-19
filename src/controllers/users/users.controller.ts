@@ -71,4 +71,12 @@ export class UsersController {
   const direccionActualized = await this.usersService.updateDireccion(id, direccionData);
   return direccionActualized;
   }
+
+  @ApiQuery({ name: "user_name", description: "nombre de usuario" })
+  @ApiQuery({ name: "password", description: "contraseña" })
+  @Get('login')
+  async loginUser(@Query('user_name') userName: string, @Query('password') password: string): Promise<string> {
+    const data = await this.usersService.loginUser(userName, password);
+    return data;
+  }
 }

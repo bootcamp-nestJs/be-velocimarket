@@ -135,4 +135,20 @@ export class UsersService {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
+
+  async loginUser(userName: string, pass: string): Promise<string> {
+    const Users = await this.UserRepository.findOne({
+      where: {
+        user_name: Like(`%${userName}%`)}
+    })
+    if (!Users) {
+      throw new BadRequestException(`nombre de usuario ${userName} no existe`)
+    }
+    if (Users.password === pass)
+      return `Login correcto, Bienvenido.`
+    else {
+      return 'Contraseña incorrecta, vuelva a intentarlo'
+    }
+    }
+  
 }

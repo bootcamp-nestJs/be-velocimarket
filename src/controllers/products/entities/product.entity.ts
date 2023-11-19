@@ -39,6 +39,8 @@ export class Product {
     fecha_creacion: Date;
     @Column({name: 'fecha_modificacion'})
     fecha_modificacion: Date;
+    @Column({name: 'vendido'})
+    vendido: boolean;
 
     @ManyToOne((() => Usuario))
     @JoinColumn({ name: 'usuario_id' })

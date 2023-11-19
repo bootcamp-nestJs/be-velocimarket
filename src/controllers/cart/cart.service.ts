@@ -50,7 +50,7 @@ export class CartService implements ICart{
           product: false
         }
       } );
-      console.log(cartMapper.toDtoList(listCarts))
+      console.log(listCarts)
       return cartMapper.toDtoList(listCarts);
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);

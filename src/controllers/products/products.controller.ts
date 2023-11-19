@@ -68,4 +68,11 @@ async remove(@Query('id') id: number): Promise<string> {
   await this.productsService.removeProduct(id);
   return `Producto de ID ${id} eliminado`
 }
+
+@ApiQuery({ name: "id_user", description: "Id del usuario" })
+  @Get('product/selled')
+  async findProductSelled(@Query('id_user') idUser: number): Promise<ProductDto[]> {
+    const data = await this.productsService.findProductBySell(idUser);
+    return data ;
+  }
 }
