@@ -27,4 +27,8 @@ export class Conversacion {
     @JoinTable({ name: 'mensaje_id'})
     msg: Mensaje;
 
+    @ManyToOne(() => Product)
+    @JoinTable({ name: 'producto_id'})
+    product: Product;
+
     }

@@ -8,6 +8,6 @@ export class CartDto {
     valorEnvio: number;
     totalCarrito: number;
     medioPago: string;
-    productos: Product[];
+    productos: Product;
     usuario: UserDto;
 }

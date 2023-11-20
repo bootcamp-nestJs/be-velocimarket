@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { CartDto } from './dto/cart.dto';
 import { cartMapper } from './mapper/mapper.cart';
 import { Usuario } from '../users/entities/user.entity';
+import { CartProduct } from './entities/productCart.entity';
 
 @Injectable()
 export class CartService implements ICart{
@@ -16,7 +17,8 @@ export class CartService implements ICart{
   constructor(
     @InjectRepository(Cart)
       private cartRepository: Repository<Cart>,
-      
+      @InjectRepository(CartProduct)
+      private cartProductRepository: Repository<CartProduct>
     ) {}
   private listCart: Cart[] = [];
 
@@ -24,7 +26,7 @@ export class CartService implements ICart{
     const userExist  = await this.cartRepository.exist({
       relations: {
         user: true,
-        product: false
+        cartProduct: false
       }, where:{
         usuario_id: newCart.usuarioId
       }
@@ -35,7 +37,8 @@ export class CartService implements ICart{
     try {
       const newCartDto = cartMapper.toEntity(newCart);
       const newCartCreated = await this.cartRepository.save(newCartDto);
-      return cartMapper.toDto(newCartCreated) ;
+      return cartMapper.toCartDto(newCartCreated);
+       
       
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
@@ -44,13 +47,13 @@ export class CartService implements ICart{
 
   async findAllCarts(): Promise<CartDto[]> {
     try {
-      const listCarts  = await this.cartRepository.find({
+      const listCarts  = await this.cartProductRepository.find({
         relations: {
-          user: true,
-          product: false
+          cart: true,
+          product: true
         }
       } );
-      console.log(listCarts)
+     // console.log(listCarts.map(listCarts => listCarts.cartProduct.map(CartProduct => CartProduct.product.nombre)))
       return cartMapper.toDtoList(listCarts);
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
@@ -64,7 +67,7 @@ export class CartService implements ICart{
         user: true
       }
     });
-    const cartDto = cartMapper.toDto(cart);
+    const cartDto = cartMapper.toCartDto(cart);
     if(!cartDto){
       throw new NotFoundException(`el producto con id ${id} no se encontro!`); 
     }
@@ -80,7 +83,7 @@ export class CartService implements ICart{
     try {
           const newCart: Cart = cartMapper.toUpdateEntity(id, updateData)
           const resultado = await this.cartRepository.update(id, newCart)
-          return cartMapper.toDto(newCart);
+          return cartMapper.toCartDto(newCart);
         }
      catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);

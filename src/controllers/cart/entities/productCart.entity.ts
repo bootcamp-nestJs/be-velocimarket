@@ -15,11 +15,11 @@ export class CartProduct {
     @Column({name: 'fecha_modificacion'})
     fecha_modificacion: Date;
 
-    @ManyToOne(() => Product)
+    @ManyToOne(() => Product, p => p.carritoProducto)
     @JoinColumn({ name: 'producto_id'})
     product: Product;
 
-    @ManyToOne(() => Cart)
+    @ManyToOne(() => Cart, c => c.cartProduct)
     @JoinColumn({ name: 'carrito_id'})
     cart: Cart;
 

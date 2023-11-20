@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { MensajesService } from './mensajes.service';
 import { CreateMensajeDto } from './dto/create-mensaje.dto';
 import { MensajeDto } from './dto/mensaje.dto';
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiQuery } from '@nestjs/swagger';
 import { Mensaje } from './entities/mensaje.entity';
 
 @Controller('mensajes')
@@ -20,10 +20,6 @@ export class MensajesController {
     return mensaje;
   }
 
-  @ApiBody({
-    description: "Mensajes a mostrar",
-    type: Mensaje
-  })
   @ApiCreatedResponse({ description: "Los mensajes se cargan sin problema", isArray: true, type: Mensaje})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Get()
@@ -32,7 +28,7 @@ export class MensajesController {
     return data;
   }
 
-  @ApiBody({
+  @ApiQuery({
     description: "Mensaje a mostrar",
     type: MensajeDto
   })
@@ -44,7 +40,7 @@ export class MensajesController {
     return data;
   }
 
-  @ApiBody({
+  @ApiQuery({
     description: "Mensaje a eliminar",
     type: MensajeDto
   })

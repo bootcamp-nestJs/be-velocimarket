@@ -22,6 +22,8 @@ import { Calificacion } from './controllers/reports/entities/calificacion.entity
 import { Cart } from './controllers/cart/entities/cart.entity';
 
 import * as dotenv from 'dotenv';
+import { Conversacion } from './controllers/mensajes/entities/conversacion.entity';
+import { CartProduct } from './controllers/cart/entities/productCart.entity';
 dotenv.config({ path: '.env.local' });
 @Module({ 
   imports: [TypeOrmModule.forRoot({
@@ -31,7 +33,7 @@ dotenv.config({ path: '.env.local' });
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [Product, Categoria, Subcategoria, Usuario, Imagen, Reclamos, Direccion, Mensaje, Follower, Following, Calificacion, Cart]
+    entities: [Product, Categoria, Subcategoria, Usuario, Imagen, Reclamos, Direccion, Mensaje, Follower, Following, Calificacion, Cart, Conversacion, CartProduct]
   }),
     ProductsModule, 
     UsersModule,
