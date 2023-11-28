@@ -62,7 +62,7 @@ export class UsersService {
       const userFinded  = await this.userRepository.findOne({where: {id}});
       const user = UserMapper.toDto(userFinded);
       if(!user){
-        throw new NotFoundException(`el producto con id ${id} no se encontro!`); 
+        throw new NotFoundException(`el usuario con id ${id} no se encontro!`); 
       }
       return user;
       
@@ -71,7 +71,43 @@ export class UsersService {
     }
   }
 
-  async findUserByInclude(name: string): Promise<UserDto[]> {
+  async findUserByUserName(user_name: string): Promise<UserDto> {
+    try {
+      const userFinded  = await this.userRepository.findOne({where: {user_name}});
+      const user = UserMapper.toDto(userFinded);
+      
+      if(!user){
+        throw new NotFoundException(`el usaurio con user_name ${user_name} no se encontro!`); 
+      }
+      return user;
+      
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
+  }
+
+  async findUsersByInclude(name: string): Promise<UserDto[]> {
+    try {
+      const listUsers = await this.userRepository.find({
+        where: [{
+          nombre: Like(`%${name}%`)
+        },{
+          user_name: Like(`%${name}%`)
+        }, {
+          mail: Like(`%${name}%`)
+        }]
+      })
+  
+      const usersInclude = UserMapper.toDtoList(listUsers);
+      if(!usersInclude || usersInclude.length === 0) throw new NotFoundException(`No se encontraron coincidencias con el nombre: ${name}`);
+      return usersInclude;
+      
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
+  }
+
+  async findUserByInc(name: string): Promise<UserDto[]> {
     try {
       const listUsers = await this.userRepository.find({
         where: [{

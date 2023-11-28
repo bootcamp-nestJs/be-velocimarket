@@ -19,10 +19,12 @@ import { Follower } from './controllers/users/entities/follower.entity';
 import { Following } from './controllers/users/entities/following.entity';
 import { Calificacion } from './controllers/reports/entities/calificacion.entity';
 import { Cart } from './controllers/cart/entities/cart.entity';
-import { SessionController } from './controllers/session/session.controller';
-import { SessionService } from './controllers/session/session.service';
-
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
+// import { AuthModule } from './controllers/authprov/auth.module';
+import { AuthModule } from './controllers/auth/auth.module';
+
 dotenv.config({ path: '.env.local' });
 @Module({ 
   imports: [TypeOrmModule.forRoot({
@@ -43,16 +45,22 @@ dotenv.config({ path: '.env.local' });
       Follower, 
       Following, 
       Calificacion, 
-      Cart]
-  }),
+      Cart
+    ]}),
     ProductsModule, 
     UsersModule,
     CartModule,
     ReportsModule,
     MensajesModule,
-    HelperModule
+    HelperModule,
+    // PassportModule,
+    // JwtModule.register({
+    //   secret: process.env.SECRET_KEY,
+    //   // signOptions: {expiresIn: '60s'}
+    // }),
+    AuthModule,
   ],
-  controllers: [AppController, SessionController],
-  providers: [AppService, SessionService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

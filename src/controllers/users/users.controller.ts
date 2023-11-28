@@ -37,7 +37,7 @@ export class UsersController {
   @ApiQuery({ name: "nombre", description: "nombre del usuario" })
   @Get('search')
   async findUserByName(@Query('nombre') nombre: string): Promise<UserDto[]> {
-    const data = await this.usersService.findUserByInclude(nombre);
+    const data = await this.usersService.findUsersByInclude(nombre);
     return data;
   }
   
