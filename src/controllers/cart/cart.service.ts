@@ -10,6 +10,8 @@ import { CartDto } from './dto/cart.dto';
 import { cartMapper } from './mapper/mapper.cart';
 import { Usuario } from '../users/entities/user.entity';
 import { CartProduct } from './entities/productCart.entity';
+import { Product } from '../products/entities/product.entity';
+import { addProductCartDto } from './dto/add-product-cart.dto';
 
 @Injectable()
 export class CartService implements ICart{
@@ -18,7 +20,9 @@ export class CartService implements ICart{
     @InjectRepository(Cart)
       private cartRepository: Repository<Cart>,
       @InjectRepository(CartProduct)
-      private cartProductRepository: Repository<CartProduct>
+      private cartProductRepository: Repository<CartProduct>,
+      @InjectRepository(Product)
+      private productRepository: Repository<Product>
     ) {}
   private listCart: Cart[] = [];
 
@@ -37,13 +41,77 @@ export class CartService implements ICart{
     try {
       const newCartDto = cartMapper.toEntity(newCart);
       const newCartCreated = await this.cartRepository.save(newCartDto);
+      const newCartProduct : CartProduct = cartMapper.toCartProductEntity(newCart);
+      newCartProduct.carrito_id = newCartCreated.id;
+      const newCartProductCreated = await this.cartProductRepository.save(newCartProduct);
+      const productPrecio = await this.cartProductRepository.findOne({
+        where: {id: newCartProductCreated.id},
+        relations: {
+          cart: true,
+          product: true
+        }
+      } );
+      const agregarPrecio = await this.cartRepository.update(newCartCreated.id, {total_carrito: productPrecio.product.precio})
       return cartMapper.toCartDto(newCartCreated);
        
-      
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
+
+  async addProductToCart(addProduct: addProductCartDto): Promise<CartDto> {
+    const cartExist  = await this.cartRepository.exist({
+      relations: {
+        user: true,
+        cartProduct: true
+      }, where:{
+        id: addProduct.carrotiId
+      }
+    })
+    if(!cartExist){
+      throw new BadRequestException(`No existe carrito con id ${addProduct.carrotiId}`)
+    } 
+    const productExist  = await this.productRepository.exist({
+      where:{
+       id: addProduct.productoId}
+    })
+    if(!productExist){
+      throw new BadRequestException(`No existe producto con id ${addProduct.productoId}`)
+    } 
+    try {
+      const newCartProduct : CartProduct = cartMapper.addProductToCart(addProduct);
+      await this.cartProductRepository.save(newCartProduct);
+
+      const cartProduct = await this.cartProductRepository.findOne({
+        where: {id: newCartProduct.id},
+        relations: {
+          cart: true,
+          product: true
+        }
+      } );
+      const cart = await this.cartRepository.findOne({
+        where: {id: addProduct.carrotiId},
+        relations: {
+          user: true,
+          cartProduct: true
+        }
+      } );
+      const agregarPrecio = await this.cartRepository.update(addProduct.carrotiId, {total_carrito: cart.total_carrito + cartProduct.product.precio, fecha_modificacion: new Date()})
+      console.log(agregarPrecio, " ", cart.total_carrito, " ", cartProduct.product.precio)
+      const cartFinal = await this.cartRepository.findOne({
+        where: {id: addProduct.carrotiId},
+        relations: {
+          user: true,
+          cartProduct: true
+        }
+      } );
+      return cartMapper.toCartDto(cartFinal);
+       
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
+  }
+
 
   async findAllCarts(): Promise<CartDto[]> {
     try {
@@ -53,7 +121,6 @@ export class CartService implements ICart{
           product: true
         }
       } );
-     // console.log(listCarts.map(listCarts => listCarts.cartProduct.map(CartProduct => CartProduct.product.nombre)))
       return cartMapper.toDtoList(listCarts);
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);

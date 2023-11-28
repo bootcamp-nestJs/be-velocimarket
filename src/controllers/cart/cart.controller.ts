@@ -4,6 +4,7 @@ import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { CartDto } from './dto/cart.dto';
 import { Cart } from './entities/cart.entity';
+import { addProductCartDto } from './dto/add-product-cart.dto';
 
 @Controller('cart')
 export class CartController {
@@ -25,6 +26,12 @@ export class CartController {
   async findOne(@Query('id') id: number): Promise<CartDto> {
     const data = await this.cartService.findCartById(id);
     return data;
+  }
+
+  @Post('addProduct')
+  async addProduct(@Body() addProduct: addProductCartDto): Promise<CartDto> {
+    const productoCreado = await this.cartService.addProductToCart(addProduct);
+    return productoCreado;
   }
 
   @Patch()

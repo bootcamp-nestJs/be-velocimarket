@@ -1,10 +1,10 @@
 import { Product } from "src/controllers/products/entities/product.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Cart } from "./cart.entity";
 
 @Entity({ name: 'CarritoProducto'})
 export class CartProduct {
-    @PrimaryColumn({name: 'id'})
+    @PrimaryGeneratedColumn({name: 'id'})
     id: number;
     @Column({name: 'carrito_id'})
     carrito_id: number;

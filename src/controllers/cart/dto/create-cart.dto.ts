@@ -16,15 +16,15 @@ export class CreateCartDto {
 
   @ApiProperty({
     type: 'number',
-    example: 150000,
-    minimum: 3,
+    example: 1,
+    minimum: 1,
     required: true,
-    description: "Total Carrito",
-    title: "totalCarrito"
+    description: "Id del producto",
+    title: "productoId"
   })
-  @IsInt({message: "El atributo totalCarrito presenta error,revise que es numerico"})
-  @IsPositive({ message: "El atributo totalCarrito presenta error, debe ser mayor a cero" })
-	readonly totalCarrito: number
+  @IsInt({message: "El atributo productoId presenta error,revise que es numerico"})
+  @IsPositive({ message: "El atributo productoId presenta error, debe ser mayor a cero" })
+	readonly productoId: number
 
   @ApiProperty({
     type: 'string',

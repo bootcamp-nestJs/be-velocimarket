@@ -1,11 +1,11 @@
 import { Product } from "src/controllers/products/entities/product.entity";
 import { Usuario } from "src/controllers/users/entities/user.entity";
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { CartProduct } from './productCart.entity';
 
 @Entity({ name: 'Carrito'})
 export class Cart {
-    @PrimaryColumn({name: 'id'})
+    @PrimaryGeneratedColumn({name: 'id'})
     id: number;
     @Column({name: 'usuario_id'})
     usuario_id: number;
