@@ -7,6 +7,6 @@ export class UserDto {
     telefono: string;
     calle: string;
     numero: number;
-    comuna: string;
-    region: string;
+    comuna: number;
+    region: number;
 }

@@ -14,12 +14,13 @@ import { Subcategoria } from './controllers/products/entities/subcategoria.entit
 import { Usuario } from './controllers/users/entities/user.entity';
 import { Imagen } from './controllers/products/entities/imagen.entity';
 import { Reclamos } from './controllers/reports/entities/Reclamos.entity';
-import { Direccion } from './controllers/users/entities/direccion.entity';
 import { Mensaje } from './controllers/mensajes/entities/mensaje.entity';
 import { Follower } from './controllers/users/entities/follower.entity';
 import { Following } from './controllers/users/entities/following.entity';
 import { Calificacion } from './controllers/reports/entities/calificacion.entity';
 import { Cart } from './controllers/cart/entities/cart.entity';
+import { SessionController } from './controllers/session/session.controller';
+import { SessionService } from './controllers/session/session.service';
 
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
@@ -31,7 +32,18 @@ dotenv.config({ path: '.env.local' });
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [Product, Categoria, Subcategoria, Usuario, Imagen, Reclamos, Direccion, Mensaje, Follower, Following, Calificacion, Cart]
+    entities: [
+      Product, 
+      Categoria, 
+      Subcategoria, 
+      Usuario, 
+      Imagen, 
+      Reclamos, 
+      Mensaje, 
+      Follower, 
+      Following, 
+      Calificacion, 
+      Cart]
   }),
     ProductsModule, 
     UsersModule,
@@ -40,7 +52,7 @@ dotenv.config({ path: '.env.local' });
     MensajesModule,
     HelperModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, SessionController],
+  providers: [AppService, SessionService],
 })
 export class AppModule {}
