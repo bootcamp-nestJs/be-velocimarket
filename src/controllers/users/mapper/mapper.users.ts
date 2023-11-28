@@ -1,8 +1,6 @@
 import { CreateUserDto } from "../dto/create-user.dto";
-import { UpdateDireccionDto } from "../dto/update-direccion.dto";
 import { UpdateUserDto } from "../dto/update-user.dto";
 import { UserDto } from "../dto/user.dto";
-import { Direccion } from "../entities/direccion.entity";
 import { Usuario } from "../entities/user.entity";
 
 export class UserMapper {
@@ -18,7 +16,6 @@ export class UserMapper {
       dto.user_name= entity.user_name;
       dto.mail= entity.mail;
       dto.telefono= entity.telefono;
-      dto.direccion= entity.direccion;
        
       return dto;
     }
@@ -38,45 +35,48 @@ export class UserMapper {
       entity.user_name= dto.user;
       entity.password= dto.password;
       entity.telefono=dto.telefono;
+      entity.calle = dto.calle;
+      entity.comuna = dto.comuna;
+      entity.numero = dto.numero;
+      entity.region = dto.region;
       const date = new Date
       entity.fecha_creacion = date;
   
       return entity;
     }  
-    static toEntityDireccion(dto: CreateUserDto): Direccion {
-      if (!dto) {
-        return null;
-      }
-      const entity_direccion = new Direccion()
-      entity_direccion.calle = dto.calle;
-      entity_direccion.comuna = dto.comuna;
-      entity_direccion.numero = dto.número;
-      entity_direccion.region = dto.region;
-      const date = new Date
-      entity_direccion.fecha_creacion = date;
+    // static toEntityDireccion(dto: CreateUserDto): Direccion {
+    //   if (!dto) {
+    //     return null;
+    //   }
+    //   const entity_direccion = new Direccion()
+      // entity_direccion.calle = dto.calle;
+      // entity_direccion.comuna = dto.comuna;
+      // entity_direccion.numero = dto.número;
+      // entity_direccion.region = dto.region;
+    //   const date = new Date
+    //   entity_direccion.fecha_creacion = date;
       
-      return entity_direccion;
-    }  
+    //   return entity_direccion;
+    // }  
 
-    static toUpdateEntityDireccion(dto: UpdateDireccionDto): Direccion {
-      if (!dto) {
-        return null;
-      }
-      const entity_direccion = new Direccion()
-      entity_direccion.calle = dto.calle;
-      entity_direccion.comuna = dto.comuna;
-      entity_direccion.numero = dto.número;
-      entity_direccion.region = dto.region;
-      const date = new Date
-      entity_direccion.fecha_modificacion = date;
+    // static toUpdateEntityDireccion(dto: UpdateDireccionDto): Direccion {
+    //   if (!dto) {
+    //     return null;
+    //   }
+    //   const entity_direccion = new Direccion()
+    //   entity_direccion.calle = dto.calle;
+    //   entity_direccion.comuna = dto.comuna;
+    //   entity_direccion.numero = dto.número;
+    //   entity_direccion.region = dto.region;
+    //   const date = new Date
+    //   entity_direccion.fecha_modificacion = date;
       
-      return entity_direccion;
-    }  
+    //   return entity_direccion;
+    // }  
     
     static toUpdateEntity(id: number, dto: UpdateUserDto): Usuario {
-        if (!dto) {
-          return null;
-        }
+        if (!dto) return null;
+        
         const entity =  new Usuario();
         entity.id= id;
         entity.nombre= dto.nombre;
@@ -85,8 +85,13 @@ export class UserMapper {
         entity.user_name= dto.user;
         entity.password= dto.password;
         entity.telefono=dto.telefono;
+        entity.calle = dto.calle;
+        entity.comuna = dto.comuna;
+        entity.numero = dto.numero;
+        entity.region = dto.region;
         const date = new Date
         entity.fecha_modificacion = date;
+        
         return entity;
       }  
 }

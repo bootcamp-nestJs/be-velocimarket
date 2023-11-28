@@ -10,9 +10,9 @@ export class CartController {
   constructor(private readonly cartService: CartService) {}
 
   @Post()
-  async create(@Body() createCartDto: CreateCartDto): Promise<CartDto> {
-    const cartCreado = await this.cartService.createCart(createCartDto);
-    return cartCreado;
+  async create(@Body() createCartDto: CreateCartDto): Promise<number> {
+    const cartCreadoId = await this.cartService.createCart(createCartDto);
+    return cartCreadoId;
   }
 
   @Get()
@@ -28,15 +28,15 @@ export class CartController {
   }
 
   @Patch()
-  async update(@Query('id') id: number, @Body() updateCartDto: UpdateCartDto): Promise<CartDto> {
-    const data = await this.cartService.updateCart(id, updateCartDto);
+  async update(@Query('id') id: number, @Body() updateCartDto: UpdateCartDto): Promise<string> {
+    await this.cartService.updateCart(id, updateCartDto);
 
-    return data;
+    return `Carrito id: ${id} actualizado con éxito`;
   }
 
   @Delete()
   async remove(@Query('id') id: number): Promise<string> {
     await this.cartService.removeCart(id);
-    return `Carrito de ID ${id} eliminado`
+    return `Carrito id: ${id} eliminado`
   }
 }

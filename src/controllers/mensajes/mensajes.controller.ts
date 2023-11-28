@@ -16,7 +16,7 @@ export class MensajesController {
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Post()
   async create(@Body() createMensajeDto: CreateMensajeDto): Promise<MensajeDto> {
-    const mensaje= await this.mensajesService.createMensaje(createMensajeDto);
+    const mensaje = await this.mensajesService.createMensaje(createMensajeDto);
     return mensaje;
   }
 

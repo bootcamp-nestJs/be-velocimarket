@@ -42,27 +42,29 @@ export class MensajesService implements IMensaje {
     }
 
     async findMensajeById(id: number): Promise<MensajeDto> {
-      const msg  = await this.mensajeRepository.findOne({
-        where: {id: id}
-      });
-      const msgDto = MsgMapper.toDto(msg);
-      if(!msgDto){
-        throw new NotFoundException(`el mensaje con id ${id} no se encontro!`); 
-      }
-      return msgDto;
-    }
-
-    async removeMensaje(id: number): Promise<string> {
-      const msg = await this.mensajeRepository.findOneBy({
-        id: id
-      })
-      if( !msg ) throw new NotFoundException(`El mensaje ${id} que esta tratando de eliminar no existe!`);
-  
       try {
-        await this.mensajeRepository.delete(id)
-        return `Producto con id ${id} eliminado`
+        const msg  = await this.mensajeRepository.findOne({
+          where: {id}
+        });
+        const msgDto = MsgMapper.toDto(msg);
+        if(!msgDto){
+          throw new NotFoundException(`el mensaje con id ${id} no se encontro!`); 
+        }
+        return msgDto;
+        
       } catch (error) {
         throw new InternalServerErrorException(`Error: ${error}`);
       }
     }
+
+  async removeMensaje(id: number): Promise<string> {
+    try {      
+      const msg = await this.mensajeRepository.findOneBy({id})
+      if( !msg ) throw new NotFoundException(`El mensaje ${id} que esta tratando de eliminar no existe!`);
+      await this.mensajeRepository.delete(id)
+      return `Producto con id ${id} eliminado`
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
+  }
 }

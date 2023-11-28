@@ -18,10 +18,11 @@ export class ProductsController {
   @ApiCreatedResponse({ description: "El Producto se creó exitosamente", isArray: true, type: CreateProductDto})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Post()
-  async create(@Body() createProductDto: CreateProductDto): Promise<ProductDto> {
+  async create(@Body() createProductDto: CreateProductDto): Promise<string> {
     try {
-      const producto_creado = await this.productsService.createProduct(createProductDto);
-      return producto_creado;
+      const productoCreadoId = await this.productsService.createProduct(createProductDto);
+      
+      return `Producto id: ${productoCreadoId} creado con éxito`;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -57,15 +58,16 @@ export class ProductsController {
     type: UpdateProductDto
   })
   @Patch()
-  async update(@Query('id') id: number, @Body() updateProductDto: UpdateProductDto): Promise<ProductDto> {
-  const producto_actualizado = await this.productsService.updateProduct(id, updateProductDto);
-  return producto_actualizado;
+  async update(@Query('id') id: number, @Body() updateProductDto: UpdateProductDto): Promise<string> {
+    await this.productsService.updateProduct(id, updateProductDto);
+    return `Producto id: ${id} actualizado con éxito`;
   }
 
-@ApiQuery({ name: "id", description: "Id del producto como numero entero" })
-@Delete()
-async remove(@Query('id') id: number): Promise<string> {
-  await this.productsService.removeProduct(id);
-  return `Producto de ID ${id} eliminado`
-}
+  @ApiQuery({ name: "id", description: "Id del producto como numero entero" })
+  @Delete()
+  async remove(@Query('id') id: number): Promise<string> {
+    await this.productsService.removeProduct(id);
+    
+    return `Producto id: ${id} eliminado con exito`
+  }
 }

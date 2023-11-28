@@ -1,5 +1,3 @@
-import { Direccion } from "../entities/direccion.entity";
-
 export class UserDto {
     id: number;
     nombre: string;
@@ -7,5 +5,8 @@ export class UserDto {
     user_name: string;
     mail: string;
     telefono: string;
-    direccion: Direccion;
+    calle: string;
+    numero: number;
+    comuna: string;
+    region: string;
 }
