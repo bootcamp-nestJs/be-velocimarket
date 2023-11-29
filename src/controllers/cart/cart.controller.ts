@@ -46,4 +46,11 @@ export class CartController {
     await this.cartService.removeCart(id);
     return `Carrito de ID ${id} eliminado`
   }
+
+  @Delete('removeProduct')
+  async removeProduct(@Query('productId') productId: number, @Query('cartId') cartId: number): Promise<string> {
+    await this.cartService.removeProductCart(productId,cartId );
+    return `Producto de ID ${productId} eliminado del carrito de ID ${cartId}`
+  }
+
 }

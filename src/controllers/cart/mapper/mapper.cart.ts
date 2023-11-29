@@ -37,7 +37,7 @@ export class cartMapper {
       dto.valorEnvio= entity.valor_envio;
       dto.totalCarrito= entity.total_carrito;
       dto.productos= [];
-      //dto.productos= entity.cartProduct.map(cartProduct => cartProduct.product);
+      //dto.productos.push(entity.cartProduct[0].product);
        
       return dto;
     }

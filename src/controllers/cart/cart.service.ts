@@ -24,7 +24,6 @@ export class CartService implements ICart{
       @InjectRepository(Product)
       private productRepository: Repository<Product>
     ) {}
-  private listCart: Cart[] = [];
 
   async createCart( newCart: CreateCartDto): Promise<CartDto> {
     const userExist  = await this.cartRepository.exist({
@@ -43,6 +42,7 @@ export class CartService implements ICart{
       const newCartCreated = await this.cartRepository.save(newCartDto);
       const newCartProduct : CartProduct = cartMapper.toCartProductEntity(newCart);
       newCartProduct.carrito_id = newCartCreated.id;
+      
       const newCartProductCreated = await this.cartProductRepository.save(newCartProduct);
       const productPrecio = await this.cartProductRepository.findOne({
         where: {id: newCartProductCreated.id},
@@ -52,7 +52,9 @@ export class CartService implements ICart{
         }
       } );
       const agregarPrecio = await this.cartRepository.update(newCartCreated.id, {total_carrito: productPrecio.product.precio})
-      return cartMapper.toCartDto(newCartCreated);
+      const cartFinal = cartMapper.toCartDto(newCartCreated);
+      cartFinal.productos.push(productPrecio.product)
+      return cartFinal;
        
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
@@ -105,13 +107,52 @@ export class CartService implements ICart{
           cartProduct: true
         }
       } );
-      return cartMapper.toCartDto(cartFinal);
+      const productsOfCart: CartProduct[] = await this.cartProductRepository.find({
+        where: {carrito_id: addProduct.carrotiId},
+        relations: {
+          cart: true,
+          product: true
+        }
+      } );
+      const cartDto = cartMapper.toCartDto(cartFinal);
+      cartDto.productos = productsOfCart.map(cartProduct => cartProduct.product);
+      return cartDto;
        
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
 
+  async removeProductCart(productId: number, cartId: number): Promise<string> {
+    try {
+      const cartProduct = await this.cartProductRepository.findOne({
+        where: {
+          carrito_id: cartId,
+          producto_id: productId
+        },
+        relations: {
+          cart: true,
+          product: true
+        }
+      });
+      const cart = await this.cartRepository.findOne({
+        where: {id: cartId},
+        relations: {
+          user: true,
+          cartProduct: true
+        }
+      } );
+      if( !cartProduct ) throw new NotFoundException(`El carrito ${cartId} que esta tratando de eliminar no existe `);
+      const eliminarPrecio = await this.cartRepository.update(cartId, {total_carrito: cart.total_carrito - cartProduct.product.precio, fecha_modificacion: new Date()});
+      const eliminarProducto = await this.cartProductRepository.delete(cartProduct.id);
+
+      return `el producto ${productId} ha sido eliminado del carrito ${cartId}`
+
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
+    
+    }
 
   async findAllCarts(): Promise<CartDto[]> {
     try {
@@ -170,4 +211,6 @@ export class CartService implements ICart{
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
+
+  
 }
