@@ -6,7 +6,7 @@ import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiQuery
 import { UserDto } from './dto/user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
