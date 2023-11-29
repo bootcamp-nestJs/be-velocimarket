@@ -24,6 +24,16 @@ export class ProductsController {
     return await this.productsService.createProduct(createProductDto);
   }
 
+  @ApiBody({
+    description: "Imagenes del producto"
+  })
+  @ApiCreatedResponse({ description: "La imagen se cargó exitosamente", isArray: true})
+  @Post(':id/upload')
+  async uploadImages(@Param('id') productId: string, @Body() uploadImages ) {
+    
+    return;
+  }
+
   @Get()
   async findAll() : Promise<ProductDto[]> {
     return await this.productsService.findAllProducts();
