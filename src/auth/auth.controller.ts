@@ -12,12 +12,4 @@ export class AuthController {
   async singIn(@Body() credentials: CredentialsDto)  { // Promise<string>
     return this.authService.login(credentials);
   }
-
-  @Post('signout')
-  async singOut(@Body() data)  { // Promise<string>
-    // const userCreatedId = await this.usersService.createUser(createUserDto);
-    // return `Usuario ${userCreatedId} creado con éxito`;
-    return 'saludos desde sign out'
-  }
-
 }

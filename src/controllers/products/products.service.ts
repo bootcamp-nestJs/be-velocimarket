@@ -18,16 +18,13 @@ export class ProductsService implements IProducts{
       private imagenRepository: Repository<Imagen>
     ) {}
 
-  async createProduct( newProduct: CreateProductDto): Promise<number> {
+  async createProduct( newProduct: CreateProductDto): Promise<ProductDto> {
     try {
       const newProductDto = ProductMapper.toEntity(newProduct);
       
       const newProductCreated = await this.productRepository.save(newProductDto);
       
-      // return this.findProductById(newProductCreated.id) ;
-
-      return newProductCreated.id;
-      
+      return this.findProductById(newProductCreated.id) ;  
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
@@ -50,75 +47,56 @@ export class ProductsService implements IProducts{
   }
 
   async findProductById(id: number): Promise<ProductDto> {
-    try {
-      const product  = await this.productRepository.findOne({
-        where: {id},
-        relations: {
-          subcat: true,
-          img: true
-        }
-      });
-  
-      const product_dto = ProductMapper.toDto(product);
-      
-      if(!product_dto){
-        throw new NotFoundException(`el producto con id ${id} no se encontro!`); 
+    const product  = await this.productRepository.findOne({
+      where: {id},
+      relations: {
+        subcat: true,
+        img: true
       }
-  
-      return product_dto;
-      
-    } catch (error) {
-      throw new InternalServerErrorException(`Error: ${error}`);
+    });
+
+    const product_dto = ProductMapper.toDto(product);
+    
+    if(!product_dto){
+      throw new NotFoundException(`el producto con id ${id} no se encontro!`); 
     }
+
+    return product_dto;
   }
 
   async findProductByInclude(name: string): Promise<ProductDto[]> {
-    try {
-      const listProducts = await this.productRepository.find({
-        where: {
-          nombre: Like(`%${name}%`)
-        }
-      })
-  
-      const productsInclude = ProductMapper.toDtoList(listProducts);
-      
-      if(!productsInclude || productsInclude.length === 0) throw new NotFoundException(`No se encontraron coincidencias con el nombre: ${name}`);
-      
-      return productsInclude;
-    } catch (error) {
-      throw new InternalServerErrorException(`Error: ${error}`);
-    }
+    const listProducts = await this.productRepository.find({
+      where: {
+        nombre: Like(`%${name}%`)
+      }
+    })
+
+    const productsInclude = ProductMapper.toDtoList(listProducts);
+    
+    if(!productsInclude || productsInclude.length === 0) throw new NotFoundException(`No se encontraron coincidencias con el nombre: ${name}`);
+    
+    return productsInclude;
   }
 
-  async updateProduct(id: number, updateData: UpdateProductDto): Promise<void> {
-    try 
-    {
-      const product = await this.productRepository.findOneBy({id});
-  
-      if( !product ) throw new NotFoundException(`El producto ${id} que esta tratando de actualizar no existe`);
-      
-      const newProduct: Product = ProductMapper.toUpdateEntity(id, updateData)
-      
-      await this.productRepository.update(id, newProduct)
-      
-      // return this.findProductById(id);
-      return;
-    }catch (error) {
-      throw new InternalServerErrorException(`Error: ${error}`);
-    }
+  async updateProduct(id: number, updateData: UpdateProductDto): Promise<string> {
+    const product = await this.productRepository.findOneBy({id});
+
+    if( !product ) throw new NotFoundException(`El producto ${id} que esta tratando de actualizar no existe`);
+    
+    const newProduct: Product = ProductMapper.toUpdateEntity(id, updateData)
+    
+    await this.productRepository.update(id, newProduct)
+    
+    return `Producto id: ${id} actualizado con éxito`;
   }
 
-  async removeProduct(id: number): Promise<void> {
-    try {
-      const product = await this.productRepository.findOneBy({id});
-  
-      if( !product ) throw new NotFoundException(`El producto que esta tratando de eliminar no existe ${id}`);
-      
-      await this.productRepository.delete(id)
-      
-      return;
-    } catch (error) {
-      throw new InternalServerErrorException(`Error: ${error}`);
-    }
+  async removeProduct(id: number): Promise<string> {
+    const product = await this.productRepository.findOneBy({id});
+
+    if( !product ) throw new NotFoundException(`El producto que esta tratando de eliminar no existe ${id}`);
+    
+    await this.productRepository.delete(id)
+
+    return `Producto id: ${id} eliminado con exito`
   }
 }

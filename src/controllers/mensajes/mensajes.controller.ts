@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { MensajesService } from './mensajes.service';
 import { CreateMensajeDto } from './dto/create-mensaje.dto';
 import { MensajeDto } from './dto/mensaje.dto';
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse } from '@nestjs/swagger';
 import { Mensaje } from './entities/mensaje.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('mensajes')
 export class MensajesController {
   constructor(private readonly mensajesService: MensajesService) {}
@@ -16,8 +18,7 @@ export class MensajesController {
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Post()
   async create(@Body() createMensajeDto: CreateMensajeDto): Promise<MensajeDto> {
-    const mensaje = await this.mensajesService.createMensaje(createMensajeDto);
-    return mensaje;
+    return await this.mensajesService.createMensaje(createMensajeDto);
   }
 
   @ApiBody({
@@ -28,8 +29,7 @@ export class MensajesController {
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Get()
   async findAll(): Promise<MensajeDto[]> {
-    const data = await this.mensajesService.findAllMensajes();
-    return data;
+    return await this.mensajesService.findAllMensajes();
   }
 
   @ApiBody({
@@ -40,8 +40,7 @@ export class MensajesController {
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Get('search')
   async findOne(@Query('id') id: number): Promise<MensajeDto> {
-    const data = await this.mensajesService.findMensajeById(id);
-    return data;
+    return await this.mensajesService.findMensajeById(id);
   }
 
   @ApiBody({
@@ -52,7 +51,6 @@ export class MensajesController {
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Delete()
   async remove(@Query('id') id: number): Promise<string> {
-    await this.mensajesService.removeMensaje(id);
-    return `Mensaje de ID ${id} eliminado`;
+    return await this.mensajesService.removeMensaje(id);
   }
 }

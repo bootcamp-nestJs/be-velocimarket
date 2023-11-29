@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe, InternalServerErrorException, UseGuards, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiQuery } from '@nestjs/swagger';
 import { UserDto } from './dto/user.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -16,9 +18,8 @@ export class UsersController {
   @ApiCreatedResponse({ description: "El usuario se creó exitosamente", isArray: true, type: CreateUserDto})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Post('signup')
-  async create(@Body() createUserDto: CreateUserDto): Promise<string> {
-    const userCreatedId = await this.usersService.createUser(createUserDto);
-    return `Usuario ${userCreatedId} creado con éxito`;
+  async create(@Body() createUserDto: CreateUserDto): Promise<UserDto> {
+    return await this.usersService.createUser(createUserDto);
   }
 
   @Get()
@@ -48,15 +49,13 @@ export class UsersController {
   })
   @Patch()
   async update(@Query('id') id: number, @Body() updateProductDto: UpdateUserDto): Promise<string> {
-    await this.usersService.updateUser(id, updateProductDto);
-    return `Usuario ${id} actualizado con éxito`;
+    return await this.usersService.updateUser(id, updateProductDto);
   }
 
   @ApiQuery({ name: "id", description: "Id del usuario a eliminar" })
   @Delete()
   async remove(@Query('id') id: number): Promise<string> {
-    await this.usersService.removeUser(id);
-    return `Usuario id ${id} eliminado con éxito.`
+    return await this.usersService.removeUser(id);
   } 
 
   // @ApiQuery({ name: "id", description: "Id del usuario como numero entero" })

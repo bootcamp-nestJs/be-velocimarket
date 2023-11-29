@@ -18,7 +18,7 @@ export class CartService implements ICart{
     private cartRepository: Repository<Cart>
   ) {}
 
-  async createCart( newCart: CreateCartDto): Promise<number> {
+  async createCart( newCart: CreateCartDto): Promise<Cart> {
     try {
       const userExist  = await this.cartRepository.exist({
         relations: {
@@ -36,7 +36,7 @@ export class CartService implements ICart{
       const newCartDto = cartMapper.toEntity(newCart);
       const newCartCreated = await this.cartRepository.save(newCartDto);
       
-      return newCartCreated.id;
+      return newCartCreated;
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
@@ -58,44 +58,41 @@ export class CartService implements ICart{
   }
 
   async findCartById(id: number): Promise<CartDto> {
-    try {
-      const cart  = await this.cartRepository.findOne({
-        where: {id: id},
-        relations: {
-          user: true
-        }
-      });
-      const cartDto = cartMapper.toDto(cart);
-      if(!cartDto){
-        throw new NotFoundException(`el producto con id ${id} no se encontro!`); 
+    const cart  = await this.cartRepository.findOne({
+      where: {id: id},
+      relations: {
+        user: true
       }
-      return cartDto;
-    } catch (error) {
-      throw new InternalServerErrorException(`Error: ${error}`);
+    });
+    const cartDto = cartMapper.toDto(cart);
+    if(!cartDto){
+      throw new NotFoundException(`el producto con id ${id} no se encontro!`); 
     }
+    return cartDto;
   }
 
-  async updateCart(id: number, updateData: UpdateCartDto): Promise<void> {
-    try {
-      const cart = await this.cartRepository.findOneBy({id});
+  async updateCart(id: number, updateData: UpdateCartDto): Promise<string> {
+    const cart = await this.cartRepository.findOneBy({id});
+  
+    if( !cart ) throw new NotFoundException(`El carrito ${id} que esta tratando de actualizar no existe`);
+    
+    const newCart: Cart = cartMapper.toUpdateEntity(id, updateData)
 
-      if( !cart ) throw new NotFoundException(`El carrito ${id} que esta tratando de actualizar no existe`);
-      
-      const newCart: Cart = cartMapper.toUpdateEntity(id, updateData)
+    try {
       await this.cartRepository.update(id, newCart)
-      return;
+      return `Carrito id ${id} actualizado con éxito`;
     }catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
 
-  async removeCart(id: number): Promise<void> {
+  async removeCart(id: number): Promise<string> {
+    const cart = await this.cartRepository.findOneBy({id})
+    if( !cart ) throw new NotFoundException(`El carrito ${id} que esta tratando de eliminar no existe `);
+    
     try {
-      const cart = await this.cartRepository.findOneBy({id})
-      if( !cart ) throw new NotFoundException(`El carrito ${id} que esta tratando de eliminar no existe `);
-      
       await this.cartRepository.delete(id)
-      return;
+      return `Carrito id ${id} eliminado con éxito`;
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }

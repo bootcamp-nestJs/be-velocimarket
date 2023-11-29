@@ -8,7 +8,7 @@ import { UsersModule } from './controllers/users/users.module';
 import { ValidationPipe } from '@nestjs/common';
 import { MensajesModule } from './controllers/mensajes/mensajes.module';
 import { HelperModule } from './helpers/helper.module';
-import { AuthModule } from './controllers/auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 
 async function bootstrap() {
   console.log('Listen on port: 3000');

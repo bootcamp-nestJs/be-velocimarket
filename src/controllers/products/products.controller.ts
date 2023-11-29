@@ -1,55 +1,44 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query, BadRequestException, InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiQuery } from '@nestjs/swagger';
 import { ProductDto } from './dto/product.dto';
 import { ProductMapper } from './mapper/mapper.products';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('products')
 export class ProductsController {
   constructor( private readonly productsService: ProductsService) {}
   
   @ApiBody({
-    description: "Datos del usuario que se va a crear",
+    description: "Datos del producto que se va a crear",
     type: CreateProductDto
   })
   //@ApiHeader({ name: "Prueba", description: "Id del producto", example: "1234-1234", required: true })
   @ApiCreatedResponse({ description: "El Producto se creó exitosamente", isArray: true, type: CreateProductDto})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Post()
-  async create(@Body() createProductDto: CreateProductDto): Promise<string> {
-    try {
-      const productoCreadoId = await this.productsService.createProduct(createProductDto);
-      
-      return `Producto id: ${productoCreadoId} creado con éxito`;
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
+  async create(@Body() createProductDto: CreateProductDto): Promise<ProductDto> {
+    return await this.productsService.createProduct(createProductDto);
   }
 
   @Get()
   async findAll() : Promise<ProductDto[]> {
-    try {
-      const data = await this.productsService.findAllProducts();
-    return  data;
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
+    return await this.productsService.findAllProducts();
   }
 
   @ApiQuery({ name: "id", description: "Id del producto" })
   @Get('product')
   async findProductById(@Query('id') id: number): Promise<ProductDto> {
-    const data = await this.productsService.findProductById(id);
-    return data ;
+    return await this.productsService.findProductById(id);
   }
 
   @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
   @Get('search')
   async findProductByName(@Query('nombre') nombre: string): Promise<ProductDto[]> {
-    const data = await this.productsService.findProductByInclude(nombre);
-    return data ;
+    return await this.productsService.findProductByInclude(nombre);
   }
 
   @ApiQuery({ name: "id", description: "Id del producto como numero entero" })
@@ -59,15 +48,12 @@ export class ProductsController {
   })
   @Patch()
   async update(@Query('id') id: number, @Body() updateProductDto: UpdateProductDto): Promise<string> {
-    await this.productsService.updateProduct(id, updateProductDto);
-    return `Producto id: ${id} actualizado con éxito`;
+    return await this.productsService.updateProduct(id, updateProductDto);
   }
 
   @ApiQuery({ name: "id", description: "Id del producto como numero entero" })
   @Delete()
   async remove(@Query('id') id: number): Promise<string> {
-    await this.productsService.removeProduct(id);
-    
-    return `Producto id: ${id} eliminado con exito`
+    return await this.productsService.removeProduct(id);
   }
 }
