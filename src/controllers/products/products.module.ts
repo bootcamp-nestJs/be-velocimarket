@@ -3,9 +3,9 @@ import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { Subcategoria } from './entities/Subcategoria.entity';
-import { Imagen } from './entities/Imagen.entity';
-import { Categoria } from './entities/Categoria.entity';
+import { Subcategoria } from './entities/subcategoria.entity';
+import { Imagen } from './entities/imagen.entity';
+import { Categoria } from './entities/categoria.entity';
 import { Calificacion } from '../reports/entities/calificacion.entity';
 
 @Module({

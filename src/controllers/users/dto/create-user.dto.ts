@@ -116,33 +116,29 @@ export class CreateUserDto {
     })
     @IsInt({message: "El atributo número debe ser un entero positivo"})
     @IsNotEmpty({message: "El atributo número presenta error, no puede ser un campo vacío"})
-    readonly número: number;
+    readonly numero: number;
 
     @ApiProperty({
-        type: 'string',
-        example: 'Cumpeo',
-        minimum: 5,
+        type: 'number',
+        example: 3,
+        minimum: 2,
         required: true,
         description: "Ciudad domicilio usuario",
         title: "Comuna"
     })
-    @IsString({message: "El atributo comuna presenta error,revise que es string"})
-    @MinLength(5,{message: "El atributo comuna presenta error, necesita minimo 10 caracteres"})
-    @MaxLength(20,{message: "El atributo comuna presenta error, necesita como maximo 20 caracteres"})
+    @IsInt({message: "El atributo comuna debe ser un entero positivo"})
     @IsNotEmpty({message: "El atributo comuna presenta error, no puede ser un campo vacío"})
-    readonly comuna: string;
+    readonly comuna: number;
 
     @ApiProperty({
-        type: 'string',
-        example: 'Region de Los Lagos',
-        minimum: 10,
+        type: 'number',
+        example: 1,
+        minimum: 2,
         required: true,
         description: "Región domicilio usuario",
         title: "Región"
     })
-    @IsString({message: "El atributo región presenta error,revise que es string"})
-    @MinLength(10,{message: "El atributo región presenta error, necesita minimo 10 caracteres"})
-    @MaxLength(20,{message: "El atributo región presenta error, necesita como maximo 20 caracteres"})
+    @IsInt({message: "El atributo región debe ser un entero positivo"})
     @IsNotEmpty({message: "El atributo región presenta error, no puede ser un campo vacío"})
-    readonly region: string;
+    readonly region: number;
 }

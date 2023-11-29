@@ -8,6 +8,7 @@ import { UsersModule } from './controllers/users/users.module';
 import { ValidationPipe } from '@nestjs/common';
 import { MensajesModule } from './controllers/mensajes/mensajes.module';
 import { HelperModule } from './helpers/helper.module';
+import { AuthModule } from './auth/auth.module';
 
 async function bootstrap() {
   console.log('Listen on port: 3000');
@@ -69,6 +70,13 @@ async function bootstrap() {
   .setContact("Javiera Quiñones", "", "java.sandoval@gmail.com")
   .build();
 
+  let documentBuilderAuth = new DocumentBuilder()
+  .setTitle("Documentacion de la API VelociMRKT - Auth")
+  .setDescription("Descripcion de la API")
+  .setVersion('0.0.1')
+  .setContact("Javiera Quiñones", "", "java.sandoval@gmail.com")
+  .build();
+
   const documentProducts = SwaggerModule.createDocument(app, documentBuilderProducts, {
     include: [ ProductsModule ]
   });
@@ -87,7 +95,9 @@ async function bootstrap() {
   const documentCommon = SwaggerModule.createDocument(app, documentBuilderCommon, {
     include: [ HelperModule ]
   });
-
+  const documentAuth = SwaggerModule.createDocument(app, documentBuilderCommon, {
+    include: [ AuthModule ]
+  });
 
   SwaggerModule.setup('docs/products', app, documentProducts);
   SwaggerModule.setup('docs/cart', app, documentCart);
@@ -95,6 +105,7 @@ async function bootstrap() {
   SwaggerModule.setup('docs/users', app, documentUsers);
   SwaggerModule.setup('docs/messagges', app, documentMensaje);
   SwaggerModule.setup('docs/common', app, documentCommon);
+  SwaggerModule.setup('docs/auth', app, documentAuth);
 
   await app.listen(3000);
 }

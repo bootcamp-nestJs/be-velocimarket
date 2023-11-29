@@ -9,19 +9,19 @@ import { MensajesModule } from './controllers/mensajes/mensajes.module';
 import { HelperModule } from './helpers/helper.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './controllers/products/entities/product.entity';
-import { Categoria } from './controllers/products/entities/Categoria.entity';
-import { Subcategoria } from './controllers/products/entities/Subcategoria.entity';
+import { Categoria } from './controllers/products/entities/categoria.entity';
+import { Subcategoria } from './controllers/products/entities/subcategoria.entity';
 import { Usuario } from './controllers/users/entities/user.entity';
-import { Imagen } from './controllers/products/entities/Imagen.entity';
+import { Imagen } from './controllers/products/entities/imagen.entity';
 import { Reclamos } from './controllers/reports/entities/Reclamos.entity';
-import { Direccion } from './controllers/users/entities/direccion.entity';
 import { Mensaje } from './controllers/mensajes/entities/mensaje.entity';
 import { Follower } from './controllers/users/entities/follower.entity';
 import { Following } from './controllers/users/entities/following.entity';
 import { Calificacion } from './controllers/reports/entities/calificacion.entity';
 import { Cart } from './controllers/cart/entities/cart.entity';
-
 import * as dotenv from 'dotenv';
+import { AuthModule } from './auth/auth.module';
+
 dotenv.config({ path: '.env.local' });
 @Module({ 
   imports: [TypeOrmModule.forRoot({
@@ -31,14 +31,26 @@ dotenv.config({ path: '.env.local' });
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [Product, Categoria, Subcategoria, Usuario, Imagen, Reclamos, Direccion, Mensaje, Follower, Following, Calificacion, Cart]
-  }),
+    entities: [
+      Product, 
+      Categoria, 
+      Subcategoria, 
+      Usuario, 
+      Imagen, 
+      Reclamos, 
+      Mensaje, 
+      Follower, 
+      Following, 
+      Calificacion, 
+      Cart
+    ]}),
     ProductsModule, 
     UsersModule,
     CartModule,
     ReportsModule,
     MensajesModule,
-    HelperModule
+    HelperModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

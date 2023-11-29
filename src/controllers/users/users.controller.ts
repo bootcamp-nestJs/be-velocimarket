@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe, InternalServerErrorException, UseGuards, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiQuery } from '@nestjs/swagger';
 import { UserDto } from './dto/user.dto';
-import { UpdateDireccionDto } from './dto/update-direccion.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -18,13 +19,12 @@ export class UsersController {
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Post('signup')
   async create(@Body() createUserDto: CreateUserDto): Promise<UserDto> {
-    const userCreated = await this.usersService.createUser(createUserDto);
-    return userCreated;
+    return await this.usersService.createUser(createUserDto);
   }
 
   @Get()
   async findAll() : Promise<UserDto[]> {
-      const data = await this.usersService.findAllUsers();
+    const data = await this.usersService.findAllUsers();
     return  data;
   }
 
@@ -38,37 +38,34 @@ export class UsersController {
   @ApiQuery({ name: "nombre", description: "nombre del usuario" })
   @Get('search')
   async findUserByName(@Query('nombre') nombre: string): Promise<UserDto[]> {
-    const data = await this.usersService.findUserByInclude(nombre);
+    const data = await this.usersService.findUsersByInclude(nombre);
     return data;
   }
   
-
   @ApiQuery({ name: "id", description: "Id del usuario como numero entero" })
   @ApiBody({
     description: "Datos del usuario que se van a modificar",
     type: UpdateUserDto
   })
   @Patch()
-  async update(@Query('id') id: number, @Body() updateProductDto: UpdateUserDto): Promise<UserDto> {
-  const userActualized = await this.usersService.updateUser(id, updateProductDto);
-  return userActualized;
+  async update(@Query('id') id: number, @Body() updateProductDto: UpdateUserDto): Promise<string> {
+    return await this.usersService.updateUser(id, updateProductDto);
   }
 
   @ApiQuery({ name: "id", description: "Id del usuario a eliminar" })
   @Delete()
   async remove(@Query('id') id: number): Promise<string> {
-    await this.usersService.removeUser(id);
-    return `Usuario de ID ${id} eliminado`
-    } 
+    return await this.usersService.removeUser(id);
+  } 
 
-  @ApiQuery({ name: "id", description: "Id del usuario como numero entero" })
-  @ApiBody({
-    description: "Datos del usuario al que la dirección se va a modificar",
-    type: UpdateDireccionDto
-  })
-  @Patch('direction_actualize')
-  async updateDireccion(@Query('id') id: number, @Body() direccionData: UpdateDireccionDto): Promise<string> {
-  const direccionActualized = await this.usersService.updateDireccion(id, direccionData);
-  return direccionActualized;
-  }
+  // @ApiQuery({ name: "id", description: "Id del usuario como numero entero" })
+  // @ApiBody({
+  //   description: "Datos del usuario al que la dirección se va a modificar",
+  //   type: UpdateDireccionDto
+  // })
+  // @Patch('direction_actualize')
+  // async updateDireccion(@Query('id') id: number, @Body() direccionData: UpdateDireccionDto): Promise<string> {
+  // const direccionActualized = await this.usersService.updateDireccion(id, direccionData);
+  // return direccionActualized;
+  // }
 }

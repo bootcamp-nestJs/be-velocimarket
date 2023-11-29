@@ -1,7 +1,6 @@
 import { Product } from "src/controllers/products/entities/product.entity";
 import { Reclamos } from "src/controllers/reports/entities/Reclamos.entity";
 import { Column, Entity, ManyToMany, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
-import { Direccion } from "./direccion.entity";
 import { Mensaje } from "src/controllers/mensajes/entities/mensaje.entity";
 import { Follower } from "./follower.entity";
 import { Following } from "./following.entity";
@@ -25,6 +24,14 @@ export class Usuario {
     password: string;
     @Column({name: 'telefono'})
     telefono: string;
+    @Column({name: 'calle'})
+    calle: string;
+    @Column({name: 'numero'})
+    numero: number;
+    @Column({name: 'comuna'})
+    comuna: number;
+    @Column({name: 'region'})
+    region: number;
     @Column({name: 'fecha_creacion'})
     fecha_creacion: Date;
     @Column({name: 'fecha_modificacion'})
@@ -35,9 +42,6 @@ export class Usuario {
 
     @OneToMany(() => Reclamos, (r) => r.user)
     reclamo: Reclamos[];
-
-    @OneToOne(() => Direccion, d => d.user)
-    direccion: Direccion;
 
     @ManyToMany(() => Mensaje, m=> m.user)
     msg: Mensaje[];

@@ -1,4 +1,4 @@
-import { Imagen } from "../entities/Imagen.entity";
+import { Imagen } from "../entities/imagen.entity";
 
 export class ProductDto {
     id: number;
