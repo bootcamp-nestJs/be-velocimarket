@@ -18,7 +18,7 @@ export class Following {
     @ManyToOne(() => Usuario)
     @JoinColumn({ name: 'usuario_id' })
     @JoinColumn({ name: 'following_id' })
-    user: Usuario ;
+        user: Usuario ;
     }
     
 

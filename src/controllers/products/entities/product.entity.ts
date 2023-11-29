@@ -1,7 +1,7 @@
 import { Usuario } from "src/controllers/users/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
-import { Subcategoria } from "./Subcategoria.entity";
-import { Imagen } from "./Imagen.entity";
+import { Subcategoria } from "./subcategoria.entity";
+import { Imagen } from "./imagen.entity";
 import { Calificacion } from "src/controllers/reports/entities/calificacion.entity";
 import { Mensaje } from "src/controllers/mensajes/entities/mensaje.entity";
 import { Cart } from "src/controllers/cart/entities/cart.entity";

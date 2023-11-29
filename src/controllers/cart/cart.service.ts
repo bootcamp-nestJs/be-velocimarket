@@ -38,6 +38,19 @@ export class CartService implements ICart{
       throw new BadRequestException(`No existe usuario con id ${newCart.usuarioId}`)
     } 
     try {
+      const userExist  = await this.cartRepository.exist({
+        relations: {
+          user: true,
+          cartProduct: false
+        }, where:{
+          usuario_id: newCart.usuarioId
+        }
+      });
+
+      if(!userExist){
+        throw new BadRequestException(`No existe usuario con id ${newCart.usuarioId}`)
+      }
+
       const newCartDto = cartMapper.toEntity(newCart);
       const newCartCreated = await this.cartRepository.save(newCartDto);
       const newCartProduct : CartProduct = cartMapper.toCartProductEntity(newCart);
@@ -183,11 +196,12 @@ export class CartService implements ICart{
   }
 
   async updateCart(id: number, updateData: UpdateCartDto): Promise<CartDto> {
-    const cart = await this.cartRepository.findOneBy({
-      id: id
-    });
+    const cart = await this.cartRepository.findOneBy({id});
+  
     if( !cart ) throw new NotFoundException(`El carrito ${id} que esta tratando de actualizar no existe`);
     
+    const newCart: Cart = cartMapper.toUpdateEntity(id, updateData)
+
     try {
           const newCart: Cart = cartMapper.toUpdateEntity(id, updateData)
           const resultado = await this.cartRepository.update(id, newCart)
@@ -199,14 +213,12 @@ export class CartService implements ICart{
   }
 
   async removeCart(id: number): Promise<string> {
-    const cart = await this.cartRepository.findOneBy({
-      id: id
-    })
+    const cart = await this.cartRepository.findOneBy({id})
     if( !cart ) throw new NotFoundException(`El carrito ${id} que esta tratando de eliminar no existe `);
-
+    
     try {
       await this.cartRepository.delete(id)
-      return `Carrito con id ${id} eliminado`
+      return `Carrito id ${id} eliminado con éxito`;
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
