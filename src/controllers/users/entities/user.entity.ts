@@ -6,6 +6,7 @@ import { Follower } from "./follower.entity";
 import { Following } from "./following.entity";
 import { Calificacion } from "src/controllers/reports/entities/calificacion.entity";
 import { Cart } from "src/controllers/cart/entities/cart.entity";
+import { Conversacion } from "src/controllers/mensajes/entities/conversacion.entity";
 
 @Entity({ name: 'Usuario'})
 export class Usuario {
@@ -43,8 +44,8 @@ export class Usuario {
     @OneToMany(() => Reclamos, (r) => r.user)
     reclamo: Reclamos[];
 
-    @ManyToMany(() => Mensaje, m=> m.user)
-    msg: Mensaje[];
+    @OneToMany(() => Conversacion, c => c.user)
+    conversaciones: Conversacion[];
 
     @OneToMany(() => Follower, f => f.user)
     follower: Follower[];

@@ -53,10 +53,9 @@ export class UsersService {
     try {
       const  listUsers  = await this.userRepository.find({
         relations: {
-          msg: false
+          conversaciones: false
         }
       });
-      // console.log(listUsers)
       return UserMapper.toDtoList(listUsers);
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
@@ -83,22 +82,6 @@ export class UsersService {
   }
 
   async findUsersByInclude(name: string): Promise<UserDto[]> {
-    const listUsers = await this.userRepository.find({
-      where: [{
-        nombre: Like(`%${name}%`)
-      },{
-        user_name: Like(`%${name}%`)
-      }, {
-        mail: Like(`%${name}%`)
-      }]
-    })
-
-    const usersInclude = UserMapper.toDtoList(listUsers);
-    if(!usersInclude || usersInclude.length === 0) throw new NotFoundException(`No se encontraron coincidencias con el nombre: ${name}`);
-    return usersInclude;
-  }
-
-  async findUserByInc(name: string): Promise<UserDto[]> {
     const listUsers = await this.userRepository.find({
       where: [{
         nombre: Like(`%${name}%`)

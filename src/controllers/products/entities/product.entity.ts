@@ -6,6 +6,8 @@ import { Calificacion } from "src/controllers/reports/entities/calificacion.enti
 import { Mensaje } from "src/controllers/mensajes/entities/mensaje.entity";
 import { Cart } from "src/controllers/cart/entities/cart.entity";
 import { Reclamos } from "src/controllers/reports/entities/Reclamos.entity";
+import { CartProduct } from "src/controllers/cart/entities/productCart.entity";
+import { Conversacion } from "src/controllers/mensajes/entities/conversacion.entity";
 
 @Entity({ name: 'Producto'})
 export class Product {
@@ -39,6 +41,8 @@ export class Product {
     fecha_creacion: Date;
     @Column({name: 'fecha_modificacion'})
     fecha_modificacion: Date;
+    @Column({name: 'vendido'})
+    vendido: boolean;
 
     @ManyToOne((() => Usuario))
     @JoinColumn({ name: 'usuario_id' })
@@ -47,11 +51,11 @@ export class Product {
     @OneToMany(() => Calificacion, (c) => c.user)
     calificacion: Calificacion[];
     
-    @ManyToMany(() => Mensaje, m=> m.product)
-    msg: Mensaje[];
+    @OneToMany(() => Conversacion, (c) => c.product)
+    conversaciones: Conversacion[];
     
-    @ManyToMany(() => Cart, c=> c.product)
-    carrito: Cart[];
+    @OneToMany(() => CartProduct, c=> c.product)
+    carritoProducto: CartProduct[];
     
     @OneToMany(() => Reclamos, (r) => r.product)
     reclamos: Reclamos[];

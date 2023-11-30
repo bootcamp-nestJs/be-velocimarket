@@ -2,9 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } f
 import { MensajesService } from './mensajes.service';
 import { CreateMensajeDto } from './dto/create-mensaje.dto';
 import { MensajeDto } from './dto/mensaje.dto';
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiQuery } from '@nestjs/swagger';
 import { Mensaje } from './entities/mensaje.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { Conversacion } from './entities/conversacion.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('mensajes')
@@ -21,18 +22,14 @@ export class MensajesController {
     return await this.mensajesService.createMensaje(createMensajeDto);
   }
 
-  @ApiBody({
-    description: "Mensajes a mostrar",
-    type: Mensaje
-  })
   @ApiCreatedResponse({ description: "Los mensajes se cargan sin problema", isArray: true, type: Mensaje})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Get()
-  async findAll(): Promise<MensajeDto[]> {
+  async findAll(): Promise<Conversacion[]> {
     return await this.mensajesService.findAllMensajes();
   }
 
-  @ApiBody({
+  @ApiQuery({
     description: "Mensaje a mostrar",
     type: MensajeDto
   })
@@ -43,7 +40,7 @@ export class MensajesController {
     return await this.mensajesService.findMensajeById(id);
   }
 
-  @ApiBody({
+  @ApiQuery({
     description: "Mensaje a eliminar",
     type: MensajeDto
   })

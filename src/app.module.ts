@@ -20,6 +20,8 @@ import { Following } from './controllers/users/entities/following.entity';
 import { Calificacion } from './controllers/reports/entities/calificacion.entity';
 import { Cart } from './controllers/cart/entities/cart.entity';
 import * as dotenv from 'dotenv';
+import { Conversacion } from './controllers/mensajes/entities/conversacion.entity';
+import { CartProduct } from './controllers/cart/entities/productCart.entity';
 import { AuthModule } from './auth/auth.module';
 
 dotenv.config({ path: '.env.local' });
@@ -42,7 +44,9 @@ dotenv.config({ path: '.env.local' });
       Follower, 
       Following, 
       Calificacion, 
-      Cart
+      Cart,
+      CartProduct,
+      Conversacion
     ]}),
     ProductsModule, 
     UsersModule,

@@ -4,14 +4,16 @@ import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { CartDto } from './dto/cart.dto';
 import { Cart } from './entities/cart.entity';
+import { addProductCartDto } from './dto/add-product-cart.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+
 @UseGuards(JwtAuthGuard)
 @Controller('cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
   @Post()
-  async create(@Body() createCartDto: CreateCartDto): Promise<Cart> {
+  async create(@Body() createCartDto: CreateCartDto): Promise<CartDto> {
     return await this.cartService.createCart(createCartDto);
   }
 
@@ -25,6 +27,12 @@ export class CartController {
     return await this.cartService.findCartById(id);
   }
 
+  @Post('addProduct')
+  async addProduct(@Body() addProduct: addProductCartDto): Promise<CartDto> {
+    const productoCreado = await this.cartService.addProductToCart(addProduct);
+    return productoCreado;
+  }
+
   @Patch()
   async update(@Query('id') id: number, @Body() updateCartDto: UpdateCartDto): Promise<string> {
     return await this.cartService.updateCart(id, updateCartDto);
@@ -34,4 +42,11 @@ export class CartController {
   async remove(@Query('id') id: number): Promise<string> {
     return await this.cartService.removeCart(id);
   }
+
+  @Delete('removeProduct')
+  async removeProduct(@Query('productId') productId: number, @Query('cartId') cartId: number): Promise<string> {
+    await this.cartService.removeProductCart(productId,cartId );
+    return `Producto de ID ${productId} eliminado del carrito de ID ${cartId}`
+  }
+
 }
