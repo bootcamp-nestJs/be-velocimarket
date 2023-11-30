@@ -175,6 +175,7 @@ export class CartService implements ICart{
           product: true
         }
       } );
+      console.log(listCarts)
       return cartMapper.toDtoList(listCarts);
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);

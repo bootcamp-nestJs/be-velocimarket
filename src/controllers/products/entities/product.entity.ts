@@ -7,6 +7,7 @@ import { Mensaje } from "src/controllers/mensajes/entities/mensaje.entity";
 import { Cart } from "src/controllers/cart/entities/cart.entity";
 import { Reclamos } from "src/controllers/reports/entities/Reclamos.entity";
 import { CartProduct } from "src/controllers/cart/entities/productCart.entity";
+import { Conversacion } from "src/controllers/mensajes/entities/conversacion.entity";
 
 @Entity({ name: 'Producto'})
 export class Product {
@@ -50,8 +51,8 @@ export class Product {
     @OneToMany(() => Calificacion, (c) => c.user)
     calificacion: Calificacion[];
     
-    @ManyToMany(() => Mensaje, m=> m.product)
-    msg: Mensaje[];
+    @OneToMany(() => Conversacion, (c) => c.product)
+    conversaciones: Conversacion[];
     
     @OneToMany(() => CartProduct, c=> c.product)
     carritoProducto: CartProduct[];

@@ -5,6 +5,7 @@ import { MensajeDto } from './dto/mensaje.dto';
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiQuery } from '@nestjs/swagger';
 import { Mensaje } from './entities/mensaje.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { Conversacion } from './entities/conversacion.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('mensajes')
@@ -24,7 +25,7 @@ export class MensajesController {
   @ApiCreatedResponse({ description: "Los mensajes se cargan sin problema", isArray: true, type: Mensaje})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Get()
-  async findAll(): Promise<MensajeDto[]> {
+  async findAll(): Promise<Conversacion[]> {
     return await this.mensajesService.findAllMensajes();
   }
 

@@ -1,6 +1,6 @@
 import { Product } from "src/controllers/products/entities/product.entity";
 import { Usuario } from "src/controllers/users/entities/user.entity";
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { Mensaje } from "./mensaje.entity";
 
 @Entity({ name: 'Conversacion'})
@@ -23,12 +23,10 @@ export class Conversacion {
     @JoinColumn({ name: 'usuario_id'})
     user: Usuario;
 
-    @ManyToOne(() => Mensaje)
-    @JoinTable({ name: 'mensaje_id'})
-    msg: Mensaje;
-
     @ManyToOne(() => Product)
-    @JoinTable({ name: 'producto_id'})
+    @JoinColumn({ name: 'producto_id'})
     product: Product;
-
+    
+    @OneToMany(() => Mensaje, m=> m.conversacion)
+    msgs: Mensaje[];
     }
