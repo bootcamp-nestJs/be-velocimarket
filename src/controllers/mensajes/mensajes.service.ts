@@ -6,13 +6,16 @@ import { Mensaje } from './entities/mensaje.entity';
 import { Repository } from 'typeorm';
 import { MensajeDto } from './dto/mensaje.dto';
 import { MsgMapper } from './mapper/mapper.mensajes';
+import { Conversacion } from './entities/conversacion.entity';
 
 @Injectable()
 export class MensajesService implements IMensaje {
 
   constructor(
   @InjectRepository(Mensaje)
-    private mensajeRepository: Repository<Mensaje>
+    private mensajeRepository: Repository<Mensaje>,
+  @InjectRepository(Conversacion)
+    private conversacionRepository: Repository<Conversacion>
   ) {}
   
   async createMensaje( newMsg: CreateMensajeDto): Promise<MensajeDto> {
@@ -26,16 +29,17 @@ export class MensajesService implements IMensaje {
     }
   }
 
-  async findAllMensajes(): Promise<MensajeDto[]> {
+  async findAllMensajes(): Promise<Conversacion[]> {
     try {
-      const listMensajes  = await this.mensajeRepository.find({
+      const listMensajes  = await this.conversacionRepository.find({
         relations: {
-          user: false,
-          product: false
+          msgs: true,
+          user: true,
+          product: true
         }
       });
-      console.log(listMensajes)
-      return MsgMapper.toDtoList(listMensajes);
+   console.log(await this.conversacionRepository.find())
+      return listMensajes;
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }

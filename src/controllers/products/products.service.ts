@@ -8,6 +8,8 @@ import { Product } from './entities/product.entity';
 import { Imagen } from './entities/imagen.entity';
 import { ProductMapper } from './mapper/mapper.products';
 import { ProductDto } from './dto/product.dto';
+import { UsersService } from '../users/users.service';
+import { Usuario } from '../users/entities/user.entity';
 
 @Injectable()
 export class ProductsService implements IProducts{
@@ -15,7 +17,9 @@ export class ProductsService implements IProducts{
     @InjectRepository(Product)
       private productRepository: Repository<Product>,
     @InjectRepository(Imagen)
-      private imagenRepository: Repository<Imagen>
+      private ImagenRepository: Repository<Imagen>,
+    @InjectRepository(Usuario)
+      private usuarioRepository: Repository<Usuario>
     ) {}
 
   async createProduct( newProduct: CreateProductDto): Promise<ProductDto> {
@@ -103,4 +107,23 @@ export class ProductsService implements IProducts{
 
     return `Producto id: ${id} eliminado con exito`
   }
+
+  async findProductBySell(id: number): Promise<ProductDto[]> {
+    const products  = await this.productRepository.find({
+      where: {
+        usuario_id: id,
+        vendido: true},
+      relations: {
+        subcat: true,
+        img: true, 
+        usuario: true
+      }
+    });
+    const products_dto = ProductMapper.toDtoList(products);
+    if(products_dto.length == 0){
+      throw new NotFoundException(`el usuario no tiene productos vendidos aún!`); 
+    }
+    return products_dto;
+  }
+  
 }
