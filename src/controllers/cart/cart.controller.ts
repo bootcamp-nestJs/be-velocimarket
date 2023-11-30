@@ -5,8 +5,8 @@ import { UpdateCartDto } from './dto/update-cart.dto';
 import { CartDto } from './dto/cart.dto';
 import { Cart } from './entities/cart.entity';
 import { addProductCartDto } from './dto/add-product-cart.dto';
-
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+
 @UseGuards(JwtAuthGuard)
 @Controller('cart')
 export class CartController {
@@ -34,7 +34,7 @@ export class CartController {
   }
 
   @Patch()
-  async update(@Query('id') id: number, @Body() updateCartDto: UpdateCartDto): Promise<CartDto> {
+  async update(@Query('id') id: number, @Body() updateCartDto: UpdateCartDto): Promise<string> {
     return await this.cartService.updateCart(id, updateCartDto);
   }
 

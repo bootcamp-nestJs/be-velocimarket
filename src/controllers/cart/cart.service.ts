@@ -196,7 +196,7 @@ export class CartService implements ICart{
     return cartDto;
   }
 
-  async updateCart(id: number, updateData: UpdateCartDto): Promise<CartDto> {
+  async updateCart(id: number, updateData: UpdateCartDto): Promise<string> {
     const cart = await this.cartRepository.findOneBy({id});
   
     if( !cart ) throw new NotFoundException(`El carrito ${id} que esta tratando de actualizar no existe`);
@@ -204,11 +204,9 @@ export class CartService implements ICart{
     const newCart: Cart = cartMapper.toUpdateEntity(id, updateData)
 
     try {
-          const newCart: Cart = cartMapper.toUpdateEntity(id, updateData)
-          const resultado = await this.cartRepository.update(id, newCart)
-          return cartMapper.toCartDto(newCart);
-        }
-     catch (error) {
+      await this.cartRepository.update(id, newCart)
+      return `Carrito id ${id} actualizado con éxito`;
+    }catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }

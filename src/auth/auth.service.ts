@@ -26,7 +26,6 @@ export class AuthService {
     const pass = await this.userService.getUserPassword(user.id);
     
     const passwordValid = await bcrypt.compare(password, pass);
-    console.log(passwordValid)
 
     if (!passwordValid) {
       throw new NotAcceptableException(`Las contraseñas no coinciden`);
