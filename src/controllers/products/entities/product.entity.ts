@@ -25,8 +25,6 @@ export class Product {
     precio: number;
     @Column({name: 'marca'})
     marca: string;
-    @Column({name: 'avatar'})
-    avatar: string;
     @Column({name: 'tamanio'})
     tamanio: string;
     @Column({name: 'estado'})

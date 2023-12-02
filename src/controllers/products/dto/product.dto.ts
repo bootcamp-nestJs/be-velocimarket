@@ -6,7 +6,6 @@ export class ProductDto {
     descripcion: string;
     precio: number;
     marca: string;
-    avatar: string;
     tamanio: string;
     estado: string;
     material_cuadro: string;
