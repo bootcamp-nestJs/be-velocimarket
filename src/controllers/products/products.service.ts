@@ -10,6 +10,7 @@ import { ProductMapper } from './mapper/mapper.products';
 import { ProductDto } from './dto/product.dto';
 import { UsersService } from '../users/users.service';
 import { Usuario } from '../users/entities/user.entity';
+import { Subcategoria } from './entities/subcategoria.entity';
 
 @Injectable()
 export class ProductsService implements IProducts{
@@ -19,7 +20,9 @@ export class ProductsService implements IProducts{
     @InjectRepository(Imagen)
       private ImagenRepository: Repository<Imagen>,
     @InjectRepository(Usuario)
-      private usuarioRepository: Repository<Usuario>
+      private usuarioRepository: Repository<Usuario>,
+    @InjectRepository(Subcategoria)
+      private subcatRepository: Repository<Subcategoria>,
     ) {}
 
   async createProduct( newProduct: CreateProductDto): Promise<ProductDto> {
@@ -34,16 +37,16 @@ export class ProductsService implements IProducts{
     }
   }
 
-  async findAllProducts(): Promise<ProductDto[]> {
+  async findAllProducts(pag: number): Promise<ProductDto[]> {
     try {
       const listProducts  = await this.productRepository.find({
         relations: {
           img: true,
           subcat: true,
-        }
+        },
+        skip: 6 * (pag - 1),
+        take: 6,
       });
-
-      //console.log(listProducts)
       return ProductMapper.toDtoList(listProducts);
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
@@ -67,11 +70,11 @@ export class ProductsService implements IProducts{
 
     return product_dto;
   }
-
+  // filtrar por bicicletas y tipos y bla bla. accesorios solo por categoria
   async findProductByInclude(name: string): Promise<ProductDto[]> {
     const listProducts = await this.productRepository.find({
       where: {
-        nombre: Like(`%${name}%`)
+        nombre: Like(`%${name}%`),
       },
       relations: {
         subcat: true,
@@ -85,6 +88,24 @@ export class ProductsService implements IProducts{
     
     return productsInclude;
   }
+
+  // async findProductByFilter(name: string, categoria: number, subcat: number): Promise<any> {
+    // const listSubcaProducts = await this.subcatRepository.find({
+      // relations: {
+        // product: true,
+        // categ: true
+      // }
+    // });
+    // 
+    // const listProducts = listSubcaProducts.filter( (product) => {
+      // if(product.categoria_id == subcat && product.categ.id == categoria){
+        // return product;
+      // }
+    // });
+    // console.log(listSubcaProducts[3].product[0].nombre);
+    // return listSubcaProducts;
+  // }
+ 
 
   async updateProduct(id: number, updateData: UpdateProductDto): Promise<string> {
     const product = await this.productRepository.findOneBy({id});

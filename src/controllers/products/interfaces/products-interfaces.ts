@@ -19,7 +19,7 @@ export interface Products {
 
 export interface IProducts {
     createProduct(crearProductoDto: CreateProductDto);
-    findAllProducts():any;
+    findAllProducts(pag: number):any;
     findProductById(id:number);
     findProductByInclude(nombre: string): any;
     updateProduct(id: number, updateProductDto: UpdateProductDto);  

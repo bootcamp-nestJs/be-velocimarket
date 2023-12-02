@@ -25,8 +25,8 @@ export class ProductsController {
   }
 
   @Get()
-  async findAll() : Promise<ProductDto[]> {
-    return await this.productsService.findAllProducts();
+  async findAll(@Query("pag") pag: number) : Promise<ProductDto[]> {
+    return await this.productsService.findAllProducts(pag);
   }
 
   @ApiQuery({ name: "id", description: "Id del producto" })
@@ -64,4 +64,10 @@ async remove(@Query('id') id: number): Promise<string> {
     const data = await this.productsService.findProductBySell(idUser);
     return data ;
   }
+
+// @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
+// @Get('filter')
+// async findProductByFilter(@Query('nombre') nombre: string, @Query('categoria') cat: number, @Query('subcat') subcat: number): Promise<ProductDto[]> {
+  // return await this.productsService.findProductByFilter(nombre, cat, subcat);
+// }
 }

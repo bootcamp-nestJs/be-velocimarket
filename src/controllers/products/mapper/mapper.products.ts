@@ -15,7 +15,7 @@ export class ProductMapper {
       dto.nombre= entity.nombre;
       dto.precio= entity.precio;
       dto.marca= entity.marca;
-      dto.avatar= entity.avatar;
+      // dto.avatar= entity.avatar;
       dto.tamanio= entity.tamanio;
       dto.estado= entity.estado;
       dto.material_cuadro= entity.material_cuadro;
@@ -39,7 +39,7 @@ export class ProductMapper {
       entity.categoria_id= dto.categoria;
       entity.precio= dto.precio;
       entity.marca= dto.marca;
-      entity.avatar= dto.avatar;
+      // entity.avatar= dto.avatar;
       entity.tamanio=dto.tamanio;
       entity.estado= dto.estado;
       entity.descripcion= dto.descripcion;
@@ -48,6 +48,7 @@ export class ProductMapper {
       entity.valoracion= dto.valoracion;
       const date = new Date
       entity.fecha_creacion = date;
+      entity.fecha_modificacion = date;
       return entity;
     }  
 
@@ -61,7 +62,7 @@ export class ProductMapper {
         entity.categoria_id= dto.categoria;
         entity.precio= dto.precio;
         entity.marca= dto.marca;
-        entity.avatar= dto.avatar;
+        // entity.avatar= dto.avatar;
         entity.tamanio=dto.tamanio;
         entity.estado= dto.estado;
         entity.descripcion= dto.descripcion;
