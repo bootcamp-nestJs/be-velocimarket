@@ -1,9 +1,6 @@
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
-import * as dotenv from 'dotenv';
 import { UserJwt } from "../interfaces/jwt-user.interface";
-
-dotenv.config({ path: '.env.local' });
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {

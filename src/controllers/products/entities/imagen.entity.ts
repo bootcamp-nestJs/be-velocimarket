@@ -11,9 +11,9 @@ export class Imagen {
     @Column({name: 'imagen'})
     imagen: string;
     @Column({name: 'fecha_creacion'})
-    fecha_creacion: string;
+    fecha_creacion: Date;
     @Column({name: 'fecha_modificacion'})
-    fecha_modificacion: string;
+    fecha_modificacion: Date;
 
     @ManyToOne(() => Product)
     @JoinColumn({ name: 'producto_id' })
