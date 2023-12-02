@@ -19,14 +19,18 @@ import { Follower } from './controllers/users/entities/follower.entity';
 import { Following } from './controllers/users/entities/following.entity';
 import { Calificacion } from './controllers/reports/entities/calificacion.entity';
 import { Cart } from './controllers/cart/entities/cart.entity';
-import * as dotenv from 'dotenv';
 import { Conversacion } from './controllers/mensajes/entities/conversacion.entity';
 import { CartProduct } from './controllers/cart/entities/productCart.entity';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
-dotenv.config({ path: '.env.local' });
 @Module({ 
-  imports: [TypeOrmModule.forRoot({
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: ['.env.local'],
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRoot({
     type: 'mysql',
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT, 10),

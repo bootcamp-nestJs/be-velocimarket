@@ -7,10 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { Usuario } from 'src/controllers/users/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LocalStrategy } from './strategies/local.strategy';
-import * as dotenv from 'dotenv';
 import { JwtStrategy } from './strategies/jwt.strategy';
-
-dotenv.config({ path: '.env.local' });
 @Module({
   controllers: [AuthController],
   providers: [AuthService, UsersService, LocalStrategy, JwtStrategy],

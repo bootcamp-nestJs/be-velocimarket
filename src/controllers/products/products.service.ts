@@ -10,17 +10,24 @@ import { ProductMapper } from './mapper/mapper.products';
 import { ProductDto } from './dto/product.dto';
 import { UsersService } from '../users/users.service';
 import { Usuario } from '../users/entities/user.entity';
-
+import * as fs from 'fs/promises';
+import * as fss from 'fs';
+import * as path from 'path';
+import * as os from 'os';
+import { CreateProductImage } from './dto/create-image.dto';
+import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class ProductsService implements IProducts{
+  private uploadRoute = os.homedir() + '/api-velocimarket/uploads'
+
   constructor(
     @InjectRepository(Product)
-      private productRepository: Repository<Product>,
+    private productRepository: Repository<Product>,
     @InjectRepository(Imagen)
-      private ImagenRepository: Repository<Imagen>,
+    private imagenRepository: Repository<Imagen>,
     @InjectRepository(Usuario)
-      private usuarioRepository: Repository<Usuario>
-    ) {}
+    private usuarioRepository: Repository<Usuario>
+  ) {}
 
   async createProduct( newProduct: CreateProductDto): Promise<ProductDto> {
     try {
@@ -124,6 +131,85 @@ export class ProductsService implements IProducts{
       throw new NotFoundException(`el usuario no tiene productos vendidos aún!`); 
     }
     return products_dto;
+  }
+
+  async saveProductImage( userId: number, productId: number, file: Express.Multer.File): Promise<string>{
+    try {
+      const uploadDir = path.join(this.uploadRoute);
+  
+      await fs.mkdir(uploadDir, { recursive: true });
+  
+      const imageID = uuidv4();
+      const fileName = `${userId}_${productId}_${imageID}`;
+      const filePath = path.join(uploadDir, fileName);
+  
+      await fs.writeFile(filePath, file.buffer);
+
+      const newImage: CreateProductImage = {
+        producto_id: Number(productId),
+        imagen: filePath
+      }
+      
+      const newImageDto = ProductMapper.toUpdateEntityImage(newImage);
+        
+      await this.imagenRepository.save(newImageDto);
+
+      return imageID;
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
+  }
+
+  async getProductImages(userId: number, productId: number): Promise<string[]>{
+    let productImages: string[] = [];
+
+    const product  = await this.productRepository.find({
+      where: {
+        id: productId,
+        usuario_id: userId
+      },
+      relations: {
+        img: true, 
+      }
+    });
+
+    if(!product) throw new NotFoundException('El producto no existe'); 
+    
+    const images = product[0].img;
+    if(images.length === 0) return [];
+
+    try {
+      images.forEach( img => {
+        const imagePath = img.imagen;
+    
+        // const buffer = fss.readFileSync(imagePath);
+        // const contentImage = buffer.toString('base64');
+        // productImages.push(contentImage);
+        productImages.push(imagePath);
+      } );
+
+      return productImages;
+      
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
+  }
+    
+  async removeProductImage(id: number): Promise<string>{
+    const image = await this.imagenRepository.findOneBy({id})
+
+    if(!image) throw new NotFoundException(`La imagen id ${id} no existe`); 
+
+    try {
+      await this.imagenRepository.delete(id);
+
+      await fs.unlink(image.imagen);
+  
+      return `Imagen id: ${id} eliminada con exito`
+      
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
   }
   
 }

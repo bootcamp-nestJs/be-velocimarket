@@ -59,18 +59,6 @@ export class CreateProductDto {
     readonly marca:string;
 
     @ApiProperty({
-        type: 'string',
-        example: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fla.network%2Fprimera-bicicleta-',
-        minimum: 3,
-        required: false,
-        description: "url de imágen del producto",
-        title: "Avatar"
-    })
-    @IsString({message: "El atributo avatar presenta error, revise que es string/url"})
-    @MinLength(3,{message: "El atributo avatar presenta error, necesita minimo 3 caracteres"})
-    readonly avatar:string;
-
-    @ApiProperty({
         type: 'number',
         example: 20000,
         minimum: 0,

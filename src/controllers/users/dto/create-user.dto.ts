@@ -64,13 +64,13 @@ export class CreateUserDto {
         example: '123456acs',
         minimum: 8,
         required: true,
-        description: "Contraseña, mínimo 8 caracteres alfanuméricos",
+        description: "Contraseña, caracteres alfanuméricos",
         title: "Contraseña"
     })
     // si es alfanumerico esta validación esta de más
     // @IsString({message: "El atributo password presenta error,revise que es string"})
     @MinLength(8,{message: "El atributo password presenta error, necesita mínimo 8 caracteres"})
-    @MaxLength(20,{message: "El atributo password presenta error, necesita como máximo 12 caracteres"})
+    // @MaxLength(20,{message: "El atributo password presenta error, necesita como máximo 12 caracteres"})
     @IsNotEmpty({message: "El atributo password presenta error, no puede ser un campo vacío"})
     @IsAlphanumeric('en-US', {message: "El atributo password presenta error, debe ser alfanumérico, sin la letra ñ"})
     readonly password: string;
