@@ -22,14 +22,12 @@ import { Cart } from './controllers/cart/entities/cart.entity';
 import { Conversacion } from './controllers/mensajes/entities/conversacion.entity';
 import { CartProduct } from './controllers/cart/entities/productCart.entity';
 import { AuthModule } from './auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
+import * as dotenv from 'dotenv';
+dotenv.config({ path: '.env.local'});
 
 @Module({ 
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: ['.env.local'],
-      isGlobal: true,
-    }),
+
     TypeOrmModule.forRoot({
     type: 'mysql',
     host: process.env.DB_HOST,
