@@ -127,9 +127,9 @@ export class ProductsController {
     return data ;
   }
 
-// @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
-// @Get('filter')
-// async findProductByFilter(@Query('nombre') nombre: string, @Query('categoria') cat: number, @Query('subcat') subcat: number): Promise<ProductDto[]> {
-  // return await this.productsService.findProductByFilter(nombre, cat, subcat);
-// }
+  @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
+  @Get('filter')
+  async findProductByFilter(@Query('nombre') nombre?: string, @Query('categoria') cat?: number, @Query('subcat') subcat?: number): Promise<ProductDto[]> {
+    return await this.productsService.findProductByFilter(nombre, cat, subcat);
+  }
 }

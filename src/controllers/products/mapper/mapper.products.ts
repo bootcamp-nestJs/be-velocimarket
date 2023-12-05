@@ -4,6 +4,7 @@ import { ProductDto } from "../dto/product.dto";
 import { UpdateProductDto } from "../dto/update-product.dto";
 import { Imagen } from "../entities/imagen.entity";
 import { Product } from "../entities/product.entity";
+import { Subcategoria } from "../entities/subcategoria.entity";
 
 export class ProductMapper {
 
@@ -47,6 +48,7 @@ export class ProductMapper {
     entity.valoracion= dto.valoracion;
     const date = new Date
     entity.fecha_creacion = date;
+    entity.fecha_modificacion = date;
     return entity;
   }  
 
@@ -93,4 +95,7 @@ export class ProductMapper {
     entity.fecha_modificacion = new Date();
     return entity;
   }
+
+  // static toDtoSubcat(entity: Subcategoria): ProductDto {
+    // entity
 }

@@ -44,7 +44,7 @@ export class ProductsService implements IProducts{
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
-
+  //orderby!
   async findAllProducts(pag: number): Promise<ProductDto[]> {
     try {
       const listProducts  = await this.productRepository.find({
@@ -61,6 +61,7 @@ export class ProductsService implements IProducts{
     }
   }
 
+  //id del usuario. corregir
   async findProductById(id: number): Promise<ProductDto> {
     const product  = await this.productRepository.findOne({
       where: {id},
@@ -78,7 +79,7 @@ export class ProductsService implements IProducts{
 
     return product_dto;
   }
-  // filtrar por bicicletas y tipos y bla bla. accesorios solo por categoria
+ 
   async findProductByInclude(name: string): Promise<ProductDto[]> {
     const listProducts = await this.productRepository.find({
       where: {
@@ -97,23 +98,101 @@ export class ProductsService implements IProducts{
     return productsInclude;
   }
 
-  // async findProductByFilter(name: string, categoria: number, subcat: number): Promise<any> {
-    // const listSubcaProducts = await this.subcatRepository.find({
-      // relations: {
-        // product: true,
-        // categ: true
-      // }
-    // });
-    // 
-    // const listProducts = listSubcaProducts.filter( (product) => {
-      // if(product.categoria_id == subcat && product.categ.id == categoria){
-        // return product;
-      // }
-    // });
-    // console.log(listSubcaProducts[3].product[0].nombre);
-    // return listSubcaProducts;
-  // }
- 
+  async findProductByFilter(name: string, categoria: number, subcat: number): Promise<any> {
+
+    if(name != null && categoria == null && subcat == null){
+    const listProducts = await this.findProductByInclude(name);
+    return listProducts;
+    }
+    else if(name == null && categoria != null && subcat == null){
+  
+      const listSubcaProducts = await this.subcatRepository.find({
+      relations: {
+      product: true,
+      categ: true
+    },
+    where: {
+      categ:{
+        id: categoria}
+    }});
+    console.log(listSubcaProducts);
+    return listSubcaProducts;
+    }
+    else if(name == null && categoria == null && subcat != null){
+      const listSubcaProducts = await this.subcatRepository.find({
+      relations: {
+      product: true,
+      categ: true
+    },
+    where: {
+        id: subcat}
+    });
+    return listSubcaProducts;
+    }
+    else if(name != null && categoria != null && subcat == null){
+      const listSubcaProducts = await this.subcatRepository.find({
+        relations: {
+          product: true,
+          categ: true
+        },
+        where: {
+          categ:{
+          id: categoria},
+          product:{
+            nombre: Like(`%${name}%`)}
+        
+        },
+      });
+      return listSubcaProducts;
+    }
+    else if(name != null && categoria == null && subcat != null){
+      const listSubcaProducts = await this.subcatRepository.find({
+        relations: {
+          product: true,
+          categ: true
+        },
+        where: {
+          id: subcat,
+          product:{
+            nombre: Like(`%${name}%`)}
+        
+        },
+      });
+      return listSubcaProducts;
+    }
+    else if(name == null && categoria != null && subcat != null){
+      const listSubcaProducts = await this.subcatRepository.find({
+        relations: {
+          product: true,
+          categ: true
+        },
+        where: {
+          id: subcat,
+          categ:{
+            id: categoria}
+        
+        },
+      });
+      return listSubcaProducts;
+    }
+    else if(name != null && categoria != null && subcat != null){
+      const listSubcaProducts = await this.subcatRepository.find({
+        relations: {
+          product: true,
+          categ: true
+        },
+        where: {
+          id: subcat,
+          categ:{
+            id: categoria},
+          product:{
+            nombre: Like(`%${name}%`)}
+        
+        },
+      });
+      return listSubcaProducts;
+    }
+    };
 
   async updateProduct(id: number, updateData: UpdateProductDto): Promise<string> {
     const product = await this.productRepository.findOneBy({id});
@@ -137,6 +216,7 @@ export class ProductsService implements IProducts{
     return `Producto id: ${id} eliminado con exito`
   }
 
+  //id del usuario. corregir
   async findProductBySell(id: number): Promise<ProductDto[]> {
     const products  = await this.productRepository.find({
       where: {
