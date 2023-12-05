@@ -18,6 +18,7 @@ import * as path from 'path';
 import * as os from 'os';
 import { CreateProductImage } from './dto/create-image.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { AuthService } from 'src/auth/auth.service';
 @Injectable()
 export class ProductsService implements IProducts{
   private uploadRoute = os.homedir() + '/api-velocimarket/uploads'
@@ -30,7 +31,7 @@ export class ProductsService implements IProducts{
     @InjectRepository(Usuario)
       private usuarioRepository: Repository<Usuario>,
     @InjectRepository(Subcategoria)
-      private subcatRepository: Repository<Subcategoria>,
+      private subcatRepository: Repository<Subcategoria>
     ) {}
 
   async createProduct( newProduct: CreateProductDto): Promise<ProductDto> {
@@ -46,6 +47,7 @@ export class ProductsService implements IProducts{
   }
   //orderby!
   async findAllProducts(pag: number): Promise<ProductDto[]> {
+   // const token = this.authService.login();
     try {
       const listProducts  = await this.productRepository.find({
         relations: {
@@ -62,19 +64,23 @@ export class ProductsService implements IProducts{
   }
 
   //id del usuario. corregir
-  async findProductById(id: number): Promise<ProductDto> {
+  async findProductById(userId: number): Promise<ProductDto> {
     const product  = await this.productRepository.findOne({
-      where: {id},
+      
       relations: {
         subcat: true,
-        img: true
-      }
+        img: true,
+        usuario: true
+      },
+      where: {
+        usuario:{
+          id: userId}}
     });
 
     const product_dto = ProductMapper.toDto(product);
     
     if(!product_dto){
-      throw new NotFoundException(`el producto con id ${id} no se encontro!`); 
+      throw new NotFoundException(`el producto del usuario ${userId} no se encontro!`); 
     }
 
     return product_dto;
@@ -98,7 +104,7 @@ export class ProductsService implements IProducts{
     return productsInclude;
   }
 
-  async findProductByFilter(name: string, categoria: number, subcat: number): Promise<any> {
+  async findProductByFilter(name: string, categoria: number, subcat: number): Promise<any[]> {
 
     if(name != null && categoria == null && subcat == null){
     const listProducts = await this.findProductByInclude(name);
@@ -115,7 +121,7 @@ export class ProductsService implements IProducts{
       categ:{
         id: categoria}
     }});
-    console.log(listSubcaProducts);
+    // console.log(listSubcaProducts.map(product => product.product.map(product => product.nombre)));
     return listSubcaProducts;
     }
     else if(name == null && categoria == null && subcat != null){

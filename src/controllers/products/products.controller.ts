@@ -91,9 +91,13 @@ export class ProductsController {
     return await this.productsService.findAllProducts(pag);
   }
 
-  @ApiQuery({ name: "id", description: "Id del producto" })
+  @ApiQuery({ name: "id", description: "Id del usuario" })
   @Get('product')
-  async findProductById(@Query('id') id: number): Promise<ProductDto> {
+  async findProductById(@Query('id') id: number, @Request() req): Promise<ProductDto> {
+    const payload = req.user;
+    if (id==null){
+      return await this.productsService.findProductById(payload.user.id);
+    }
     return await this.productsService.findProductById(id);
   }
 
@@ -129,7 +133,7 @@ export class ProductsController {
 
   @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
   @Get('filter')
-  async findProductByFilter(@Query('nombre') nombre?: string, @Query('categoria') cat?: number, @Query('subcat') subcat?: number): Promise<ProductDto[]> {
+  async findProductByFilter(@Query('nombre') nombre: string, @Query('categoria') cat: number, @Query('subcat') subcat: number): Promise<any[]> {
     return await this.productsService.findProductByFilter(nombre, cat, subcat);
   }
 }

@@ -1,3 +1,4 @@
+import { RegionsCitiesService } from "src/helpers/services/regions-cities.service";
 import { CreateProductImage } from "../dto/create-image.dto";
 import { CreateProductDto } from "../dto/create-product.dto";
 import { ProductDto } from "../dto/product.dto";
@@ -5,6 +6,7 @@ import { UpdateProductDto } from "../dto/update-product.dto";
 import { Imagen } from "../entities/imagen.entity";
 import { Product } from "../entities/product.entity";
 import { Subcategoria } from "../entities/subcategoria.entity";
+import { REGIONS } from "src/helpers/constants/regions-cities.constant";
 
 export class ProductMapper {
 
@@ -96,6 +98,23 @@ export class ProductMapper {
     return entity;
   }
 
-  // static toDtoSubcat(entity: Subcategoria): ProductDto {
-    // entity
+  static toDtoSubcat(entity: Subcategoria): ProductDto {
+    if (!entity) {
+      return null;
+    }
+    entity.product.map(product => {
+    const dto =  new ProductDto();
+    dto.nombre = product.nombre;
+    console.log(product.usuario.nombre)
+    dto.user = product.usuario.nombre;
+    dto.precio = product.precio;
+    dto.comuna = REGIONS.filter(region => region.id == (product.usuario.region))[0].comunas[product.usuario.comuna];
+    dto.img = product.img;
+    return dto;
+    })
+  }
+  static toSubcatDtoList(entities: Subcategoria[]): ProductDto[] {
+    return entities.map(entity => this.toDtoSubcat(entity));
+  }
 }
+
