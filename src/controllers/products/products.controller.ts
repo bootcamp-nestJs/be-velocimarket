@@ -51,8 +51,10 @@ export class ProductsController {
   @ApiCreatedResponse({ description: "El Producto se creó exitosamente", isArray: true, type: CreateProductDto})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Post()
-  async create(@Body() createProductDto: CreateProductDto): Promise<ProductDto> {
-    return await this.productsService.createProduct(createProductDto);
+  async create(@Body() createProductDto: CreateProductDto): Promise<{ message: string, id: number}> {
+    const newProduct = await this.productsService.createProduct(createProductDto);
+
+    return { message: 'Producto creado', id: newProduct.id };
   }
 
   @ApiBody({
@@ -60,16 +62,21 @@ export class ProductsController {
   })
   @ApiCreatedResponse({ description: "La imagen se cargó exitosamente", isArray: true})
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FilesInterceptor('images'))
   @Post(':id/upload')
-  async uploadImages(@Param('id') productId: number, @Request() req, @UploadedFile() file: Express.Multer.File ): Promise<string> {
+  async uploadImages(@Param('id') productId: number, @Request() req, @UploadedFiles() files: Express.Multer.File[] ): Promise<string> {
     const payload = req.user;
     const {user} = payload;
     
-    const uploadedId = await this.productsService.saveProductImage(user.id, productId ,file);
+    files.forEach( async image => {
+      console.log(image)
+      await this.productsService.saveProductImage(user.id, productId, image);
+    });
 
-    return `Imagen ${uploadedId} cargada con éxito`;
+    return 'Imágenes cargadas con exito';
   }
+
+  
 
   @Get(':id/images')
   @UseGuards(JwtAuthGuard)

@@ -18,6 +18,11 @@ import * as path from 'path';
 import * as os from 'os';
 import { CreateProductImage } from './dto/create-image.dto';
 import { v4 as uuidv4 } from 'uuid';
+
+const { Storage } = require("@google-cloud/storage");
+// Instantiate a storage client with credentials
+const storage = new Storage({ keyFilename: "google-cloud-key.json" });
+const bucket = storage.bucket("velocimarket");
 @Injectable()
 export class ProductsService implements IProducts{
   private uploadRoute = os.homedir() + '/api-velocimarket/uploads'
@@ -157,25 +162,29 @@ export class ProductsService implements IProducts{
 
   async saveProductImage( userId: number, productId: number, file: Express.Multer.File): Promise<string>{
     try {
-      const uploadDir = path.join(this.uploadRoute);
-  
-      await fs.mkdir(uploadDir, { recursive: true });
-  
+      const { originalname, buffer } = file;
+      const extension = originalname.split('.').pop();
       const imageID = uuidv4();
-      const fileName = `${userId}_${productId}_${imageID}`;
-      const filePath = path.join(uploadDir, fileName);
-  
-      await fs.writeFile(filePath, file.buffer);
-
-      const newImage: CreateProductImage = {
-        producto_id: Number(productId),
-        imagen: filePath
-      }
+      const fileName = `${userId}_${productId}_${imageID}.${extension}`;
       
-      const newImageDto = ProductMapper.toUpdateEntityImage(newImage);
+      const blob = bucket.file(fileName);
+      const blobStream = blob.createWriteStream();
+      
+      blobStream.on("error", (error) => {
+        throw new InternalServerErrorException(`Error: ${error}`);
+      });
+      
+      blobStream.on("finish", async (data) => {
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`
         
-      await this.imagenRepository.save(newImageDto);
-
+        const newImage: CreateProductImage = {
+          producto_id: Number(productId),
+          imagen: publicUrl
+        }
+        const newImageDto = ProductMapper.toUpdateEntityImage(newImage);
+        await this.imagenRepository.save(newImageDto);
+      });
+      blobStream.end(buffer);
       return imageID;
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
@@ -204,11 +213,7 @@ export class ProductsService implements IProducts{
       images.forEach( img => {
         const imagePath = img.imagen;
     
-        const buffer = fss.readFileSync(imagePath);
-        const contentImage = buffer.toString('base64');
-        productImages.push(contentImage);
-        
-        // productImages.push(imagePath);
+        productImages.push(imagePath);
       } );
 
       return productImages;
@@ -223,13 +228,14 @@ export class ProductsService implements IProducts{
 
     if(!image) throw new NotFoundException(`La imagen id ${id} no existe`); 
 
+    const [ , fileName] = image.imagen.split('velocimarket/');
+    
     try {
-      await this.imagenRepository.delete(id);
-
-      await fs.unlink(image.imagen);
-  
-      return `Imagen id: ${id} eliminada con exito`
+      await bucket.file(fileName).delete();
       
+      await this.imagenRepository.delete(id);
+      
+      return `Imagen id: ${id} eliminada con exito`
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
