@@ -50,9 +50,15 @@ export class ProductsController {
   //@ApiHeader({ name: "Prueba", description: "Id del producto", example: "1234-1234", required: true })
   @ApiCreatedResponse({ description: "El Producto se creó exitosamente", isArray: true, type: CreateProductDto})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createProductDto: CreateProductDto): Promise<ProductDto> {
-    return await this.productsService.createProduct(createProductDto);
+  async create(@Body() createProductDto: CreateProductDto, @Request() req): Promise<ProductDto> {
+    const createdProduct = await this.productsService.createProduct(createProductDto);
+    const payload = req.user;
+    //  await this.productsService.findProductById(createdProduct.id);
+    console.log(createdProduct.id);
+     const finalProduct = await this.productsService.updateProduct(createdProduct.id, { usuario_id: payload.id });
+    return createdProduct
   }
 
   @ApiBody({
@@ -93,12 +99,14 @@ export class ProductsController {
 
   @ApiQuery({ name: "id", description: "Id del usuario" })
   @Get('product')
+  @UseGuards(JwtAuthGuard)
   async findProductById(@Query('id') id: number, @Request() req): Promise<ProductDto> {
     const payload = req.user;
-    if (id==null){
-      return await this.productsService.findProductById(payload.user.id);
+    console.log(req.user.id);
+    if (id!=null){
+      return await this.productsService.findProductById(id);
     }
-    return await this.productsService.findProductById(id);
+    return await this.productsService.findProductById(payload.id);
   }
 
   @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })

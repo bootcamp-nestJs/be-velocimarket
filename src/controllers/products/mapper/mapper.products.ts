@@ -59,6 +59,7 @@ export class ProductMapper {
       return null;
     }
     const entity =  new Product();
+    entity.usuario_id = dto.usuario_id;
     entity.id= id;
     entity.nombre= dto.nombre;
     entity.categoria_id= dto.categoria;

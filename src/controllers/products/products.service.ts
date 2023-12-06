@@ -63,8 +63,30 @@ export class ProductsService implements IProducts{
     }
   }
 
+  async findProductById(Id: number): Promise<ProductDto> {
+    const product  = await this.productRepository.findOne({
+      
+      relations: {
+        subcat: true,
+        img: true,
+        usuario: true
+      },
+      where: {
+          id: Id}
+    });
+
+    const product_dto = ProductMapper.toDto(product);
+    
+    if(!product_dto){
+      throw new NotFoundException(`el producto del usuario ${Id} no se encontro!`); 
+    }
+
+    return product_dto;
+  }
+
   //id del usuario. corregir
-  async findProductById(userId: number): Promise<ProductDto> {
+  async findProductByUserId(userId: number): Promise<ProductDto> {
+    console.log(userId);
     const product  = await this.productRepository.findOne({
       
       relations: {

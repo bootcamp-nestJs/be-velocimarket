@@ -15,4 +15,5 @@ export class ProductDto {
     cat?:string;
     user?: string;
     comuna?: string;
+    userId?: number;
 }
