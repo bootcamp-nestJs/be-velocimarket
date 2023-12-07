@@ -1,11 +1,12 @@
 import { Product } from "src/controllers/products/entities/product.entity";
 import { Usuario } from "src/controllers/users/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'Calificacion'})
 export class Calificacion {
 
-    @PrimaryColumn({name: 'id'})
+    // @PrimaryColumn({name: 'id'})
+    @PrimaryGeneratedColumn()
     id: number;
     @Column({name: 'producto_id'})
     producto_id: number;

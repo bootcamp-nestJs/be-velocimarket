@@ -1,5 +1,5 @@
 import { Usuario } from "src/controllers/users/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Subcategoria } from "./subcategoria.entity";
 import { Imagen } from "./imagen.entity";
 import { Calificacion } from "src/controllers/reports/entities/calificacion.entity";
@@ -11,7 +11,8 @@ import { Conversacion } from "src/controllers/mensajes/entities/conversacion.ent
 
 @Entity({ name: 'Producto'})
 export class Product {
-    @PrimaryColumn({name: 'id'})
+    // @PrimaryColumn({name: 'id'})
+    @PrimaryGeneratedColumn()
     id: number;
     @Column({name: 'nombre'})
     nombre: string;

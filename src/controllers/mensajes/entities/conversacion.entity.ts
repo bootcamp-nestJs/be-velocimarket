@@ -1,12 +1,13 @@
 import { Product } from "src/controllers/products/entities/product.entity";
 import { Usuario } from "src/controllers/users/entities/user.entity";
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Mensaje } from "./mensaje.entity";
 
 @Entity({ name: 'Conversacion'})
 export class Conversacion {
 
-    @PrimaryColumn({name: 'id'})
+    // @PrimaryColumn({name: 'id'})
+    @PrimaryGeneratedColumn()
     id: number;
     @Column({name: 'mensaje_id'})
     mensaje_id: number;

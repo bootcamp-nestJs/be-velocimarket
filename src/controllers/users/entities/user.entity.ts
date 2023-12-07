@@ -1,6 +1,6 @@
 import { Product } from "src/controllers/products/entities/product.entity";
 import { Reclamos } from "src/controllers/reports/entities/Reclamos.entity";
-import { Column, Entity, ManyToMany, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToMany, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Mensaje } from "src/controllers/mensajes/entities/mensaje.entity";
 import { Follower } from "./follower.entity";
 import { Following } from "./following.entity";
@@ -11,7 +11,8 @@ import { Conversacion } from "src/controllers/mensajes/entities/conversacion.ent
 @Entity({ name: 'Usuario'})
 export class Usuario {
 
-    @PrimaryColumn({name: 'id'})
+    // @PrimaryColumn({name: 'id'})
+    @PrimaryGeneratedColumn()
     id: number;
     @Column({name: 'nombre'})
     nombre: string;

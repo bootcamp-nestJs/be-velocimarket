@@ -1,10 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Product } from "./product.entity";
 import { Categoria } from "./categoria.entity";
 
 @Entity({ name: 'Subcategoria'})
 export class Subcategoria {
-    @PrimaryColumn({name: 'id'})
+    // @PrimaryColumn({name: 'id'})
+    @PrimaryGeneratedColumn()
     id: number;
     @Column({name: 'categoria_id'})
     categoria_id: number;
