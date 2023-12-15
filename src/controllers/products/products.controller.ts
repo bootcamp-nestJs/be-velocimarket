@@ -58,7 +58,7 @@ export class ProductsController {
     //  await this.productsService.findProductById(createdProduct.id);
     console.log(createdProduct.id);
      const finalProduct = await this.productsService.updateProduct(createdProduct.id, { usuario_id: payload.id });
-    return createdProduct
+    return createdProduct;
   }
 
   @ApiBody({
@@ -98,21 +98,21 @@ export class ProductsController {
   }
 
   @ApiQuery({ name: "id", description: "Id del usuario" })
-  @Get('product')
+  @Get('user')
   @UseGuards(JwtAuthGuard)
-  async findProductById(@Query('id') id: number, @Request() req): Promise<ProductDto> {
+  async findProductById(@Query('id') id: number, @Query("pag") pag: number, @Request() req): Promise<ProductDto[]> {
     const payload = req.user;
     console.log(req.user.id);
     if (id!=null){
-      return await this.productsService.findProductById(id);
+      return await this.productsService.findProductByUserId(id, pag);
     }
-    return await this.productsService.findProductById(payload.id);
+    return await this.productsService.findProductByUserId(payload.id, pag);
   }
 
   @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
   @Get('search')
-  async findProductByName(@Query('nombre') nombre: string): Promise<ProductDto[]> {
-    return await this.productsService.findProductByInclude(nombre);
+  async findProductByName(@Query('nombre') nombre: string, @Query("pag") pag: number): Promise<ProductDto[]> {
+    return await this.productsService.findProductByInclude(nombre, pag);
   }
 
   @ApiQuery({ name: "id", description: "Id del producto como numero entero" })
@@ -141,7 +141,12 @@ export class ProductsController {
 
   @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
   @Get('filter')
-  async findProductByFilter(@Query('nombre') nombre: string, @Query('categoria') cat: number, @Query('subcat') subcat: number): Promise<any[]> {
-    return await this.productsService.findProductByFilter(nombre, cat, subcat);
+  async findProductByFilter(@Query('nombre') nombre: string,
+                            @Query('categoria') cat: number,
+                            @Query('subcat') subcat: number,
+                            @Query('pagina') pag: number,
+                            @Query('fecha') fecha: number,
+                            @Query('precio') precio: number): Promise<any[]> {
+    return await this.productsService.findProductByFilter(nombre, cat, subcat, pag, fecha,precio);
   }
 }

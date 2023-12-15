@@ -51,6 +51,7 @@ export class ProductMapper {
     const date = new Date
     entity.fecha_creacion = date;
     entity.fecha_modificacion = date;
+    entity.vendido = false;
     return entity;
   }  
 

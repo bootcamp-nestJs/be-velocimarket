@@ -47,7 +47,6 @@ export class ProductsService implements IProducts{
   }
   //orderby!
   async findAllProducts(pag: number): Promise<ProductDto[]> {
-   // const token = this.authService.login();
     try {
       const listProducts  = await this.productRepository.find({
         relations: {
@@ -84,10 +83,9 @@ export class ProductsService implements IProducts{
     return product_dto;
   }
 
-  //id del usuario. corregir
-  async findProductByUserId(userId: number): Promise<ProductDto> {
+  async findProductByUserId(userId: number, pag: number): Promise<ProductDto[]> {
     console.log(userId);
-    const product  = await this.productRepository.findOne({
+    const product  = await this.productRepository.find({
       
       relations: {
         subcat: true,
@@ -96,19 +94,21 @@ export class ProductsService implements IProducts{
       },
       where: {
         usuario:{
-          id: userId}}
+          id: userId}},
+      skip: 6 * (pag - 1),
+      take: 6
     });
 
-    const product_dto = ProductMapper.toDto(product);
+    const product_dto = ProductMapper.toDtoList(product);
     
-    if(!product_dto){
-      throw new NotFoundException(`el producto del usuario ${userId} no se encontro!`); 
+    if(!product_dto || product_dto.length == 0){
+      throw new NotFoundException(`El usuario ${userId} no tiene productos aún!`); 
     }
 
     return product_dto;
   }
  
-  async findProductByInclude(name: string): Promise<ProductDto[]> {
+  async findProductByInclude(name: string, pag: number): Promise<ProductDto[]> {
     const listProducts = await this.productRepository.find({
       where: {
         nombre: Like(`%${name}%`),
@@ -116,7 +116,9 @@ export class ProductsService implements IProducts{
       relations: {
         subcat: true,
         img: true
-      }
+      },
+      skip: 6 * (pag - 1),
+      take: 6
     })
 
     const productsInclude = ProductMapper.toDtoList(listProducts);
@@ -125,13 +127,30 @@ export class ProductsService implements IProducts{
     
     return productsInclude;
   }
-
-  async findProductByFilter(name: string, categoria: number, subcat: number): Promise<any[]> {
+  //probar relations con productRepository, activando subcategorias de los productos.
+  async findProductByFilter(name: string, categoria: number, subcat: number, pag: number, fecha: number, precio: number): Promise<any[]> {
 
     if(name != null && categoria == null && subcat == null){
-    const listProducts = await this.findProductByInclude(name);
-    return listProducts;
+      const listProducts = await this.productRepository.find({
+        where: {
+          nombre: Like(`%${name}%`),
+        },
+        relations: {
+          subcat: true,
+          img: true
+        },
+        skip: 6 * (pag - 1),
+        take: 6,
+        order: {
+            fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+            precio: precio == 1 ? "DESC" : "ASC"
+        }
+      })
+      const productsInclude = ProductMapper.toDtoList(listProducts);
+      if(!productsInclude || productsInclude.length === 0) throw new NotFoundException(`No se encontraron coincidencias con el nombre: ${name}`);
+      return productsInclude;
     }
+    
     else if(name == null && categoria != null && subcat == null){
   
       const listSubcaProducts = await this.subcatRepository.find({
@@ -139,11 +158,19 @@ export class ProductsService implements IProducts{
       product: true,
       categ: true
     },
-    where: {
-      categ:{
-        id: categoria}
-    }});
-    // console.log(listSubcaProducts.map(product => product.product.map(product => product.nombre)));
+      where: {
+        categ:{
+          id: categoria}
+      },
+      skip: 6 * (pag - 1),
+      take: 6,
+      order: {
+        product: {
+          fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+          precio: precio == 1 ? "DESC" : "ASC"
+        }
+      }
+    });
     return listSubcaProducts;
     }
     else if(name == null && categoria == null && subcat != null){
@@ -151,9 +178,17 @@ export class ProductsService implements IProducts{
       relations: {
       product: true,
       categ: true
-    },
-    where: {
-        id: subcat}
+      },
+      where: {
+        id: subcat},
+      skip: 6 * (pag - 1),
+      take: 6,
+      order: {
+        product: {
+          fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+          precio: precio == 1 ? "DESC" : "ASC"
+        }
+      }
     });
     return listSubcaProducts;
     }
@@ -168,9 +203,16 @@ export class ProductsService implements IProducts{
           id: categoria},
           product:{
             nombre: Like(`%${name}%`)}
-        
         },
-      });
+        skip: 6 * (pag - 1),
+        take: 6,
+        order: {
+          product: {
+            fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+            precio: precio == 1 ? "DESC" : "ASC"
+          }
+        }
+    });
       return listSubcaProducts;
     }
     else if(name != null && categoria == null && subcat != null){
@@ -183,8 +225,15 @@ export class ProductsService implements IProducts{
           id: subcat,
           product:{
             nombre: Like(`%${name}%`)}
-        
         },
+        skip: 6 * (pag - 1),
+        take: 6,
+        order: {
+          product: {
+            fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+            precio: precio == 1 ? "DESC" : "ASC"
+          }
+        }
       });
       return listSubcaProducts;
     }
@@ -198,8 +247,15 @@ export class ProductsService implements IProducts{
           id: subcat,
           categ:{
             id: categoria}
-        
         },
+        skip: 6 * (pag - 1),
+        take: 6,
+        order: {
+          product: {
+            fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+            precio: precio == 1 ? "DESC" : "ASC"
+          }
+        }
       });
       return listSubcaProducts;
     }
@@ -215,8 +271,15 @@ export class ProductsService implements IProducts{
             id: categoria},
           product:{
             nombre: Like(`%${name}%`)}
-        
         },
+        skip: 6 * (pag - 1),
+        take: 6,
+        order: {
+          product: {
+            fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+            precio: precio == 1 ? "DESC" : "ASC"
+          }
+        }
       });
       return listSubcaProducts;
     }
@@ -244,7 +307,6 @@ export class ProductsService implements IProducts{
     return `Producto id: ${id} eliminado con exito`
   }
 
-  //id del usuario. corregir
   async findProductBySell(id: number): Promise<ProductDto[]> {
     const products  = await this.productRepository.find({
       where: {
