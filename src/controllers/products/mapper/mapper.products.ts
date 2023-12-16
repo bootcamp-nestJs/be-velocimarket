@@ -107,7 +107,7 @@ export class ProductMapper {
     entity.product.map(product => {
     const dto =  new ProductDto();
     dto.nombre = product.nombre;
-    console.log(product.usuario.nombre)
+    console.log(product)
     dto.user = product.usuario.nombre;
     dto.precio = product.precio;
     dto.comuna = REGIONS.filter(region => region.id == (product.usuario.region))[0].comunas[product.usuario.comuna];

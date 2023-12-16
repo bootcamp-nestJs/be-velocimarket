@@ -51,10 +51,14 @@ export class ProductsService implements IProducts{
       const listProducts  = await this.productRepository.find({
         relations: {
           img: true,
-          subcat: true,
+          subcat: {
+          }
         },
         skip: 6 * (pag - 1),
         take: 6,
+        where: {
+          vendido: false
+        },
       });
       return ProductMapper.toDtoList(listProducts);
     } catch (error) {
@@ -153,135 +157,109 @@ export class ProductsService implements IProducts{
     
     else if(name == null && categoria != null && subcat == null){
   
-      const listSubcaProducts = await this.subcatRepository.find({
-      relations: {
-      product: true,
-      categ: true
-    },
+      const listSubcaProducts = await this.productRepository.find({
+      relations: ["subcat", "subcat.categ", "usuario"],
       where: {
-        categ:{
-          id: categoria}
+        subcat:{
+          categ:{
+            id: categoria}
+          }
       },
       skip: 6 * (pag - 1),
       take: 6,
       order: {
-        product: {
           fecha_creacion: fecha == 1 ? "DESC" : "ASC",
           precio: precio == 1 ? "DESC" : "ASC"
-        }
       }
     });
-    return listSubcaProducts;
+    return ProductMapper.toDtoList(listSubcaProducts);
     }
     else if(name == null && categoria == null && subcat != null){
-      const listSubcaProducts = await this.subcatRepository.find({
-      relations: {
-      product: true,
-      categ: true
-      },
+      const listSubcaProducts = await this.productRepository.find({
+      relations: ["subcat", "subcat.categ", "usuario"],
       where: {
         id: subcat},
       skip: 6 * (pag - 1),
       take: 6,
       order: {
-        product: {
+          fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+          precio: precio == 1 ? "DESC" : "ASC"
+      }
+    });
+    return ProductMapper.toDtoList(listSubcaProducts);
+    }
+    else if(name != null && categoria != null && subcat == null){
+      const listSubcaProducts = await this.productRepository.find({
+        relations: ["subcat", "subcat.categ", "usuario"],
+        where: {
+          subcat:{
+            categ:{
+            id: categoria}},
+          nombre: Like(`%${name}%`)
+        },
+        skip: 6 * (pag - 1),
+        take: 6,
+        order: {
           fecha_creacion: fecha == 1 ? "DESC" : "ASC",
           precio: precio == 1 ? "DESC" : "ASC"
         }
-      }
     });
-    return listSubcaProducts;
-    }
-    else if(name != null && categoria != null && subcat == null){
-      const listSubcaProducts = await this.subcatRepository.find({
-        relations: {
-          product: true,
-          categ: true
-        },
-        where: {
-          categ:{
-          id: categoria},
-          product:{
-            nombre: Like(`%${name}%`)}
-        },
-        skip: 6 * (pag - 1),
-        take: 6,
-        order: {
-          product: {
-            fecha_creacion: fecha == 1 ? "DESC" : "ASC",
-            precio: precio == 1 ? "DESC" : "ASC"
-          }
-        }
-    });
-      return listSubcaProducts;
+      return ProductMapper.toDtoList(listSubcaProducts);
     }
     else if(name != null && categoria == null && subcat != null){
-      const listSubcaProducts = await this.subcatRepository.find({
-        relations: {
-          product: true,
-          categ: true
-        },
+      const listSubcaProducts = await this.productRepository.find({
+        relations: ["subcat", "subcat.categ", "usuario"],
         where: {
-          id: subcat,
-          product:{
-            nombre: Like(`%${name}%`)}
+          subcat:{
+            id: subcat},
+          nombre: Like(`%${name}%`)
         },
         skip: 6 * (pag - 1),
         take: 6,
         order: {
-          product: {
-            fecha_creacion: fecha == 1 ? "DESC" : "ASC",
-            precio: precio == 1 ? "DESC" : "ASC"
-          }
+          fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+          precio: precio == 1 ? "DESC" : "ASC"
         }
       });
-      return listSubcaProducts;
+      return ProductMapper.toDtoList(listSubcaProducts);
     }
     else if(name == null && categoria != null && subcat != null){
-      const listSubcaProducts = await this.subcatRepository.find({
-        relations: {
-          product: true,
-          categ: true
-        },
+      const listSubcaProducts = await this.productRepository.find({
+        relations: ["subcat", "subcat.categ", "usuario"],
         where: {
-          id: subcat,
-          categ:{
-            id: categoria}
+          subcat:{
+            id: subcat,
+            categ:{
+              id: categoria}
+            },   
         },
         skip: 6 * (pag - 1),
         take: 6,
         order: {
-          product: {
-            fecha_creacion: fecha == 1 ? "DESC" : "ASC",
-            precio: precio == 1 ? "DESC" : "ASC"
-          }
+          fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+          precio: precio == 1 ? "DESC" : "ASC"
         }
       });
-      return listSubcaProducts;
+      return ProductMapper.toDtoList(listSubcaProducts);
     }
     else if(name != null && categoria != null && subcat != null){
-      const listSubcaProducts = await this.subcatRepository.find({
-        relations: {
-          product: true,
-          categ: true
-        },
+      const listSubcaProducts = await this.productRepository.find({
+        relations: ["subcat", "subcat.categ", "usuario"],
         where: {
-          id: subcat,
-          categ:{
-            id: categoria},
-          product:{
-            nombre: Like(`%${name}%`)}
-        },
+          subcat:{
+            id: subcat,
+            categ:{
+              id: categoria}
+            },
+          nombre: Like(`%${name}%`)},
         skip: 6 * (pag - 1),
         take: 6,
         order: {
-          product: {
-            fecha_creacion: fecha == 1 ? "DESC" : "ASC",
-            precio: precio == 1 ? "DESC" : "ASC"
-          }
+          fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+          precio: precio == 1 ? "DESC" : "ASC"
         }
       });
-      return listSubcaProducts;
+      return ProductMapper.toDtoList(listSubcaProducts);
     }
     };
 
