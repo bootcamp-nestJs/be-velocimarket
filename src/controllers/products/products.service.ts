@@ -18,6 +18,7 @@ import * as path from 'path';
 import * as os from 'os';
 import { CreateProductImage } from './dto/create-image.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { AuthService } from 'src/auth/auth.service';
 
 const { Storage } = require("@google-cloud/storage");
 // Instantiate a storage client with credentials
@@ -35,7 +36,7 @@ export class ProductsService implements IProducts{
     @InjectRepository(Usuario)
       private usuarioRepository: Repository<Usuario>,
     @InjectRepository(Subcategoria)
-      private subcatRepository: Repository<Subcategoria>,
+      private subcatRepository: Repository<Subcategoria>
     ) {}
 
   async createProduct( newProduct: CreateProductDto): Promise<ProductDto> {
@@ -49,16 +50,20 @@ export class ProductsService implements IProducts{
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
-
+  //orderby!
   async findAllProducts(pag: number): Promise<ProductDto[]> {
     try {
       const listProducts  = await this.productRepository.find({
         relations: {
           img: true,
-          subcat: true,
+          subcat: {
+          }
         },
         skip: 6 * (pag - 1),
         take: 6,
+        where: {
+          vendido: false
+        },
       });
       return ProductMapper.toDtoList(listProducts);
     } catch (error) {
@@ -66,25 +71,53 @@ export class ProductsService implements IProducts{
     }
   }
 
-  async findProductById(id: number): Promise<ProductDto> {
+  async findProductById(Id: number): Promise<ProductDto> {
     const product  = await this.productRepository.findOne({
-      where: {id},
+      
       relations: {
         subcat: true,
-        img: true
-      }
+        img: true,
+        usuario: true
+      },
+      where: {
+          id: Id}
     });
 
     const product_dto = ProductMapper.toDto(product);
     
     if(!product_dto){
-      throw new NotFoundException(`el producto con id ${id} no se encontro!`); 
+      throw new NotFoundException(`el producto del usuario ${Id} no se encontro!`); 
     }
 
     return product_dto;
   }
-  // filtrar por bicicletas y tipos y bla bla. accesorios solo por categoria
-  async findProductByInclude(name: string): Promise<ProductDto[]> {
+
+  async findProductByUserId(userId: number, pag: number): Promise<ProductDto[]> {
+    console.log(userId);
+    const product  = await this.productRepository.find({
+      
+      relations: {
+        subcat: true,
+        img: true,
+        usuario: true
+      },
+      where: {
+        usuario:{
+          id: userId}},
+      skip: 6 * (pag - 1),
+      take: 6
+    });
+
+    const product_dto = ProductMapper.toDtoList(product);
+    
+    if(!product_dto || product_dto.length == 0){
+      throw new NotFoundException(`El usuario ${userId} no tiene productos aún!`); 
+    }
+
+    return product_dto;
+  }
+ 
+  async findProductByInclude(name: string, pag: number): Promise<ProductDto[]> {
     const listProducts = await this.productRepository.find({
       where: {
         nombre: Like(`%${name}%`),
@@ -92,7 +125,9 @@ export class ProductsService implements IProducts{
       relations: {
         subcat: true,
         img: true
-      }
+      },
+      skip: 6 * (pag - 1),
+      take: 6
     })
 
     const productsInclude = ProductMapper.toDtoList(listProducts);
@@ -101,24 +136,137 @@ export class ProductsService implements IProducts{
     
     return productsInclude;
   }
+  //probar relations con productRepository, activando subcategorias de los productos.
+  async findProductByFilter(name: string, categoria: number, subcat: number, pag: number, fecha: number, precio: number): Promise<any[]> {
 
-  // async findProductByFilter(name: string, categoria: number, subcat: number): Promise<any> {
-    // const listSubcaProducts = await this.subcatRepository.find({
-      // relations: {
-        // product: true,
-        // categ: true
-      // }
-    // });
-    // 
-    // const listProducts = listSubcaProducts.filter( (product) => {
-      // if(product.categoria_id == subcat && product.categ.id == categoria){
-        // return product;
-      // }
-    // });
-    // console.log(listSubcaProducts[3].product[0].nombre);
-    // return listSubcaProducts;
-  // }
- 
+    if(name != null && categoria == null && subcat == null){
+      const listProducts = await this.productRepository.find({
+        where: {
+          nombre: Like(`%${name}%`),
+        },
+        relations: {
+          subcat: true,
+          img: true
+        },
+        skip: 6 * (pag - 1),
+        take: 6,
+        order: {
+            fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+            precio: precio == 1 ? "DESC" : "ASC"
+        }
+      })
+      const productsInclude = ProductMapper.toDtoList(listProducts);
+      if(!productsInclude || productsInclude.length === 0) throw new NotFoundException(`No se encontraron coincidencias con el nombre: ${name}`);
+      return productsInclude;
+    }
+    
+    else if(name == null && categoria != null && subcat == null){
+  
+      const listSubcaProducts = await this.productRepository.find({
+      relations: ["subcat", "subcat.categ", "usuario"],
+      where: {
+        subcat:{
+          categ:{
+            id: categoria}
+          }
+      },
+      skip: 6 * (pag - 1),
+      take: 6,
+      order: {
+          fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+          precio: precio == 1 ? "DESC" : "ASC"
+      }
+    });
+    return ProductMapper.toDtoList(listSubcaProducts);
+    }
+    else if(name == null && categoria == null && subcat != null){
+      const listSubcaProducts = await this.productRepository.find({
+      relations: ["subcat", "subcat.categ", "usuario"],
+      where: {
+        id: subcat},
+      skip: 6 * (pag - 1),
+      take: 6,
+      order: {
+          fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+          precio: precio == 1 ? "DESC" : "ASC"
+      }
+    });
+    return ProductMapper.toDtoList(listSubcaProducts);
+    }
+    else if(name != null && categoria != null && subcat == null){
+      const listSubcaProducts = await this.productRepository.find({
+        relations: ["subcat", "subcat.categ", "usuario"],
+        where: {
+          subcat:{
+            categ:{
+            id: categoria}},
+          nombre: Like(`%${name}%`)
+        },
+        skip: 6 * (pag - 1),
+        take: 6,
+        order: {
+          fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+          precio: precio == 1 ? "DESC" : "ASC"
+        }
+    });
+      return ProductMapper.toDtoList(listSubcaProducts);
+    }
+    else if(name != null && categoria == null && subcat != null){
+      const listSubcaProducts = await this.productRepository.find({
+        relations: ["subcat", "subcat.categ", "usuario"],
+        where: {
+          subcat:{
+            id: subcat},
+          nombre: Like(`%${name}%`)
+        },
+        skip: 6 * (pag - 1),
+        take: 6,
+        order: {
+          fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+          precio: precio == 1 ? "DESC" : "ASC"
+        }
+      });
+      return ProductMapper.toDtoList(listSubcaProducts);
+    }
+    else if(name == null && categoria != null && subcat != null){
+      const listSubcaProducts = await this.productRepository.find({
+        relations: ["subcat", "subcat.categ", "usuario"],
+        where: {
+          subcat:{
+            id: subcat,
+            categ:{
+              id: categoria}
+            },   
+        },
+        skip: 6 * (pag - 1),
+        take: 6,
+        order: {
+          fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+          precio: precio == 1 ? "DESC" : "ASC"
+        }
+      });
+      return ProductMapper.toDtoList(listSubcaProducts);
+    }
+    else if(name != null && categoria != null && subcat != null){
+      const listSubcaProducts = await this.productRepository.find({
+        relations: ["subcat", "subcat.categ", "usuario"],
+        where: {
+          subcat:{
+            id: subcat,
+            categ:{
+              id: categoria}
+            },
+          nombre: Like(`%${name}%`)},
+        skip: 6 * (pag - 1),
+        take: 6,
+        order: {
+          fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+          precio: precio == 1 ? "DESC" : "ASC"
+        }
+      });
+      return ProductMapper.toDtoList(listSubcaProducts);
+    }
+    };
 
   async updateProduct(id: number, updateData: UpdateProductDto): Promise<string> {
     const product = await this.productRepository.findOneBy({id});

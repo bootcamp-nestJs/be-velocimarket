@@ -21,7 +21,7 @@ export interface IProducts {
     createProduct(crearProductoDto: CreateProductDto);
     findAllProducts(pag: number):any;
     findProductById(id:number);
-    findProductByInclude(nombre: string): any;
+    findProductByInclude(nombre: string, pag: number): any;
     updateProduct(id: number, updateProductDto: UpdateProductDto);  
     removeProduct(id: number);
 }

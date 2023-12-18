@@ -39,17 +39,4 @@ export class CreateCartDto {
   @MaxLength(20,{message: "El atributo medioPago presenta error, necesita como maximo 20 caracteres"})
 	readonly medioPago: string;
 
-  @ApiProperty({
-    type: 'number',
-    example: 1,
-    minimum: 1,
-    required: true,
-    description: "Id del usuario",
-    title: "usuarioiD"
-  })
-
-  @IsInt({message: "El atributo usuarioiD presenta error,revise que es numerico"})
-  @IsPositive({ message: "El atributo usuarioiD presenta error, debe ser mayor a cero" })
-	readonly usuarioId: number;
-
 }

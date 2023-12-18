@@ -22,35 +22,13 @@ export class CartService implements ICart{
       @InjectRepository(CartProduct)
       private cartProductRepository: Repository<CartProduct>,
       @InjectRepository(Product)
-      private productRepository: Repository<Product>
+      private productRepository: Repository<Product>,
+      @InjectRepository(Usuario)
+      private userRepository: Repository<Usuario>
     ) {}
 
   async createCart( newCart: CreateCartDto): Promise<CartDto> {
-    const userExist  = await this.cartRepository.exist({
-      relations: {
-        user: true,
-        cartProduct: false
-      }, where:{
-        usuario_id: newCart.usuarioId
-      }
-    })
-    if(!userExist){
-      throw new BadRequestException(`No existe usuario con id ${newCart.usuarioId}`)
-    } 
     try {
-      const userExist  = await this.cartRepository.exist({
-        relations: {
-          user: true,
-          cartProduct: false
-        }, where:{
-          usuario_id: newCart.usuarioId
-        }
-      });
-
-      if(!userExist){
-        throw new BadRequestException(`No existe usuario con id ${newCart.usuarioId}`)
-      }
-
       const newCartDto = cartMapper.toEntity(newCart);
       const newCartCreated = await this.cartRepository.save(newCartDto);
       const newCartProduct : CartProduct = cartMapper.toCartProductEntity(newCart);
@@ -59,14 +37,12 @@ export class CartService implements ICart{
       const newCartProductCreated = await this.cartProductRepository.save(newCartProduct);
       const productPrecio = await this.cartProductRepository.findOne({
         where: {id: newCartProductCreated.id},
-        relations: {
-          cart: true,
-          product: true
-        }
+        relations: ["cart", "product", "product.img"]  
       } );
       const agregarPrecio = await this.cartRepository.update(newCartCreated.id, {total_carrito: productPrecio.product.precio})
       const cartFinal = cartMapper.toCartDto(newCartCreated);
       cartFinal.productos.push(productPrecio.product)
+      cartFinal.totalCarrito = productPrecio.product.precio;
       return cartFinal;
        
     } catch (error) {
@@ -112,21 +88,19 @@ export class CartService implements ICart{
         }
       } );
       const agregarPrecio = await this.cartRepository.update(addProduct.carrotiId, {total_carrito: cart.total_carrito + cartProduct.product.precio, fecha_modificacion: new Date()})
-      console.log(agregarPrecio, " ", cart.total_carrito, " ", cartProduct.product.precio)
+      //console.log(agregarPrecio, " ", cart.total_carrito, " ", cartProduct.product.precio);
       const cartFinal = await this.cartRepository.findOne({
         where: {id: addProduct.carrotiId},
         relations: {
           user: true,
-          cartProduct: true
+          cartProduct: true,
         }
       } );
       const productsOfCart: CartProduct[] = await this.cartProductRepository.find({
         where: {carrito_id: addProduct.carrotiId},
-        relations: {
-          cart: true,
-          product: true
-        }
-      } );
+        relations: ["cart", "product", "product.img"]
+      });
+      
       const cartDto = cartMapper.toCartDto(cartFinal);
       cartDto.productos = productsOfCart.map(cartProduct => cartProduct.product);
       return cartDto;
@@ -159,13 +133,12 @@ export class CartService implements ICart{
       const eliminarPrecio = await this.cartRepository.update(cartId, {total_carrito: cart.total_carrito - cartProduct.product.precio, fecha_modificacion: new Date()});
       const eliminarProducto = await this.cartProductRepository.delete(cartProduct.id);
 
-      return `el producto ${productId} ha sido eliminado del carrito ${cartId}`
+      return `el producto ${productId} ha sido eliminado del carrito ${cartId}`;
 
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
-    
-    }
+  }
 
   async findAllCarts(): Promise<CartDto[]> {
     try {
@@ -191,7 +164,7 @@ export class CartService implements ICart{
     });
     const cartDto = cartMapper.toCartDto(cart);
     if(!cartDto){
-      throw new NotFoundException(`el producto con id ${id} no se encontro!`); 
+      throw new NotFoundException(`el carrito con id ${id} no se encontro!`); 
     }
     return cartDto;
   }

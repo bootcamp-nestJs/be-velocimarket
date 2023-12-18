@@ -18,6 +18,7 @@ export class AuthService {
     const user = await this.userService.findUserByUserName(credentials.user_name);
     const {id, user_name, mail} = user;
     const access_token = this.jwtService.sign({id, user_name, mail, role: 'USER'});
+    console.log(access_token);
     return {access_token};
   }
 

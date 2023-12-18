@@ -50,11 +50,15 @@ export class ProductsController {
   //@ApiHeader({ name: "Prueba", description: "Id del producto", example: "1234-1234", required: true })
   @ApiCreatedResponse({ description: "El Producto se creó exitosamente", isArray: true, type: CreateProductDto})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createProductDto: CreateProductDto): Promise<{ message: string, id: number}> {
-    const newProduct = await this.productsService.createProduct(createProductDto);
-
-    return { message: 'Producto creado', id: newProduct.id };
+  async create(@Body() createProductDto: CreateProductDto, @Request() req): Promise<ProductDto> {
+    const createdProduct = await this.productsService.createProduct(createProductDto);
+    const payload = req.user;
+    //  await this.productsService.findProductById(createdProduct.id);
+    console.log(createdProduct.id);
+    await this.productsService.updateProduct(createdProduct.id, { usuario_id: payload.id });
+    return createdProduct;
   }
 
   @ApiBody({
@@ -98,16 +102,22 @@ export class ProductsController {
     return await this.productsService.findAllProducts(pag);
   }
 
-  @ApiQuery({ name: "id", description: "Id del producto" })
-  @Get('product')
-  async findProductById(@Query('id') id: number): Promise<ProductDto> {
-    return await this.productsService.findProductById(id);
+  @ApiQuery({ name: "id", description: "Id del usuario" })
+  @Get('user')
+  @UseGuards(JwtAuthGuard)
+  async findProductById(@Query('id') id: number, @Query("pag") pag: number, @Request() req): Promise<ProductDto[]> {
+    const payload = req.user;
+    console.log(req.user.id);
+    if (id!=null){
+      return await this.productsService.findProductByUserId(id, pag);
+    }
+    return await this.productsService.findProductByUserId(payload.id, pag);
   }
 
   @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
   @Get('search')
-  async findProductByName(@Query('nombre') nombre: string): Promise<ProductDto[]> {
-    return await this.productsService.findProductByInclude(nombre);
+  async findProductByName(@Query('nombre') nombre: string, @Query("pag") pag: number): Promise<ProductDto[]> {
+    return await this.productsService.findProductByInclude(nombre, pag);
   }
 
   @ApiQuery({ name: "id", description: "Id del producto como numero entero" })
@@ -134,9 +144,14 @@ export class ProductsController {
     return data ;
   }
 
-// @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
-// @Get('filter')
-// async findProductByFilter(@Query('nombre') nombre: string, @Query('categoria') cat: number, @Query('subcat') subcat: number): Promise<ProductDto[]> {
-  // return await this.productsService.findProductByFilter(nombre, cat, subcat);
-// }
+  @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
+  @Get('filter')
+  async findProductByFilter(@Query('nombre') nombre: string,
+                            @Query('categoria') cat: number,
+                            @Query('subcat') subcat: number,
+                            @Query('pagina') pag: number,
+                            @Query('fecha') fecha: number,
+                            @Query('precio') precio: number): Promise<any[]> {
+    return await this.productsService.findProductByFilter(nombre, cat, subcat, pag, fecha,precio);
+  }
 }
