@@ -57,7 +57,7 @@ export class ProductsController {
     const payload = req.user;
     //  await this.productsService.findProductById(createdProduct.id);
     console.log(createdProduct.id);
-     const finalProduct = await this.productsService.updateProduct(createdProduct.id, { usuario_id: payload.id });
+    await this.productsService.updateProduct(createdProduct.id, { usuario_id: payload.id });
     return createdProduct;
   }
 
@@ -66,16 +66,21 @@ export class ProductsController {
   })
   @ApiCreatedResponse({ description: "La imagen se cargó exitosamente", isArray: true})
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FilesInterceptor('images'))
   @Post(':id/upload')
-  async uploadImages(@Param('id') productId: number, @Request() req, @UploadedFile() file: Express.Multer.File ): Promise<string> {
+  async uploadImages(@Param('id') productId: number, @Request() req, @UploadedFiles() files: Express.Multer.File[] ): Promise<string> {
     const payload = req.user;
     const {user} = payload;
     
-    const uploadedId = await this.productsService.saveProductImage(user.id, productId ,file);
+    files.forEach( async image => {
+      console.log(image)
+      await this.productsService.saveProductImage(user.id, productId, image);
+    });
 
-    return `Imagen ${uploadedId} cargada con éxito`;
+    return 'Imágenes cargadas con exito';
   }
+
+  
 
   @Get(':id/images')
   @UseGuards(JwtAuthGuard)

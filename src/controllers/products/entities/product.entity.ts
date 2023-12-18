@@ -11,7 +11,8 @@ import { Conversacion } from "src/controllers/mensajes/entities/conversacion.ent
 
 @Entity({ name: 'Producto'})
 export class Product {
-    @PrimaryGeneratedColumn({name: 'id'})
+    // @PrimaryColumn({name: 'id'})
+    @PrimaryGeneratedColumn()
     id: number;
     @Column({name: 'nombre'})
     nombre: string;
