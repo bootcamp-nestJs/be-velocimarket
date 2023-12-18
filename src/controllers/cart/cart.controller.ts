@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Request, BadRequestException } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
@@ -12,9 +12,18 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createCartDto: CreateCartDto): Promise<CartDto> {
-    return await this.cartService.createCart(createCartDto);
+  async create(@Body() createCartDto: CreateCartDto,  @Request() req): Promise<CartDto> {
+    const payload = req.user;
+    
+      if(payload == undefined){
+        throw new BadRequestException(`Debe logearse para crear un carrito`)
+      }    
+    
+    const cartCreated = await this.cartService.createCart(createCartDto);
+    const cartFinal = await this.cartService.updateCart(cartCreated.id, {usuarioId: payload.id});
+    return cartCreated;
   }
 
   @Get()
