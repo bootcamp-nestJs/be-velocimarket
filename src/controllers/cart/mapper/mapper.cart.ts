@@ -82,9 +82,9 @@ export class cartMapper {
         }
         const entity =  new Cart();
         entity.id= id;
-       // entity.usuario_id= dto.usuarioId;
+        entity.usuario_id= dto.usuarioId;
         entity.medio_pago= dto.medioPago;
-        entity.total_carrito= entity.cartProduct.map(cartProduct => cartProduct.product.precio).reduce((a, b) => a + b, 0);
+        //entity.total_carrito= entity.cartProduct.map(cartProduct => cartProduct.product.precio).reduce((a, b) => a + b, 0);
         entity.valor_envio= dto.valorEnvio;
         const date = new Date
         entity.fecha_modificacion = date;

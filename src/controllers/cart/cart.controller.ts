@@ -22,7 +22,9 @@ export class CartController {
       }    
     
     const cartCreated = await this.cartService.createCart(createCartDto);
+    console.log(payload.id);
     const cartFinal = await this.cartService.updateCart(cartCreated.id, {usuarioId: payload.id});
+
     return cartCreated;
   }
 

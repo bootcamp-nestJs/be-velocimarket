@@ -80,15 +80,14 @@ export class ProductsService implements IProducts{
         usuario: true
       },
       where: {
-          id: Id}
+        id: Id
+      }
     });
-
     const product_dto = ProductMapper.toDto(product);
-    
+    console.log(product_dto);
     if(!product_dto){
       throw new NotFoundException(`el producto del usuario ${Id} no se encontro!`); 
     }
-
     return product_dto;
   }
 

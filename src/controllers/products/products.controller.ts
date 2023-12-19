@@ -105,13 +105,22 @@ export class ProductsController {
   @ApiQuery({ name: "id", description: "Id del usuario" })
   @Get('user')
   @UseGuards(JwtAuthGuard)
-  async findProductById(@Query('id') id: number, @Query("pag") pag: number, @Request() req): Promise<ProductDto[]> {
+  async findProductByUser(@Query('id') id: number, @Query("pag") pag: number, @Request() req): Promise<ProductDto[]> {
     const payload = req.user;
     console.log(req.user.id);
     if (id!=null){
       return await this.productsService.findProductByUserId(id, pag);
     }
     return await this.productsService.findProductByUserId(payload.id, pag);
+  }
+
+  @ApiQuery({ name: "id", description: "Id del producto" })
+  @Get('product')
+  @UseGuards(JwtAuthGuard)
+  async findProductById(@Query('id') id: number): Promise<ProductDto> {
+    if (id!=null){
+      return await this.productsService.findProductById(id);
+    }
   }
 
   @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
