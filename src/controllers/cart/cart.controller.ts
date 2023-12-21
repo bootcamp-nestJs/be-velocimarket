@@ -6,12 +6,14 @@ import { CartDto } from './dto/cart.dto';
 import { Cart } from './entities/cart.entity';
 import { addProductCartDto } from './dto/add-product-cart.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @UseGuards(JwtAuthGuard)
 @Controller('cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createCartDto: CreateCartDto,  @Request() req): Promise<CartDto> {
@@ -28,32 +30,38 @@ export class CartController {
     return cartCreated;
   }
 
+  @ApiBearerAuth('access-token')
   @Get()
   async findAll(): Promise<CartDto[]> {
     return await this.cartService.findAllCarts();
   }
 
+  @ApiBearerAuth('access-token')
   @Get('oneCart')
   async findOne(@Query('id') id: number): Promise<CartDto> {
     return await this.cartService.findCartById(id);
   }
 
+  @ApiBearerAuth('access-token')
   @Post('addProduct')
   async addProduct(@Body() addProduct: addProductCartDto): Promise<CartDto> {
     const productoCreado = await this.cartService.addProductToCart(addProduct);
     return productoCreado;
   }
 
+  @ApiBearerAuth('access-token')
   @Patch()
   async update(@Query('id') id: number, @Body() updateCartDto: UpdateCartDto): Promise<string> {
     return await this.cartService.updateCart(id, updateCartDto);
   }
 
+  @ApiBearerAuth('access-token')
   @Delete()
   async remove(@Query('id') id: number): Promise<string> {
     return await this.cartService.removeCart(id);
   }
 
+  @ApiBearerAuth('access-token')
   @Delete('removeProduct')
   async removeProduct(@Query('productId') productId: number, @Query('cartId') cartId: number): Promise<string> {
     await this.cartService.removeProductCart(productId,cartId );

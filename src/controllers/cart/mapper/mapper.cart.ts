@@ -32,19 +32,24 @@ export class cartMapper {
       }
       const dto =  new CartDto();
       dto.id = entity.id;
-      //dto.usuarioId = entity.usuario_id;
+      dto.usuarioId = entity.usuario_id;
       dto.medioPago= entity.medio_pago;
       dto.valorEnvio= entity.valor_envio;
       dto.totalCarrito= entity.total_carrito;
       dto.productos= [];
-      //dto.productos.push(entity.cartProduct[0].product);
-       
+      entity.cartProduct.forEach(element => {
+        dto.productos.push(element.product)});
+      //console.log(entity.cartProduct[0].product);
       return dto;
     }
 
     static toDtoList(entities: CartProduct[]): CartDto[] {
         return entities.map(entity => this.toDto(entity));
       }
+
+    static toCartDtoList(entities: Cart[]): CartDto[] {
+      return entities.map(entity => this.toCartDto(entity));
+    }
 
     static toEntity(dto: CreateCartDto): Cart {
       if (!dto) {
@@ -101,4 +106,4 @@ export class cartMapper {
 
         return cartProduct;
        }
-}0
+}

@@ -142,14 +142,10 @@ export class CartService implements ICart{
 
   async findAllCarts(): Promise<CartDto[]> {
     try {
-      const listCarts  = await this.cartProductRepository.find({
-        relations: {
-          cart: true,
-          product: true
-        }
-      } );
-      console.log(listCarts)
-      return cartMapper.toDtoList(listCarts);
+      const listCarts  = await this.cartRepository.find({
+        relations: ['cartProduct', 'cartProduct.product', 'cartProduct.product.img', 'user'], 
+      });
+      return cartMapper.toCartDtoList(listCarts);
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
@@ -158,9 +154,7 @@ export class CartService implements ICart{
   async findCartById(id: number): Promise<CartDto> {
     const cart  = await this.cartRepository.findOne({
       where: {id: id},
-      relations: {
-        user: true
-      }
+      relations: ['cartProduct', 'cartProduct.product', 'cartProduct.product.img', 'user']
     });
     const cartDto = cartMapper.toCartDto(cart);
     if(!cartDto){

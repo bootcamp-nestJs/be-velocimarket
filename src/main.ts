@@ -30,6 +30,7 @@ async function bootstrap() {
   );
   
   let documentBuilderProducts = new DocumentBuilder()
+  .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
   .setTitle("Documentacion de la API VelociMRKT - Products")
   .setDescription("Descripcion de la API")
   .setVersion('0.0.1')
@@ -37,6 +38,7 @@ async function bootstrap() {
   .build();
 
   let documentBuilderCart = new DocumentBuilder()
+  .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
   .setTitle("Documentacion de la API VelociMRKT - Cart")
   .setDescription("Descripcion de la API")
   .setVersion('0.0.1')
@@ -44,6 +46,7 @@ async function bootstrap() {
   .build();
 
   let documentBuilderReports = new DocumentBuilder()
+  .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
   .setTitle("Documentacion de la API VelociMRKT - Reports")
   .setDescription("Descripcion de la API")
   .setVersion('0.0.1')
@@ -51,6 +54,7 @@ async function bootstrap() {
   .build();
 
   let documentBuilderUsers = new DocumentBuilder()
+  .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
   .setTitle("Documentacion de la API VelociMRKT - Users")
   .setDescription("Descripcion de la API")
   .setVersion('0.0.1')
@@ -58,6 +62,7 @@ async function bootstrap() {
   .build();
 
   let documentBuilderMensajes = new DocumentBuilder()
+  .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
   .setTitle("Documentacion de la API VelociMRKT - Mensajes")
   .setDescription("Descripcion de la API")
   .setVersion('0.0.1')

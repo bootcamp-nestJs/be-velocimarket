@@ -17,7 +17,7 @@ import { Controller,
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiQuery } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiHeader, ApiQuery } from '@nestjs/swagger';
 import { ProductDto } from './dto/product.dto';
 import { ProductMapper } from './mapper/mapper.products';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -61,6 +61,7 @@ export class ProductsController {
     return createdProduct;
   }
 
+  @ApiBearerAuth('access-token')
   @ApiBody({
     description: "Imagenes del producto"
   })
@@ -81,7 +82,7 @@ export class ProductsController {
   }
 
   
-
+  @ApiBearerAuth('access-token')
   @Get(':id/images')
   @UseGuards(JwtAuthGuard)
   async getProductImages(@Param('id') productId: number, @Request() req) : Promise<any> {
@@ -91,6 +92,7 @@ export class ProductsController {
     return await this.productsService.getProductImages(user.id, productId);
   }
 
+  @ApiBearerAuth('access-token')
   @Delete('image')
   @UseGuards(JwtAuthGuard)
   async deleteProductImage(@Query('id') imageId: number){
@@ -101,7 +103,8 @@ export class ProductsController {
   async findAll(@Query("pag") pag: number) : Promise<ProductDto[]> {
     return await this.productsService.findAllProducts(pag);
   }
-
+  
+  @ApiBearerAuth('access-token')
   @ApiQuery({ name: "id", description: "Id del usuario" })
   @Get('user')
   @UseGuards(JwtAuthGuard)
@@ -114,6 +117,7 @@ export class ProductsController {
     return await this.productsService.findProductByUserId(payload.id, pag);
   }
 
+  @ApiBearerAuth('access-token')
   @ApiQuery({ name: "id", description: "Id del producto" })
   @Get('product')
   @UseGuards(JwtAuthGuard)
@@ -123,12 +127,14 @@ export class ProductsController {
     }
   }
 
+  @ApiBearerAuth('access-token')
   @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
   @Get('search')
   async findProductByName(@Query('nombre') nombre: string, @Query("pag") pag: number): Promise<ProductDto[]> {
     return await this.productsService.findProductByInclude(nombre, pag);
   }
 
+  @ApiBearerAuth('access-token')
   @ApiQuery({ name: "id", description: "Id del producto como numero entero" })
   @ApiBody({
     description: "Datos del producto que se van a modificar",
@@ -139,6 +145,7 @@ export class ProductsController {
     return await this.productsService.updateProduct(id, updateProductDto);
   }
 
+  @ApiBearerAuth('access-token')
   @ApiQuery({ name: "id", description: "Id del producto como numero entero" })
   @Delete()
   async remove(@Query('id') id: number): Promise<string> {
@@ -146,6 +153,7 @@ export class ProductsController {
     return `Producto de ID ${id} eliminado`
   }
 
+  @ApiBearerAuth('access-token')
   @ApiQuery({ name: "id_user", description: "Id del usuario" })
   @Get('product/selled')
   async findProductSelled(@Query('id_user') idUser: number): Promise<ProductDto[]> {
@@ -153,6 +161,7 @@ export class ProductsController {
     return data ;
   }
 
+  @ApiBearerAuth('access-token')
   @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
   @Get('filter')
   async findProductByFilter(@Query('nombre') nombre: string,
