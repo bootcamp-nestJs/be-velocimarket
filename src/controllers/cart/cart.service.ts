@@ -29,6 +29,7 @@ export class CartService implements ICart{
 
   async createCart( newCart: CreateCartDto): Promise<CartDto> {
     try {
+
       const newCartDto = cartMapper.toEntity(newCart);
       const newCartCreated = await this.cartRepository.save(newCartDto);
       const newCartProduct : CartProduct = cartMapper.toCartProductEntity(newCart);
@@ -40,9 +41,17 @@ export class CartService implements ICart{
         relations: ["cart", "product", "product.img"]  
       } );
       const agregarPrecio = await this.cartRepository.update(newCartCreated.id, {total_carrito: productPrecio.product.precio})
-      const cartFinal = cartMapper.toCartDto(newCartCreated);
+      
+      const cartFinal = new CartDto();
+      cartFinal.id = newCartCreated.id;
+      cartFinal.usuarioId = newCartCreated.usuario_id;
+      cartFinal.medioPago= newCartCreated.medio_pago;
+      cartFinal.valorEnvio= newCartCreated.valor_envio;
+      cartFinal.totalCarrito= newCartCreated.total_carrito;
+      cartFinal.productos= [];
       cartFinal.productos.push(productPrecio.product)
       cartFinal.totalCarrito = productPrecio.product.precio;
+      // console.log(cartFinal);
       return cartFinal;
        
     } catch (error) {
@@ -117,23 +126,24 @@ export class CartService implements ICart{
           carrito_id: cartId,
           producto_id: productId
         },
-        relations: {
-          cart: true,
-          product: true
-        }
+        relations: ["cart", "product", "product.img"]
       });
       const cart = await this.cartRepository.findOne({
         where: {id: cartId},
-        relations: {
-          user: true,
-          cartProduct: true
-        }
-      } );
-      if( !cartProduct ) throw new NotFoundException(`El carrito ${cartId} que esta tratando de eliminar no existe `);
+        relations: ["cartProduct", "cartProduct.product", "cartProduct.product.img"]
+      });
+      if( !cartProduct ) throw new NotFoundException(`El carrito ${cartId} no existe `);
+      
       const eliminarPrecio = await this.cartRepository.update(cartId, {total_carrito: cart.total_carrito - cartProduct.product.precio, fecha_modificacion: new Date()});
       const eliminarProducto = await this.cartProductRepository.delete(cartProduct.id);
 
+      if (cart.cartProduct.map(element => element.product == null)){
+        const eliminarCarrito = await this.cartRepository.delete(cartId);
+        return `el producto ${productId} ha sido eliminado del carrito ${cartId} y el carrito ha sido eliminado`;
+      }
       return `el producto ${productId} ha sido eliminado del carrito ${cartId}`;
+
+      
 
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
