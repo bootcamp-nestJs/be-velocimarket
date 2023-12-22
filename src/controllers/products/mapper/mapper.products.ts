@@ -23,11 +23,11 @@ export class ProductMapper {
     dto.estado= entity.estado;
     dto.material_cuadro= entity.material_cuadro;
     dto.componentes= entity.componentes;
-    dto.valoracion= entity.valoracion;
     dto.descripcion= entity.descripcion;
     dto.userId = entity.usuario_id;
     dto.img = entity.img;
     dto.cat = entity.subcat.descripcion;
+    dto.vendido = entity.vendido;
     return dto;
   }
 

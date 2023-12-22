@@ -21,6 +21,7 @@ export class UserMapper {
     dto.comuna = entity.comuna;
     dto.numero = entity.numero;
     dto.region = entity.region;
+    dto.valoracion = entity.valoracion;
     return dto;
   }
 
@@ -48,6 +49,8 @@ export class UserMapper {
     entity.region = dto.region;
     const date = new Date
     entity.fecha_creacion = date;
+    entity.fecha_modificacion = date;
+    entity.valoracion = 0;
 
     return entity;
   }  
@@ -96,6 +99,7 @@ export class UserMapper {
     entity.comuna = dto.comuna;
     entity.numero = dto.numero;
     entity.region = dto.region;
+    entity.valoracion = dto.valoracion;
     const date = new Date
     entity.fecha_modificacion = date;
     

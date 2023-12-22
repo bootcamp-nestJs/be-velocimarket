@@ -14,7 +14,6 @@ export class UsersController {
     description: "Datos del usuario que se va a crear",
     type: CreateUserDto
   })
-  //@ApiHeader({ name: "Usuario", description: "Id del usuario", example: "1234-1234", required: true })
   @ApiCreatedResponse({ description: "El usuario se creó exitosamente", isArray: true, type: CreateUserDto})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Post('signup')
@@ -58,14 +57,13 @@ export class UsersController {
     return await this.usersService.removeUser(id);
   } 
 
-  // @ApiQuery({ name: "id", description: "Id del usuario como numero entero" })
-  // @ApiBody({
-  //   description: "Datos del usuario al que la dirección se va a modificar",
-  //   type: UpdateDireccionDto
-  // })
-  // @Patch('direction_actualize')
-  // async updateDireccion(@Query('id') id: number, @Body() direccionData: UpdateDireccionDto): Promise<string> {
-  // const direccionActualized = await this.usersService.updateDireccion(id, direccionData);
-  // return direccionActualized;
-  // }
+  @ApiQuery({ name: "userId", description: "Id del usuario a evaluar" })
+  @ApiQuery({ name: "val", description: "Valoración del usuario" })
+  @ApiCreatedResponse({ description: "Se evaluó al usuario de forma correcta",  type: Number})
+  @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
+  @Get('valoration')
+  async valoration(@Query('userId') userId: number,@Query('val') valoracion: number): Promise<number> {
+    const newValoracion = await this.usersService.cambiarValoracion(userId, valoracion);
+    return newValoracion;
+  }
 }
