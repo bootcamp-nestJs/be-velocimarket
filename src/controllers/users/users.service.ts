@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { UserDto } from './dto/user.dto';
 import { UserMapper } from './mapper/mapper.users';
+import { valorateUserDto } from './dto/valoration.dto';
 
 @Injectable()
 export class UsersService {
@@ -129,21 +130,21 @@ export class UsersService {
     }
   }
 
-  async cambiarValoracion(userId: number, valoracion: number): Promise<number> {
+  async cambiarValoracion(valoration : valorateUserDto): Promise<number> {
     const user = await this.userRepository.findOne({
-      where: {id: userId},
+      where: {id: valoration.userId},
       relations: ['producto']
     });
-    if( !user ) throw new NotFoundException(`El usuario ${userId} no existe`);
+    if( !user ) throw new NotFoundException(`El usuario ${valoration.userId} no existe`);
     let contador = 0;
     user.producto.forEach(producto => {
       if (producto.vendido) {
         contador += 1;
       }})
       
-      const newValoracion = (user.valoracion + valoracion)/contador;
-      console.log((user.valoracion+1) + (valoracion+1));
-    await this.userRepository.update(userId, {valoracion: newValoracion});
+      const newValoracion = (user.valoracion + valoration.valoracion)/contador;
+      console.log((user.valoracion),(valoration.valoracion), contador);
+    await this.userRepository.update(valoration.userId, {valoracion: newValoracion});
     return newValoracion;
   }
 

@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiQuery } from '@nestjs/swagger';
 import { UserDto } from './dto/user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { valorateUserDto } from './dto/valoration.dto';
 
 // @UseGuards(JwtAuthGuard)
 @Controller('users')
@@ -57,13 +58,16 @@ export class UsersController {
     return await this.usersService.removeUser(id);
   } 
 
-  @ApiQuery({ name: "userId", description: "Id del usuario a evaluar" })
-  @ApiQuery({ name: "val", description: "Valoración del usuario" })
+  @ApiBody({
+    description: "Datos del usuario que se va a crear",
+    type: valorateUserDto
+  })
+  
   @ApiCreatedResponse({ description: "Se evaluó al usuario de forma correcta",  type: Number})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
-  @Get('valoration')
-  async valoration(@Query('userId') userId: number,@Query('val') valoracion: number): Promise<number> {
-    const newValoracion = await this.usersService.cambiarValoracion(userId, valoracion);
+  @Post('valoration')
+  async valoration(@Body() valoracion : valorateUserDto): Promise<number> {
+    const newValoracion = await this.usersService.cambiarValoracion(valoracion);
     return newValoracion;
   }
 }
