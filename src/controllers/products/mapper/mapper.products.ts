@@ -7,6 +7,7 @@ import { Imagen } from "../entities/imagen.entity";
 import { Product } from "../entities/product.entity";
 import { Subcategoria } from "../entities/subcategoria.entity";
 import { REGIONS } from "src/helpers/constants/regions-cities.constant";
+import { Categoria } from "../entities/categoria.entity";
 
 export class ProductMapper {
 
@@ -107,18 +108,54 @@ export class ProductMapper {
       return null;
     }
     entity.product.map(product => {
-    const dto =  new ProductDto();
-    dto.nombre = product.nombre;
-    console.log(product)
-    dto.user = product.usuario.nombre;
-    dto.precio = product.precio;
-    dto.comuna = REGIONS.filter(region => region.id == (product.usuario.region))[0].comunas[product.usuario.comuna];
-    dto.img = product.img;
-    return dto;
+      const dto =  new ProductDto();
+      dto.nombre = product.nombre;
+      
+      dto.user = product.usuario.nombre;
+      dto.precio = product.precio;
+      dto.comuna = REGIONS.filter(region => region.id == (product.usuario.region))[0].comunas[product.usuario.comuna];
+      dto.img = product.img;
+      return dto;
     })
   }
+
   static toSubcatDtoList(entities: Subcategoria[]): ProductDto[] {
     return entities.map(entity => this.toDtoSubcat(entity));
+  }
+
+  static toDtoCat(entity: Categoria) {
+    if (!entity) {
+      return null;
+    }
+    
+    const dtoCat = {
+      id: entity.id,
+      categoria: entity.categoria,
+      subcategoria: this.toCustomSubCatDtoList(entity.subcategoria)
+    }
+
+    return dtoCat;
+  };
+
+  static toCatDtoList(entities: Categoria[]) {
+    return entities.map(entity => this.toDtoCat(entity));
+  }
+
+  static toDtoSubCat(entity: Subcategoria) {
+    if (!entity) {
+      return null;
+    }
+    
+    const dtoSubCat = {
+      id: entity.id,
+      subcategoria: entity.descripcion,
+    }
+
+    return dtoSubCat;
+  };
+
+  static toCustomSubCatDtoList(entities: Subcategoria[]) {
+    return entities.map(entity => this.toDtoSubCat(entity));
   }
 }
 

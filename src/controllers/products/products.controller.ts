@@ -172,4 +172,10 @@ export class ProductsController {
                             @Query('precio') precio: number): Promise<any[]> {
     return await this.productsService.findProductByFilter(nombre, cat, subcat, pag, fecha,precio);
   }
+
+  @ApiBearerAuth('access-token')
+  @Get('categories')
+  async findAllCategpries(){
+    return await this.productsService.getProductsCategories();
+  }
 }

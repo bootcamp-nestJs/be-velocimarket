@@ -19,6 +19,7 @@ import * as os from 'os';
 import { CreateProductImage } from './dto/create-image.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from 'src/auth/auth.service';
+import { Categoria } from './entities/categoria.entity';
 
 const { Storage } = require("@google-cloud/storage");
 // Instantiate a storage client with credentials
@@ -35,8 +36,8 @@ export class ProductsService implements IProducts{
     private imagenRepository: Repository<Imagen>,
     @InjectRepository(Usuario)
       private usuarioRepository: Repository<Usuario>,
-    @InjectRepository(Subcategoria)
-      private subcatRepository: Repository<Subcategoria>
+    @InjectRepository(Categoria)
+      private catRepository: Repository<Categoria>
     ) {}
 
   async createProduct( newProduct: CreateProductDto): Promise<ProductDto> {
@@ -388,4 +389,17 @@ export class ProductsService implements IProducts{
     }
   }
   
+
+  async getProductsCategories(){
+    const findedCategories = await this.catRepository.find({
+        relations: {
+          subcategoria: true
+        },
+      }
+    );
+    
+    const categories = ProductMapper.toCatDtoList(findedCategories);
+
+    return categories;
+  }
 }
