@@ -9,4 +9,5 @@ export class UserDto {
     numero: number;
     comuna: number;
     region: number;
+    valoracion: number;
 }

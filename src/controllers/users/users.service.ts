@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { UserDto } from './dto/user.dto';
 import { UserMapper } from './mapper/mapper.users';
+import { valorateUserDto } from './dto/valoration.dto';
 
 @Injectable()
 export class UsersService {
@@ -35,13 +36,10 @@ export class UsersService {
       const newUserDto = UserMapper.toEntity(newUser);
 
       await this.userRepository.save(newUserDto);
-      // const newUserDireccion = UserMapper.toEntityDireccion(newUser);
       const findUser = await this.userRepository.findOneBy({
         user_name: newUser.user
       })
-      // newUserDireccion.usuario_id = findUser.id;
-      // await this.direccionRepository.save(newUserDireccion);
-      
+        
       return UserMapper.toDto(findUser) ;
       
     } catch (error) {
@@ -106,7 +104,6 @@ export class UsersService {
       
       await this.userRepository.update(id, newUser);
 
-      // return UserMapper.toDto(newUser);
       return `Usuario ${id} actualizado con éxito`;
     }
      catch (error) {
@@ -133,23 +130,22 @@ export class UsersService {
     }
   }
 
-  // async updateDireccion(id: number, updateData: UpdateDireccionDto): Promise<string> {
-  //   const user = await this.UserRepository.findOneBy({
-  //     id: id
-  //   });
-  //   if( !user ) throw new NotFoundException(`El producto ${id} que esta tratando de actualizar no existe`);
-    
-  //   try {
-  //         const userDirection= await this.direccionRepository.findOneBy({
-  //           usuario_id: id
-  //         })
-  //         const idDireccion = userDirection.id;
-  //         const newDirection: Direccion =UserMapper.toUpdateEntityDireccion(updateData);
-  //         const resultado = await this.direccionRepository.update(idDireccion, newDirection)
-  //         return `Dirección del producto con id ${id} ha sido actualizada`;
-  //       }
-  //    catch (error) {
-  //     throw new InternalServerErrorException(`Error: ${error}`);
-  //   }
-  // }
+  async cambiarValoracion(valoration : valorateUserDto): Promise<number> {
+    const user = await this.userRepository.findOne({
+      where: {id: valoration.userId},
+      relations: ['producto']
+    });
+    if( !user ) throw new NotFoundException(`El usuario ${valoration.userId} no existe`);
+    let contador = 0;
+    user.producto.forEach(producto => {
+      if (producto.vendido) {
+        contador += 1;
+      }})
+      
+      const newValoracion = (user.valoracion + valoration.valoracion)/contador;
+      console.log((user.valoracion),(valoration.valoracion), contador);
+    await this.userRepository.update(valoration.userId, {valoracion: newValoracion});
+    return newValoracion;
+  }
+
 }

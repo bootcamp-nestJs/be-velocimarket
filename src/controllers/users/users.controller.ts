@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiQuery } from '@nestjs/swagger';
 import { UserDto } from './dto/user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { valorateUserDto } from './dto/valoration.dto';
 
 // @UseGuards(JwtAuthGuard)
 @Controller('users')
@@ -14,7 +15,6 @@ export class UsersController {
     description: "Datos del usuario que se va a crear",
     type: CreateUserDto
   })
-  //@ApiHeader({ name: "Usuario", description: "Id del usuario", example: "1234-1234", required: true })
   @ApiCreatedResponse({ description: "El usuario se creó exitosamente", isArray: true, type: CreateUserDto})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @Post('signup')
@@ -58,14 +58,16 @@ export class UsersController {
     return await this.usersService.removeUser(id);
   } 
 
-  // @ApiQuery({ name: "id", description: "Id del usuario como numero entero" })
-  // @ApiBody({
-  //   description: "Datos del usuario al que la dirección se va a modificar",
-  //   type: UpdateDireccionDto
-  // })
-  // @Patch('direction_actualize')
-  // async updateDireccion(@Query('id') id: number, @Body() direccionData: UpdateDireccionDto): Promise<string> {
-  // const direccionActualized = await this.usersService.updateDireccion(id, direccionData);
-  // return direccionActualized;
-  // }
+  @ApiBody({
+    description: "Datos del usuario que se va a crear",
+    type: valorateUserDto
+  })
+  
+  @ApiCreatedResponse({ description: "Se evaluó al usuario de forma correcta",  type: Number})
+  @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
+  @Post('valoration')
+  async valoration(@Body() valoracion : valorateUserDto): Promise<number> {
+    const newValoracion = await this.usersService.cambiarValoracion(valoracion);
+    return newValoracion;
+  }
 }
