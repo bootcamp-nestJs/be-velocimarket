@@ -34,6 +34,8 @@ export class Usuario {
     comuna: number;
     @Column({name: 'region'})
     region: number;
+    @Column({name: 'valoracion'})
+    valoracion: number;
     @Column({name: 'fecha_creacion'})
     fecha_creacion: Date;
     @Column({name: 'fecha_modificacion'})

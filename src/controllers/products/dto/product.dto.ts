@@ -16,4 +16,5 @@ export class ProductDto {
     user?: string;
     comuna?: string;
     userId?: number;
+    vendido?: boolean;
 }
