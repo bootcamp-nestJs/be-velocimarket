@@ -10,7 +10,6 @@ export class ProductDto {
     estado?: string;
     material_cuadro?: string;
     componentes?: string;
-    valoracion?: number;
     img?: Imagen[];
     cat?:string;
     user?: string;

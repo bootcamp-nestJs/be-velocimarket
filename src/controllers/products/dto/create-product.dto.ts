@@ -120,18 +120,6 @@ export class CreateProductDto {
     @MaxLength(200,{message: "El atributo componentes presenta error, necesita como maximo 200 caracteres"})
     readonly componentes:string;
 
-    @ApiProperty({
-        type: 'number',
-        example: 2,
-        minimum: 0,
-        required: false,
-        description: "Valoraciones en estrellas",
-        title: "valoración"
-    })
-    @IsInt({ message: "El atributo valoración presenta error, revise que es numérico" })
-    @IsPositive({ message: "El atributo valoración presenta error, debe ser mayor a cero" })
-    @Max(5)
-    readonly valoracion: number
 }
 
     

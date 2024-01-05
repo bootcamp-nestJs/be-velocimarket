@@ -50,7 +50,6 @@ export class ProductMapper {
     entity.descripcion= dto.descripcion;
     entity.material_cuadro= dto.material_cuadro;
     entity.componentes=dto.componentes;
-    entity.valoracion= dto.valoracion;
     const date = new Date
     entity.fecha_creacion = date;
     entity.fecha_modificacion = date;
@@ -74,7 +73,6 @@ export class ProductMapper {
     entity.descripcion= dto.descripcion;
     entity.material_cuadro= dto.material_cuadro;
     entity.componentes=dto.componentes;
-    entity.valoracion= dto.valoracion;
     const date = new Date
     entity.fecha_modificacion = date;
     return entity;

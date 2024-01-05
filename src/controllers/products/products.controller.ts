@@ -50,6 +50,7 @@ export class ProductsController {
   //@ApiHeader({ name: "Prueba", description: "Id del producto", example: "1234-1234", required: true })
   @ApiCreatedResponse({ description: "El Producto se creó exitosamente", isArray: true, type: CreateProductDto})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createProductDto: CreateProductDto, @Request() req): Promise<ProductDto> {

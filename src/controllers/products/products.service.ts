@@ -143,6 +143,7 @@ export class ProductsService implements IProducts{
       const listProducts = await this.productRepository.find({
         where: {
           nombre: Like(`%${name}%`),
+          vendido: false
         },
         relations: {
           subcat: true,
@@ -163,12 +164,13 @@ export class ProductsService implements IProducts{
     else if(name == null && categoria != null && subcat == null){
   
       const listSubcaProducts = await this.productRepository.find({
-      relations: ["subcat", "subcat.categ", "usuario"],
+      relations: ["subcat", "subcat.categ", "usuario", "img"],
       where: {
         subcat:{
           categ:{
             id: categoria}
-          }
+          },
+        vendido: false
       },
       skip: 6 * (pag - 1),
       take: 6,
@@ -181,9 +183,10 @@ export class ProductsService implements IProducts{
     }
     else if(name == null && categoria == null && subcat != null){
       const listSubcaProducts = await this.productRepository.find({
-      relations: ["subcat", "subcat.categ", "usuario"],
+      relations: ["subcat", "subcat.categ", "usuario", "img"],
       where: {
-        id: subcat},
+        id: subcat,
+        vendido: false},
       skip: 6 * (pag - 1),
       take: 6,
       order: {
@@ -195,12 +198,13 @@ export class ProductsService implements IProducts{
     }
     else if(name != null && categoria != null && subcat == null){
       const listSubcaProducts = await this.productRepository.find({
-        relations: ["subcat", "subcat.categ", "usuario"],
+        relations: ["subcat", "subcat.categ", "usuario", "img"],
         where: {
           subcat:{
             categ:{
             id: categoria}},
-          nombre: Like(`%${name}%`)
+          nombre: Like(`%${name}%`),
+          vendido: false
         },
         skip: 6 * (pag - 1),
         take: 6,
@@ -213,11 +217,12 @@ export class ProductsService implements IProducts{
     }
     else if(name != null && categoria == null && subcat != null){
       const listSubcaProducts = await this.productRepository.find({
-        relations: ["subcat", "subcat.categ", "usuario"],
+        relations: ["subcat", "subcat.categ", "usuario", "img"],
         where: {
           subcat:{
             id: subcat},
-          nombre: Like(`%${name}%`)
+          nombre: Like(`%${name}%`),
+          vendido: false
         },
         skip: 6 * (pag - 1),
         take: 6,
@@ -230,13 +235,14 @@ export class ProductsService implements IProducts{
     }
     else if(name == null && categoria != null && subcat != null){
       const listSubcaProducts = await this.productRepository.find({
-        relations: ["subcat", "subcat.categ", "usuario"],
+        relations: ["subcat", "subcat.categ", "usuario", "img"],
         where: {
           subcat:{
             id: subcat,
             categ:{
               id: categoria}
-            },   
+            },
+          vendido: false,   
         },
         skip: 6 * (pag - 1),
         take: 6,
@@ -249,14 +255,15 @@ export class ProductsService implements IProducts{
     }
     else if(name != null && categoria != null && subcat != null){
       const listSubcaProducts = await this.productRepository.find({
-        relations: ["subcat", "subcat.categ", "usuario"],
+        relations: ["subcat", "subcat.categ", "usuario", "img"],
         where: {
           subcat:{
             id: subcat,
             categ:{
               id: categoria}
             },
-          nombre: Like(`%${name}%`)},
+          nombre: Like(`%${name}%`),
+          vendido: false},
         skip: 6 * (pag - 1),
         take: 6,
         order: {
