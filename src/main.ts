@@ -9,11 +9,29 @@ import { ValidationPipe } from '@nestjs/common';
 import { MensajesModule } from './controllers/mensajes/mensajes.module';
 import { HelperModule } from './helpers/helper.module';
 import { AuthModule } from './auth/auth.module';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
+import { trace } from 'console';
 
 
 async function bootstrap() {
   console.log('Listen on port: 3000');
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger({
+      transports: [
+        new winston.transports.Console( {
+          format: winston.format.combine(
+            winston.format.colorize({ all: true, colors: { info: 'green', error: 'red', debug: 'yellow', warn: 'orange', verbose: 'blue', silly: 'magenta' } }),
+            winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss", alias: "@timestamp" }),
+            winston.format.printf((info) => `[${info.timestamp}]  ${info.level}:    LOG: [${info.context}]  ${info.message} ${trace ? `    ${trace}` : ''}` ),
+            winston.format.align(),
+            ),
+          level: 'info',
+          })
+        //new winston.transports.File({ filename: 'combined.log' }),
+      ],
+    })});
+
   app.setGlobalPrefix('api');
 
   app.enableCors({
