@@ -7,10 +7,16 @@ import { Like, Repository } from 'typeorm';
 import { UserDto } from './dto/user.dto';
 import { UserMapper } from './mapper/mapper.users';
 import { valorateUserDto } from './dto/valoration.dto';
+import { UploadImageService } from 'src/services/upload-image.service';
 
+
+const { Storage } = require("@google-cloud/storage");
+const storage = new Storage({ keyFilename: "google-cloud-key.json" });
+const bucket = storage.bucket("velocimarket");
 @Injectable()
 export class UsersService {
   constructor(
+    private uploadImageService: UploadImageService,
     @InjectRepository(Usuario)
     private userRepository: Repository<Usuario>) {}
 
@@ -120,7 +126,7 @@ export class UsersService {
   
   async removeUser(id: number): Promise<string> {
     const user = await this.userRepository.findOneBy({id})
-    if( !user ) throw new NotFoundException(`El producto que esta tratando de eliminar no existe ${id}`);
+    if( !user ) throw new NotFoundException(`El usuario que esta tratando de eliminar no existe ${id}`);
     
     try {
       await this.userRepository.delete(id);   
@@ -148,4 +154,21 @@ export class UsersService {
     return newValoracion;
   }
 
+  async uploadAvatar(id: number, file: Express.Multer.File): Promise<string>{
+    const user = await this.userRepository.findOneBy({id})
+    if( !user ) throw new NotFoundException(`El usuario que esta tratando de eliminar no existe ${id}`);
+
+    const publicUrl = await this.uploadImageService.upload(id, file);
+    user.user_avatar = publicUrl;
+
+    try {
+      const newUser: Usuario = UserMapper.toUpdateEntity(id, user);
+      
+      await this.userRepository.update(id, newUser);
+
+      return `Imagen cargada con éxito`;
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
+  }
 }

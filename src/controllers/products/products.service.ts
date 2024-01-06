@@ -8,34 +8,24 @@ import { Product } from './entities/product.entity';
 import { Imagen } from './entities/imagen.entity';
 import { ProductMapper } from './mapper/mapper.products';
 import { ProductDto } from './dto/product.dto';
-import { UsersService } from '../users/users.service';
 import { Usuario } from '../users/entities/user.entity';
-import { Subcategoria } from './entities/subcategoria.entity';
-
-import * as fs from 'fs/promises';
-import * as fss from 'fs';
-import * as path from 'path';
 import * as os from 'os';
 import { CreateProductImage } from './dto/create-image.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { AuthService } from 'src/auth/auth.service';
 import { Categoria } from './entities/categoria.entity';
+import { UploadImageService } from 'src/services/upload-image.service';
 
 const { Storage } = require("@google-cloud/storage");
-// Instantiate a storage client with credentials
 const storage = new Storage({ keyFilename: "google-cloud-key.json" });
 const bucket = storage.bucket("velocimarket");
 @Injectable()
 export class ProductsService implements IProducts{
-  private uploadRoute = os.homedir() + '/api-velocimarket/uploads'
-
   constructor(
+    private uploadImageService: UploadImageService,
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
     @InjectRepository(Imagen)
     private imagenRepository: Repository<Imagen>,
-    @InjectRepository(Usuario)
-      private usuarioRepository: Repository<Usuario>,
     @InjectRepository(Categoria)
       private catRepository: Repository<Categoria>
     ) {}
@@ -315,32 +305,19 @@ export class ProductsService implements IProducts{
     return products_dto;
   }
 
-  async saveProductImage( userId: number, productId: number, file: Express.Multer.File): Promise<string>{
+  async saveProductImage( userId: number, productId: number, file: Express.Multer.File): Promise<void>{
     try {
-      const { originalname, buffer } = file;
-      const extension = originalname.split('.').pop();
-      const imageID = uuidv4();
-      const fileName = `${userId}_${productId}_${imageID}.${extension}`;
+      const publicUrl = await this.uploadImageService.upload(userId, file);
       
-      const blob = bucket.file(fileName);
-      const blobStream = blob.createWriteStream();
+      const newImage: CreateProductImage = {
+        producto_id: Number(productId),
+        imagen: publicUrl
+      }
       
-      blobStream.on("error", (error) => {
-        throw new InternalServerErrorException(`Error: ${error}`);
-      });
-      
-      blobStream.on("finish", async (data) => {
-        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`
-        
-        const newImage: CreateProductImage = {
-          producto_id: Number(productId),
-          imagen: publicUrl
-        }
-        const newImageDto = ProductMapper.toUpdateEntityImage(newImage);
-        await this.imagenRepository.save(newImageDto);
-      });
-      blobStream.end(buffer);
-      return imageID;
+      const newImageDto = ProductMapper.toUpdateEntityImage(newImage);
+      await this.imagenRepository.save(newImageDto);
+
+      return;
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }

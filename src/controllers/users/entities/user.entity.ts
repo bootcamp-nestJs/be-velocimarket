@@ -1,5 +1,5 @@
 import { Product } from "src/controllers/products/entities/product.entity";
-import { Reclamos } from "src/controllers/reports/entities/Reclamos.entity";
+import { Reclamos } from "src/controllers/reports/entities/reclamos.entity";
 import { Column, Entity, ManyToMany, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Mensaje } from "src/controllers/mensajes/entities/mensaje.entity";
 import { Follower } from "./follower.entity";
@@ -18,6 +18,8 @@ export class Usuario {
     nombre: string;
     @Column({name: 'user_name'})
     user_name: string;
+    @Column({name: 'user_avatar'})
+    user_avatar: string;
     @Column({name: 'apellido'})
     apellido: string;
     @Column({name: 'mail'})

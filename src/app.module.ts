@@ -13,7 +13,7 @@ import { Categoria } from './controllers/products/entities/categoria.entity';
 import { Subcategoria } from './controllers/products/entities/subcategoria.entity';
 import { Usuario } from './controllers/users/entities/user.entity';
 import { Imagen } from './controllers/products/entities/imagen.entity';
-import { Reclamos } from './controllers/reports/entities/Reclamos.entity';
+import { Reclamos } from './controllers/reports/entities/reclamos.entity';
 import { Mensaje } from './controllers/mensajes/entities/mensaje.entity';
 import { Follower } from './controllers/users/entities/follower.entity';
 import { Following } from './controllers/users/entities/following.entity';
@@ -23,11 +23,11 @@ import { Conversacion } from './controllers/mensajes/entities/conversacion.entit
 import { CartProduct } from './controllers/cart/entities/productCart.entity';
 import { AuthModule } from './auth/auth.module';
 import * as dotenv from 'dotenv';
+import { ServicesModule } from './services/services.module';
 dotenv.config({ path: '.env.local'});
 
 @Module({ 
   imports: [
-
     TypeOrmModule.forRoot({
     type: 'mysql',
     host: process.env.DB_HOST,
@@ -57,6 +57,7 @@ dotenv.config({ path: '.env.local'});
     MensajesModule,
     HelperModule,
     AuthModule,
+    ServicesModule
   ],
   controllers: [AppController],
   providers: [AppService],

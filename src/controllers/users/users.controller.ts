@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe, InternalServerErrorException, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe, InternalServerErrorException, UseGuards, Request, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiQuery } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiHeader, ApiQuery } from '@nestjs/swagger';
 import { UserDto } from './dto/user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { valorateUserDto } from './dto/valoration.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 // @UseGuards(JwtAuthGuard)
 @Controller('users')
@@ -69,5 +70,16 @@ export class UsersController {
   async valoration(@Body() valoracion : valorateUserDto): Promise<number> {
     const newValoracion = await this.usersService.cambiarValoracion(valoracion);
     return newValoracion;
+  }
+
+  @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('avatar'))
+  @Post('avatar')
+  async uploadAvatar(@Request() req, @UploadedFile() file: Express.Multer.File): Promise<string> {
+    const {id, } = req.user;
+    
+    return await this.usersService.uploadAvatar(id, file);
   }
 }

@@ -93,6 +93,7 @@ export class UserMapper {
     entity.apellido= dto.apellido;
     entity.mail= dto.mail;
     entity.user_name= dto.user;
+    entity.user_avatar = dto.user_avatar,
     entity.password= dto.password;
     entity.telefono=dto.telefono;
     entity.calle = dto.calle;

@@ -5,7 +5,7 @@ import { Imagen } from "./imagen.entity";
 import { Calificacion } from "src/controllers/reports/entities/calificacion.entity";
 import { Mensaje } from "src/controllers/mensajes/entities/mensaje.entity";
 import { Cart } from "src/controllers/cart/entities/cart.entity";
-import { Reclamos } from "src/controllers/reports/entities/Reclamos.entity";
+import { Reclamos } from "src/controllers/reports/entities/reclamos.entity";
 import { CartProduct } from "src/controllers/cart/entities/productCart.entity";
 import { Conversacion } from "src/controllers/mensajes/entities/conversacion.entity";
 
@@ -34,8 +34,6 @@ export class Product {
     material_cuadro: string;
     @Column({name: 'componentes'})
     componentes: string;
-    @Column({name: 'valoracion'})
-    valoracion: number;
     @Column({name: 'fecha_creacion'})
     fecha_creacion: Date;
     @Column({name: 'fecha_modificacion'})

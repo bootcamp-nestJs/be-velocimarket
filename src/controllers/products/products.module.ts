@@ -11,7 +11,6 @@ import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
 import { Usuario } from '../users/entities/user.entity';
 
-
 @Module({
   imports: [TypeOrmModule.forFeature([Product, Subcategoria, Imagen, Categoria, Calificacion, Usuario ]), UsersModule],
   controllers: [ProductsController],

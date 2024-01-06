@@ -61,6 +61,16 @@ export class CreateUserDto {
 
     @ApiProperty({
         type: 'string',
+        example: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngwing.com%2Fen%2Fsearch%3Fq%3Dmsn%2BMessenger&psig=AOvVaw0GTdHgzu-SENoLaqQboVIo&ust=1704596499279000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCJidrP_ix4MDFQAAAAAdAAAAABAD',
+        required: false,
+        description: "Avatar de usuario",
+        title: "Avatar de usuario"
+    })
+    @IsString({message: "El atributo user presenta error,revise que es string"})
+    readonly user_avatar: string;
+
+    @ApiProperty({
+        type: 'string',
         example: '123456acs',
         minimum: 8,
         required: true,

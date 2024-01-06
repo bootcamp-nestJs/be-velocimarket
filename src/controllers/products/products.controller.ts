@@ -22,23 +22,7 @@ import { ProductDto } from './dto/product.dto';
 import { ProductMapper } from './mapper/mapper.products';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-// import { diskStorage } from 'multer';
-// import path from 'path';
-// import { join } from 'path';
 
-// ? revisar despues
-// export const storage = {
-//   storage: diskStorage({
-//     destination: './uploads/productsImages',
-//     filename: (req, file, cb) => {
-//       const filename: string = path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
-//       const extension: string = path.parse(file.originalname).ext;
-      
-//       cb(null, `${filename}${extension}`)
-//     }
-//   })
-// }
-// @UseGuards(JwtAuthGuard)
 @Controller('products')
 export class ProductsController {
   constructor( private readonly productsService: ProductsService) {}
@@ -56,8 +40,6 @@ export class ProductsController {
   async create(@Body() createProductDto: CreateProductDto, @Request() req): Promise<ProductDto> {
     const createdProduct = await this.productsService.createProduct(createProductDto);
     const payload = req.user;
-    //  await this.productsService.findProductById(createdProduct.id);
-    console.log(createdProduct.id);
     await this.productsService.updateProduct(createdProduct.id, { usuario_id: payload.id });
     return createdProduct;
   }
@@ -71,14 +53,11 @@ export class ProductsController {
   @UseInterceptors(FilesInterceptor('images'))
   @Post(':id/upload')
   async uploadImages(@Param('id') productId: number, @Request() req, @UploadedFiles() files: Express.Multer.File[] ): Promise<string> {
-    const payload = req.user;
-    const {user} = payload;
-    
-    files.forEach( async image => {
-      console.log(image)
-      await this.productsService.saveProductImage(user.id, productId, image);
-    });
+    const {id, } = req.user;
 
+    files.forEach( async image => {
+      await this.productsService.saveProductImage(id, productId, image);
+    });
     return 'Imágenes cargadas con exito';
   }
 
