@@ -3,6 +3,7 @@ export class UserDto {
     nombre: string;
     apellido: string;
     user_name: string;
+    user_avatar: string;
     mail: string;
     telefono: string;
     calle: string;
