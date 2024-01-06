@@ -169,13 +169,16 @@ export class ProductsService implements IProducts{
           precio: precio == 1 ? "DESC" : "ASC"
       }
     });
+    console.log(listSubcaProducts.map( p => p.subcat.categ.id));
     return ProductMapper.toDtoList(listSubcaProducts);
     }
     else if(name == null && categoria == null && subcat != null){
       const listSubcaProducts = await this.productRepository.find({
       relations: ["subcat", "subcat.categ", "usuario", "img"],
       where: {
-        id: subcat,
+        subcat:{
+            id: subcat
+        },
         vendido: false},
       skip: 6 * (pag - 1),
       take: 6,
