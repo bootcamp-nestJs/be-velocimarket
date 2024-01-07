@@ -22,6 +22,7 @@ import { ProductDto } from './dto/product.dto';
 import { ProductMapper } from './mapper/mapper.products';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { PaginatedDto } from './dto/data-paginated.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -80,7 +81,7 @@ export class ProductsController {
   }
 
   @Get()
-  async findAll(@Query("pag") pag: number) : Promise<ProductDto[]> {
+  async findAll(@Query("pag") pag: number) : Promise<PaginatedDto> {
     return await this.productsService.findAllProducts(pag);
   }
   
@@ -88,7 +89,7 @@ export class ProductsController {
   @ApiQuery({ name: "id", description: "Id del usuario" })
   @Get('user')
   @UseGuards(JwtAuthGuard)
-  async findProductByUser(@Query('id') id: number, @Query("pag") pag: number, @Request() req): Promise<ProductDto[]> {
+  async findProductByUser(@Query('id') id: number, @Query("pag") pag: number, @Request() req): Promise<PaginatedDto> {
     const payload = req.user;
     console.log(req.user.id);
     if (id!=null){
@@ -110,7 +111,7 @@ export class ProductsController {
   @ApiBearerAuth('access-token')
   @ApiQuery({ name: "nombre", description: "nombre del producto a buscar" })
   @Get('search')
-  async findProductByName(@Query('nombre') nombre: string, @Query("pag") pag: number): Promise<ProductDto[]> {
+  async findProductByName(@Query('nombre') nombre: string, @Query("pag") pag: number): Promise<PaginatedDto> {
     return await this.productsService.findProductByInclude(nombre, pag);
   }
 
@@ -149,7 +150,7 @@ export class ProductsController {
                             @Query('subcat') subcat: number,
                             @Query('pagina') pag: number,
                             @Query('fecha') fecha: number,
-                            @Query('precio') precio: number): Promise<any[]> {
+                            @Query('precio') precio: number): Promise<PaginatedDto> {
     return await this.productsService.findProductByFilter(nombre, cat, subcat, pag, fecha,precio);
   }
 
