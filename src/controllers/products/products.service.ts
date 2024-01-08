@@ -14,7 +14,6 @@ import { CreateProductImage } from './dto/create-image.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { Categoria } from './entities/categoria.entity';
 import { UploadImageService } from 'src/services/upload-image.service';
-import { PaginatedDto } from './dto/data-paginated.dto';
 
 const { Storage } = require("@google-cloud/storage");
 const storage = new Storage({ keyFilename: "google-cloud-key.json" });
@@ -43,30 +42,21 @@ export class ProductsService implements IProducts{
     }
   }
   //orderby!
-  async findAllProducts(page: number): Promise<PaginatedDto> {
-    console.log('aca');
+  async findAllProducts(pag: number): Promise<ProductDto[]> {
     try {
-      const [data, total] = await this.productRepository.findAndCount({
+      const listProducts  = await this.productRepository.find({
         relations: {
           img: true,
-          subcat: {}
+          subcat: {
+          }
         },
-        skip: 6 * (page - 1),
+        skip: 6 * (pag - 1),
         take: 6,
         where: {
           vendido: false
         },
       });
-
-      const pages = Math.ceil(total / 6);
-      const products = ProductMapper.toDtoList(data);
-      const result: PaginatedDto = {
-        products,
-        page,
-        pages,
-        total
-      }
-      return result;
+      return ProductMapper.toDtoList(listProducts);
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
@@ -92,8 +82,10 @@ export class ProductsService implements IProducts{
     return product_dto;
   }
 
-  async findProductByUserId(userId: number, page: number): Promise<PaginatedDto> {
-    const [data, total]  = await this.productRepository.findAndCount({
+  async findProductByUserId(userId: number, pag: number): Promise<ProductDto[]> {
+    console.log(userId);
+    const product  = await this.productRepository.find({
+      
       relations: {
         subcat: true,
         img: true,
@@ -102,37 +94,21 @@ export class ProductsService implements IProducts{
       where: {
         usuario:{
           id: userId}},
-      skip: 6 * (page - 1),
+      skip: 6 * (pag - 1),
       take: 6
     });
-    const products = ProductMapper.toDtoList(data);
-    if(!products || products.length == 0){
+
+    const product_dto = ProductMapper.toDtoList(product);
+    
+    if(!product_dto || product_dto.length == 0){
       throw new NotFoundException(`El usuario ${userId} no tiene productos aún!`); 
     }
-    const pages = Math.ceil(total / 6);
-    const result: PaginatedDto = {
-      products,
-      page,
-      pages,
-      total
-    }
-    return result;
+
+    return product_dto;
   }
  
-  async findProductByInclude(name: string, page: number): Promise<PaginatedDto> {
-    // const listProducts = await this.productRepository.find({
-    //   where: {
-    //     nombre: Like(`%${name}%`),
-    //   },
-    //   relations: {
-    //     subcat: true,
-    //     img: true
-    //   },
-    //   skip: 6 * (pag - 1),
-    //   take: 6
-    // })
-
-    const [data, total]  = await this.productRepository.findAndCount({
+  async findProductByInclude(name: string, pag: number): Promise<ProductDto[]> {
+    const listProducts = await this.productRepository.find({
       where: {
         nombre: Like(`%${name}%`),
       },
@@ -140,28 +116,21 @@ export class ProductsService implements IProducts{
         subcat: true,
         img: true
       },
-      skip: 6 * (page - 1),
+      skip: 6 * (pag - 1),
       take: 6
     })
 
-    const products = ProductMapper.toDtoList(data);
+    const productsInclude = ProductMapper.toDtoList(listProducts);
     
-    if(!products || products.length === 0) throw new NotFoundException(`No se encontraron coincidencias con el nombre: ${name}`);
+    if(!productsInclude || productsInclude.length === 0) throw new NotFoundException(`No se encontraron coincidencias con el nombre: ${name}`);
     
-    const pages = Math.ceil(total / 6);
-    const result: PaginatedDto = {
-      products,
-      page,
-      pages,
-      total
-    }
-    return result;
+    return productsInclude;
   }
-
   //probar relations con productRepository, activando subcategorias de los productos.
-  async findProductByFilter(name: string, categoria: number, subcat: number, page: number, fecha: number, precio: number): Promise<PaginatedDto> {
+  async findProductByFilter(name: string, categoria: number, subcat: number, pag: number, fecha: number, precio: number): Promise<any[]> {
+
     if(name != null && categoria == null && subcat == null){
-      const [data, total]  = await this.productRepository.findAndCount({
+      const listProducts = await this.productRepository.find({
         where: {
           nombre: Like(`%${name}%`),
           vendido: false
@@ -170,84 +139,55 @@ export class ProductsService implements IProducts{
           subcat: true,
           img: true
         },
-        skip: 6 * (page - 1),
+        skip: 6 * (pag - 1),
         take: 6,
         order: {
-          fecha_creacion: fecha == 1 ? "DESC" : "ASC",
-          precio: precio == 1 ? "DESC" : "ASC"
+            fecha_creacion: fecha == 1 ? "DESC" : "ASC",
+            precio: precio == 1 ? "DESC" : "ASC"
         }
       })
-
-      const products = ProductMapper.toDtoList(data);
-      if(!products || products.length === 0) throw new NotFoundException(`No se encontraron coincidencias`);
-
-      const pages = Math.ceil(total / 6);
-      const result: PaginatedDto = {
-        products,
-        page,
-        pages,
-        total
-      }
-      return result;
+      const productsInclude = ProductMapper.toDtoList(listProducts);
+      if(!productsInclude || productsInclude.length === 0) throw new NotFoundException(`No se encontraron coincidencias con el nombre: ${name}`);
+      return productsInclude;
     }
     
     else if(name == null && categoria != null && subcat == null){
-      const [data, total]  = await this.productRepository.findAndCount({
-        relations: ["subcat", "subcat.categ", "usuario", "img"],
-        where: {
-          subcat:{
-            categ:{
-              id: categoria}
-            },
-          vendido: false
-        },
-        skip: 6 * (page - 1),
-        take: 6,
-        order: {
+  
+      const listSubcaProducts = await this.productRepository.find({
+      relations: ["subcat", "subcat.categ", "usuario", "img"],
+      where: {
+        subcat:{
+          categ:{
+            id: categoria}
+          },
+        vendido: false
+      },
+      skip: 6 * (pag - 1),
+      take: 6,
+      order: {
           fecha_creacion: fecha == 1 ? "DESC" : "ASC",
           precio: precio == 1 ? "DESC" : "ASC"
-        }
-      });
-      const products = ProductMapper.toDtoList(data);
-      if(!products || products.length === 0) throw new NotFoundException(`No se encontraron coincidencias`);
-
-      const pages = Math.ceil(total / 6);
-      const result: PaginatedDto = {
-        products,
-        page,
-        pages,
-        total
       }
-      return result;
+    });
+    return ProductMapper.toDtoList(listSubcaProducts);
     }
     else if(name == null && categoria == null && subcat != null){
-      const [data, total]  = await this.productRepository.findAndCount({
-        relations: ["subcat", "subcat.categ", "usuario", "img"],
-        where: {
-          id: subcat,
-          vendido: false},
-        skip: 6 * (page - 1),
-        take: 6,
-        order: {
+      const listSubcaProducts = await this.productRepository.find({
+      relations: ["subcat", "subcat.categ", "usuario", "img"],
+      where: {
+        id: subcat,
+        vendido: false},
+      skip: 6 * (pag - 1),
+      take: 6,
+      order: {
           fecha_creacion: fecha == 1 ? "DESC" : "ASC",
           precio: precio == 1 ? "DESC" : "ASC"
-        }
-      });
-      const products = ProductMapper.toDtoList(data);
-      if(!products || products.length === 0) throw new NotFoundException(`No se encontraron coincidencias`);
-
-      const pages = Math.ceil(total / 6);
-      const result: PaginatedDto = {
-        products,
-        page,
-        pages,
-        total
       }
-      return result;
+    });
+    return ProductMapper.toDtoList(listSubcaProducts);
     }
-
     else if(name != null && categoria != null && subcat == null){
-      const [data, total]  = await this.productRepository.findAndCount({
+      const listSubcaProducts = await this.productRepository.find({
         relations: ["subcat", "subcat.categ", "usuario", "img"],
         where: {
           subcat:{
@@ -256,27 +196,17 @@ export class ProductsService implements IProducts{
           nombre: Like(`%${name}%`),
           vendido: false
         },
-        skip: 6 * (page - 1),
+        skip: 6 * (pag - 1),
         take: 6,
         order: {
           fecha_creacion: fecha == 1 ? "DESC" : "ASC",
           precio: precio == 1 ? "DESC" : "ASC"
         }
-      });
-      const products = ProductMapper.toDtoList(data);
-      if(!products || products.length === 0) throw new NotFoundException(`No se encontraron coincidencias`);
-
-      const pages = Math.ceil(total / 6);
-      const result: PaginatedDto = {
-        products,
-        page,
-        pages,
-        total
-      }
-      return result;
+    });
+      return ProductMapper.toDtoList(listSubcaProducts);
     }
     else if(name != null && categoria == null && subcat != null){
-      const [data, total]  = await this.productRepository.findAndCount({
+      const listSubcaProducts = await this.productRepository.find({
         relations: ["subcat", "subcat.categ", "usuario", "img"],
         where: {
           subcat:{
@@ -284,27 +214,17 @@ export class ProductsService implements IProducts{
           nombre: Like(`%${name}%`),
           vendido: false
         },
-        skip: 6 * (page - 1),
+        skip: 6 * (pag - 1),
         take: 6,
         order: {
           fecha_creacion: fecha == 1 ? "DESC" : "ASC",
           precio: precio == 1 ? "DESC" : "ASC"
         }
       });
-      const products = ProductMapper.toDtoList(data);
-      if(!products || products.length === 0) throw new NotFoundException(`No se encontraron coincidencias`);
-
-      const pages = Math.ceil(total / 6);
-      const result: PaginatedDto = {
-        products,
-        page,
-        pages,
-        total
-      }
-      return result;
+      return ProductMapper.toDtoList(listSubcaProducts);
     }
     else if(name == null && categoria != null && subcat != null){
-      const [data, total]  = await this.productRepository.findAndCount({
+      const listSubcaProducts = await this.productRepository.find({
         relations: ["subcat", "subcat.categ", "usuario", "img"],
         where: {
           subcat:{
@@ -314,27 +234,17 @@ export class ProductsService implements IProducts{
             },
           vendido: false,   
         },
-        skip: 6 * (page - 1),
+        skip: 6 * (pag - 1),
         take: 6,
         order: {
           fecha_creacion: fecha == 1 ? "DESC" : "ASC",
           precio: precio == 1 ? "DESC" : "ASC"
         }
       });
-      const products = ProductMapper.toDtoList(data);
-      if(!products || products.length === 0) throw new NotFoundException(`No se encontraron coincidencias`);
-
-      const pages = Math.ceil(total / 6);
-      const result: PaginatedDto = {
-        products,
-        page,
-        pages,
-        total
-      }
-      return result;
+      return ProductMapper.toDtoList(listSubcaProducts);
     }
     else if(name != null && categoria != null && subcat != null){
-      const [data, total]  = await this.productRepository.findAndCount({
+      const listSubcaProducts = await this.productRepository.find({
         relations: ["subcat", "subcat.categ", "usuario", "img"],
         where: {
           subcat:{
@@ -344,26 +254,16 @@ export class ProductsService implements IProducts{
             },
           nombre: Like(`%${name}%`),
           vendido: false},
-        skip: 6 * (page - 1),
+        skip: 6 * (pag - 1),
         take: 6,
         order: {
           fecha_creacion: fecha == 1 ? "DESC" : "ASC",
           precio: precio == 1 ? "DESC" : "ASC"
         }
       });
-      const products = ProductMapper.toDtoList(data);
-      if(!products || products.length === 0) throw new NotFoundException(`No se encontraron coincidencias`);
-
-      const pages = Math.ceil(total / 6);
-      const result: PaginatedDto = {
-        products,
-        page,
-        pages,
-        total
-      }
-      return result;
+      return ProductMapper.toDtoList(listSubcaProducts);
     }
-  };
+    };
 
   async updateProduct(id: number, updateData: UpdateProductDto): Promise<string> {
     const product = await this.productRepository.findOneBy({id});
