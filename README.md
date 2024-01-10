@@ -49,11 +49,24 @@ este comando instalará todas las librerias necesarias para levantar el proyecto
 
 ## Configuraciones previas
 Antes de levantar el proyecto es preciso hacer configuraciones iniciales.
-#### 1. Definir variables de entorno
+
+#### 1. Generar base de datos
+Primero se debe generar la base de datos.
+Bajo la carpeta *model* se encuentra el diagrama entidad relacion del proyecto y dos scripts. El script *Estructura_BD_VelociMRKT* creará la base de datos y las tablas correspondientes al modelo de la aplicación y el script *Datos_BD_VelociMRKT* poblará la base creada con valores dummy iniciales.
+
+Este método es opcional al proceso de migración *code first* generada por *TypeOrm*, vale decir, si se requiere generar la base de datos de forma manual. Sino, es preciso configurar el proyecto para generar esta migración previo a la ejecución del proyecto
+
+#### 2. Generar cuenta de servicio en GCP **
+Se debe generar una cuenta de servicio o una *Service Account* en *GCP Cloud Storage* con los permisos necesarios de escritura sobre el bucket disponibilizado para almacenar las imágenes generadas en la aplicación. Una vez generada esta SA *google-cloud-key.json* debe ubicarse en la raiz del proyecto para su uso.
+Esta SA no debe subirse al repositorio, por lo que es su responsabilidad resguardar sus claves.
+
+** Este proceso es necesario para el correcto funcionamiento de la totalidad de la aplicación, pero se pueden generar flujos sin la necesidad de tener esta *SA* configurada en el proyecto.
+
+#### 3. Definir variables de entorno
 En el archivo *.env.dist* se encuentran las variables de entorno que se utilizan en la aplicación. Para configurar las variables locales se debe crear un archivo *.env.local* en el directorio raiz (misma ubicación del archivo *.env.dist*) con la misma configuracion. Las variables son las siguientes:
 
 ```bash
-# variables para conectar la base de datos
+# variables para conectar la base de datos (generadas en el paso 1)
 DB_HOST=DBHOST
 DB_PORT=3306
 DB_USER="USER_DB"
@@ -63,20 +76,9 @@ DB_NAME="DBNAME"
 # secreto para firmar token de autenticación
 SECRET_KEY="ClaveSecreta@12345"
 
-# nombre el bucket donde apunta cloud storage
+# nombre el bucket donde apunta cloud storage (generadas en el paso 2)
 BUCKET_NAME="nombre_bucket_gcp"
 ```
-
-#### 2. Generar cuenta de servicio en GCP **
-Se debe generar una cuenta de servicio o una *Service Account* en *GCP Cloud Storage* con los permisos necesarios de escritura sobre el bucket disponibilizado para almacenar las imágenes generadas en la aplicación. Una vez generada esta SA *google-cloud-key.json* debe ubicarse en la raiz del proyecto para su uso.
-Esta SA no debe subirse al repositorio, por lo que es su responsabilidad resguardar sus claves.
-
-** Este proceso es necesario para el correcto funcionamiento de la totalidad de la aplicación, pero se pueden generar flujos sin la necesidad de tener esta *SA* configurada en el proyecto.
-
-#### 3. Generar base de datos (opcional)
-Este método es opcional al proceso de migración *code first* generada por *TypeOrm*, vale decir, si se requiere generar la base de datos de forma manual.
-
-Bajo la carpeta *model* se encuentra el diagrama entidad relacion del proyecto y dos scripts. El script *Estructura_BD_VelociMRKT* creará la base de datos y las tablas correspondientes al modelo de la aplicación y el script *Datos_BD_VelociMRKT* poblará la base creada con valores dummy.
 
 ## Levantar el proyecto
 Una vez realizadas las configuraciones previas, se levanta el proyecto con los siguientes comandos
