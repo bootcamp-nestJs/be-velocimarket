@@ -56,28 +56,30 @@ Bajo la carpeta *model* se encuentra el diagrama entidad relacion del proyecto y
 
 Este método es opcional al proceso de migración *code first* generada por *TypeOrm*, vale decir, si se requiere generar la base de datos de forma manual. Sino, es preciso configurar el proyecto para generar esta migración previo a la ejecución del proyecto
 
-#### 2. Generar cuenta de servicio en GCP **
-Se debe generar una cuenta de servicio o una *Service Account* en *GCP Cloud Storage* con los permisos necesarios de escritura sobre el bucket disponibilizado para almacenar las imágenes generadas en la aplicación. Una vez generada esta SA *google-cloud-key.json* debe ubicarse en la raiz del proyecto para su uso.
+#### 2. Crear Bucket en GCP Cloud Storage y generar cuenta de servicio en GCP **
+Ir a la consola de *GCP* y crear un proyecto. Bajo ese proyecto, ir a la plataforma de *Cloud Storage* y crear un bucket con permisos públicos. Aquí un [ejemplo](https://www.youtube.com/watch?v=Px1oXqR1bFA).
+
+Luego de esto, se debe generar una cuenta de servicio o una *Service Account* en *GCP Cloud Storage* con los permisos necesarios sobre el proyecto y el bucket disponibilizado para almacenar las imágenes generadas en la aplicación. Una vez generada esta SA *google-cloud-key.json* debe ubicarse en la raiz del proyecto para su uso.
 Esta SA no debe subirse al repositorio, por lo que es su responsabilidad resguardar sus claves.
 
 ** Este proceso es necesario para el correcto funcionamiento de la totalidad de la aplicación, pero se pueden generar flujos sin la necesidad de tener esta *SA* configurada en el proyecto.
 
 #### 3. Definir variables de entorno
-En el archivo *.env.dist* se encuentran las variables de entorno que se utilizan en la aplicación. Para configurar las variables locales se debe crear un archivo *.env.local* en el directorio raiz (misma ubicación del archivo *.env.dist*) con la misma configuracion. Las variables son las siguientes:
+En el archivo *.env.dist* se encuentran las variables de entorno que se utilizan en la aplicación y un ejemplo de lo que toma por valor. Para configurar las variables locales se debe crear un archivo *.env.local* en el directorio raiz (misma ubicación del archivo *.env.dist*) con la misma configuracion pero reemplazando las variables por las variables locales que corresponden. Las variables son las siguientes:
 
 ```bash
-# variables para conectar la base de datos (generadas en el paso 1)
-DB_HOST=DBHOST
-DB_PORT=3306
-DB_USER="USER_DB"
-DB_PASSWORD="PASS1234"
-DB_NAME="DBNAME"
+# variables para conectar la base de datos
+DB_HOST= # host base de datos (mysql ó mariadb)
+DB_PORT= # puerto de conexión
+DB_USER= # usuario conexión bd
+DB_PASSWORD= # contraseña usuario bd
+DB_NAME= # nombre base de datos, generada en el paso 1
 
 # secreto para firmar token de autenticación
-SECRET_KEY="ClaveSecreta@12345"
+SECRET_KEY="ClaveSecreta@12345" # valor ejemplo, reemplazar por valor definitivo
 
-# nombre el bucket donde apunta cloud storage (generadas en el paso 2)
-BUCKET_NAME="nombre_bucket_gcp"
+# nombre el bucket donde apunta cloud storage
+BUCKET_NAME="nombre_bucket_gcp" # reemplazar por el nombre del bucket, generado en el paso 2
 ```
 
 ## Levantar el proyecto
