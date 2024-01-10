@@ -1,9 +1,12 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 
+import * as dotenv from 'dotenv';
+dotenv.config({ path: '.env.local'});
+
 const { Storage } = require("@google-cloud/storage");
 const storage = new Storage({ keyFilename: "google-cloud-key.json" });
-const bucket = storage.bucket("velocimarket");
+const bucket = storage.bucket(process.env.BUCKET_NAME);
 
 @Injectable()
 export class UploadImageService {
