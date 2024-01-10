@@ -200,5 +200,26 @@ export class CartService implements ICart{
     }
   }
 
+  async checkoutCart(id: number): Promise<string>{
+    const cart  = await this.cartRepository.findOne({
+      where: {id},
+      relations: ['cartProduct', 'cartProduct.product']
+    });
+    if( !cart ) throw new NotFoundException(`El carrito ${id} que esta tratando de eliminar no existe `);
+
+    try {
+      const cartProducts = cart.cartProduct;
+
+      cartProducts.map(async(cartProduct) => {
+        const product = cartProduct.product;
+        product.vendido = true;
+        await this.productRepository.save(product);
+      });
+
+      return `Checkout id ${id} realizado con éxito`;
+    } catch (error) {
+      throw new InternalServerErrorException(`Error: ${error}`);
+    }
+  }
   
 }

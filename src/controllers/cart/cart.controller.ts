@@ -8,7 +8,7 @@ import { addProductCartDto } from './dto/add-product-cart.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
@@ -47,6 +47,12 @@ export class CartController {
   async addProduct(@Body() addProduct: addProductCartDto): Promise<CartDto> {
     const productoCreado = await this.cartService.addProductToCart(addProduct);
     return productoCreado;
+  }
+
+  // @ApiBearerAuth('access-token')
+  @Post('checkout/:id')
+  async checkout(@Param('id') cartId: number): Promise<string> {
+    return await this.cartService.checkoutCart(cartId);
   }
 
   @ApiBearerAuth('access-token')
