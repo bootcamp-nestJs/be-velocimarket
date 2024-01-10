@@ -59,7 +59,7 @@ Este método es opcional al proceso de migración *code first* generada por *Typ
 #### 2. Crear Bucket en GCP Cloud Storage y generar cuenta de servicio en GCP **
 Ir a la consola de *GCP* y crear un proyecto. Bajo ese proyecto, ir a la plataforma de *Cloud Storage* y crear un bucket con permisos públicos. Aquí un [ejemplo](https://www.youtube.com/watch?v=Px1oXqR1bFA).
 
-Luego de esto, se debe generar una cuenta de servicio o una *Service Account* en *GCP Cloud Storage* con los permisos necesarios sobre el proyecto y el bucket disponibilizado para almacenar las imágenes generadas en la aplicación. Una vez generada esta SA *google-cloud-key.json* debe ubicarse en la raiz del proyecto para su uso.
+Luego de esto, se debe generar una cuenta de servicio o una *Service Account* con los permisos necesarios sobre el proyecto y el bucket disponibilizado para almacenar las imágenes generadas en la aplicación. Una vez generada esta SA *google-cloud-key.json* debe ubicarse en la raiz del proyecto para su uso.
 Esta SA no debe subirse al repositorio, por lo que es su responsabilidad resguardar sus claves.
 
 ** Este proceso es necesario para el correcto funcionamiento de la totalidad de la aplicación, pero se pueden generar flujos sin la necesidad de tener esta *SA* configurada en el proyecto.
