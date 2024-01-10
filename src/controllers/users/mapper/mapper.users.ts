@@ -56,35 +56,6 @@ export class UserMapper {
 
     return entity;
   }  
-  // static toEntityDireccion(dto: CreateUserDto): Direccion {
-  //   if (!dto) {
-  //     return null;
-  //   }
-  //   const entity_direccion = new Direccion()
-    // entity_direccion.calle = dto.calle;
-    // entity_direccion.comuna = dto.comuna;
-    // entity_direccion.numero = dto.número;
-    // entity_direccion.region = dto.region;
-  //   const date = new Date
-  //   entity_direccion.fecha_creacion = date;
-    
-  //   return entity_direccion;
-  // }  
-
-  // static toUpdateEntityDireccion(dto: UpdateDireccionDto): Direccion {
-  //   if (!dto) {
-  //     return null;
-  //   }
-  //   const entity_direccion = new Direccion()
-  //   entity_direccion.calle = dto.calle;
-  //   entity_direccion.comuna = dto.comuna;
-  //   entity_direccion.numero = dto.número;
-  //   entity_direccion.region = dto.region;
-  //   const date = new Date
-  //   entity_direccion.fecha_modificacion = date;
-    
-  //   return entity_direccion;
-  // }  
     
   static toUpdateEntity(id: number, dto: UpdateUserDto): Usuario {
     if (!dto) return null;
@@ -103,7 +74,7 @@ export class UserMapper {
     entity.numero = dto.numero;
     entity.region = dto.region;
     entity.valoracion = dto.valoracion;
-    const date = new Date
+    const date = new Date;
     entity.fecha_modificacion = date;
     
     return entity;

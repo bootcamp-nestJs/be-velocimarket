@@ -22,7 +22,6 @@ export class cartMapper {
       dto.productos= [];
       dto.productos.push(entity.product);
       
-       
       return dto;
     }
 
@@ -39,7 +38,7 @@ export class cartMapper {
       dto.productos= [];
       entity.cartProduct.forEach(element => {
         dto.productos.push(element.product)});
-      //console.log(entity.cartProduct[0].product);
+
       return dto;
     }
 
@@ -54,9 +53,8 @@ export class cartMapper {
       dto.valorEnvio= entity.valor_envio;
       dto.totalCarrito= entity.total_carrito;
       dto.productos= [];
-      // entity.cartProduct.forEach(element => {
-        // dto.productos.push(element.product)});
-      // dto.productos.push(entity.cartProduct[0].product);
+      
+      return dto;
     }
 
     static toDtoList(entities: CartProduct[]): CartDto[] {
@@ -71,10 +69,8 @@ export class cartMapper {
       if (!dto) {
         return null;
       }
-      
-      const date = new Date
+      const date = new Date;
       const entity =  new Cart();
-      //entity.usuario_id= dto.usuarioId;
       entity.medio_pago= dto.medioPago;
       entity.valor_envio= dto.valorEnvio;
       entity.fecha_creacion = date;
@@ -87,8 +83,7 @@ export class cartMapper {
       if (!dto) {
         return null;
       }
-      
-      const date = new Date
+      const date = new Date;
       const cartProduct = new CartProduct();
       cartProduct.producto_id = dto.productoId;
       cartProduct.fecha_creacion = date;
@@ -105,10 +100,10 @@ export class cartMapper {
         entity.id= id;
         entity.usuario_id= dto.usuarioId;
         entity.medio_pago= dto.medioPago;
-        //entity.total_carrito= entity.cartProduct.map(cartProduct => cartProduct.product.precio).reduce((a, b) => a + b, 0);
         entity.valor_envio= dto.valorEnvio;
-        const date = new Date
+        const date = new Date;
         entity.fecha_modificacion = date;
+
         return entity;
       }  
 
@@ -116,7 +111,7 @@ export class cartMapper {
         const cartProduct =  new CartProduct();
         cartProduct.carrito_id = agregarProducto.carrotiId;
         cartProduct.producto_id = agregarProducto.productoId;
-        const date = new Date
+        const date = new Date;
         cartProduct.fecha_creacion = date;
         cartProduct.fecha_modificacion = date;
 

@@ -1,4 +1,4 @@
-import { IsDateString, IsInt, IsOptional, IsPositive, IsString, IsUUID, MaxLength, Min, MinLength, isDate, isDateString } from "@nestjs/class-validator";
+import { IsPositive, IsString, MaxLength, Min, MinLength} from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateMensajeDto {

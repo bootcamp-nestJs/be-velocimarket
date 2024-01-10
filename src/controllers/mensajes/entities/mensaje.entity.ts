@@ -1,6 +1,4 @@
-import { Product } from "src/controllers/products/entities/product.entity";
-import { Usuario } from "src/controllers/users/entities/user.entity";
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Conversacion } from "./conversacion.entity";
 
 @Entity({ name: 'Mensaje'})

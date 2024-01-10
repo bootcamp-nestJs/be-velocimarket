@@ -1,5 +1,5 @@
 import { Product } from "src/controllers/products/entities/product.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Cart } from "./cart.entity";
 
 @Entity({ name: 'CarritoProducto'})

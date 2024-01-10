@@ -2,7 +2,7 @@ import { CreateMensajeDto } from "../dto/create-mensaje.dto";
 
 export interface Mensaje {
   id? : string;
-  descripcion: string,
+  descripcion: string;
   fechaModificacion?: string;
   fechaCreacion?: string;
 }

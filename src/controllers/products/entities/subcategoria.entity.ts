@@ -1,10 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Product } from "./product.entity";
 import { Categoria } from "./categoria.entity";
 
 @Entity({ name: 'Subcategoria'})
 export class Subcategoria {
-    // @PrimaryColumn({name: 'id'})
+    
     @PrimaryGeneratedColumn()
     id: number;
     @Column({name: 'categoria_id'})
@@ -18,7 +18,7 @@ export class Subcategoria {
 
     @ManyToOne((() => Categoria))
     @JoinColumn({ name: 'categoria_id' })
-    categ: Categoria ;
+    categ: Categoria;
 
     @OneToMany(() => Product, (p) => p.subcat)
     product: Product[];

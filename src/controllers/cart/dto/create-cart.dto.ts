@@ -1,6 +1,6 @@
-import { IsDateString, IsInt, IsNumber, IsOptional, IsPositive, IsString, IsUUID, MaxLength, Min, MinLength, isDate, isDateString } from "@nestjs/class-validator";
+import { IsInt, IsPositive, IsString, MaxLength, MinLength} from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { Product } from "src/controllers/products/entities/product.entity";
+
 export class CreateCartDto {
   @ApiProperty({
     type: 'number',
@@ -24,7 +24,7 @@ export class CreateCartDto {
   })
   @IsInt({message: "El atributo productoId presenta error,revise que es numerico"})
   @IsPositive({ message: "El atributo productoId presenta error, debe ser mayor a cero" })
-	readonly productoId: number
+	readonly productoId: number;
 
   @ApiProperty({
     type: 'string',

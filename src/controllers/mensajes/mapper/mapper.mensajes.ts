@@ -10,9 +10,7 @@ export class MsgMapper {
       }
       const dto =  new MensajeDto();
       dto.id = entity.id;
-      // dto.productoId= entity.producto_id;
       dto.descripcion= entity.mensaje;
-      //dto.producto=entity.conversacion.product;
       dto.emisor=entity.conversacion.user;
       return dto;
     }
@@ -27,21 +25,20 @@ export class MsgMapper {
       }
       const entity =  new Mensaje();
       entity.mensaje= dto.descripcion;
-      // entity.conversacion_id= dto.;
-      const date = new Date
+      const date = new Date;
       entity.fecha_creacion = date;
       return entity;
     }  
 
     static toUpdateEntity(id: number, dto: MensajeDto): Mensaje {
-        if (!dto) {
-          return null;
-        }
-        const entity =  new Mensaje();
-        entity.id= id;
-        entity.mensaje = dto.descripcion;
-        const date = new Date
-        entity.fecha_modificacion = date;
-        return entity;
-      }  
+      if (!dto) {
+        return null;
+      }
+      const entity =  new Mensaje();
+      entity.id= id;
+      entity.mensaje = dto.descripcion;
+      const date = new Date;
+      entity.fecha_modificacion = date;
+      return entity;
+    }  
 }

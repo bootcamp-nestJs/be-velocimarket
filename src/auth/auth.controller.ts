@@ -9,7 +9,7 @@ export class AuthController {
 
   @UseGuards(AuthGuard('local'))
   @Post('signin')
-  async singIn(@Body() credentials: CredentialsDto)  { // Promise<string>
+  async singIn(@Body() credentials: CredentialsDto)  {
     return this.authService.login(credentials);
   }
 }

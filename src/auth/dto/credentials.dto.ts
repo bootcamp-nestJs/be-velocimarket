@@ -21,5 +21,5 @@ export class CredentialsDto {
     title: "Password"
   })
   @IsNotEmpty({message: "El atributo password no puede ser un campo vacío"})
-  readonly password: string
+  readonly password: string;
 }

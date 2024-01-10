@@ -15,7 +15,7 @@ import { trace } from 'console';
 
 
 async function bootstrap() {
-  console.log('Listen on port: 3000');
+
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger({
       transports: [
@@ -28,6 +28,7 @@ async function bootstrap() {
             ),
           level: 'info',
           })
+        // Logs solo en consola por espacio en disco.  
         //new winston.transports.File({ filename: 'combined.log' }),
       ],
     })});

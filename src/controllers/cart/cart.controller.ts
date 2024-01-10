@@ -8,7 +8,7 @@ import { addProductCartDto } from './dto/add-product-cart.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
@@ -20,11 +20,10 @@ export class CartController {
     const payload = req.user;
     
       if(payload == undefined){
-        throw new BadRequestException(`Debe logearse para crear un carrito`)
+        throw new BadRequestException(`Debe logearse para crear un carrito`);
       }    
-    
+    //agregar id de usuario al carrito
     const cartCreated = await this.cartService.createCart(createCartDto);
-    console.log(payload.id);
     const cartFinal = await this.cartService.updateCart(cartCreated.id, {usuarioId: payload.id});
 
     return cartCreated;
@@ -49,7 +48,7 @@ export class CartController {
     return productoCreado;
   }
 
-  // @ApiBearerAuth('access-token')
+  @ApiBearerAuth('access-token')
   @Post('checkout/:id')
   async checkout(@Param('id') cartId: number): Promise<string> {
     return await this.cartService.checkoutCart(cartId);
@@ -71,7 +70,7 @@ export class CartController {
   @Delete('removeProduct')
   async removeProduct(@Query('productId') productId: number, @Query('cartId') cartId: number): Promise<string> {
     await this.cartService.removeProductCart(productId,cartId );
-    return `Producto de ID ${productId} eliminado del carrito de ID ${cartId}`
+    return `Producto de ID ${productId} eliminado del carrito de ID ${cartId}`;
   }
 
 }

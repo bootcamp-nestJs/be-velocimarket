@@ -1,17 +1,15 @@
 import { Usuario } from "src/controllers/users/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Subcategoria } from "./subcategoria.entity";
 import { Imagen } from "./imagen.entity";
 import { Calificacion } from "src/controllers/reports/entities/calificacion.entity";
-import { Mensaje } from "src/controllers/mensajes/entities/mensaje.entity";
-import { Cart } from "src/controllers/cart/entities/cart.entity";
 import { Reclamos } from "src/controllers/reports/entities/reclamos.entity";
 import { CartProduct } from "src/controllers/cart/entities/productCart.entity";
 import { Conversacion } from "src/controllers/mensajes/entities/conversacion.entity";
 
 @Entity({ name: 'Producto'})
 export class Product {
-    // @PrimaryColumn({name: 'id'})
+    
     @PrimaryGeneratedColumn()
     id: number;
     @Column({name: 'nombre'})
@@ -59,7 +57,7 @@ export class Product {
     
     @ManyToOne(() => Subcategoria)
     @JoinColumn({ name: 'categoria_id' })
-    subcat: Subcategoria ;
+    subcat: Subcategoria;
     
     @OneToMany(() => Imagen, (i) => i.product)
     img: Imagen[];

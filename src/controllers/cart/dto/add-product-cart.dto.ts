@@ -24,6 +24,6 @@ export class addProductCartDto {
   })
   @IsInt({message: "El atributo productoId presenta error,revise que es numerico"})
   @IsPositive({ message: "El atributo productoId presenta error, debe ser mayor a cero" })
-	readonly productoId: number
+	readonly productoId: number;
 
 }
