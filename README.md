@@ -67,9 +67,11 @@ SECRET_KEY="ClaveSecreta@12345"
 BUCKET_NAME="nombre_bucket_gcp"
 ```
 
-#### 2. Generar cuenta de servicio
+#### 2. Generar cuenta de servicio en GCP *
 Se debe generar una cuenta de servicio o una *Service Account* en *GCP Cloud Storage* con los permisos necesarios de escritura sobre el bucket disponibilizado para almacenar las imágenes generadas en la aplicación. Una vez generada esta SA *google-cloud-key.json* debe ubicarse en la raiz del proyecto para su uso.
 Esta SA no debe subirse al repositorio, por lo que es su responsabilidad resguardar sus claves.
+
+* Este proceso es necesario para el correcto funcionamiento de la totalidad de la aplicación, pero se pueden generar flujos sin la necesidad de tener esta *SA* configurada en el proyecto.
 
 #### 3. Generar base de datos (opcional)
 Este método es opcional al proceso de migración *code first* generada por *TypeOrm*, vale decir, si se requiere generar la base de datos de forma manual.
