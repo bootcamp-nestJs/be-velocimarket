@@ -51,7 +51,7 @@ este comando instalará todas las librerias necesarias para levantar el proyecto
 Antes de levantar el proyecto es preciso hacer configuraciones iniciales.
 
 #### 1. Generar base de datos
-Primero se debe generar la base de datos.
+Primero se debe generar la base de datos *mysql* ó *MariaDB*.
 Bajo la carpeta *model* se encuentra el diagrama entidad relacion del proyecto y dos scripts. El script *Estructura_BD_VelociMRKT* creará la base de datos y las tablas correspondientes al modelo de la aplicación y el script *Datos_BD_VelociMRKT* poblará la base creada con valores dummy iniciales.
 
 Este método es opcional al proceso de migración *code first* generada por *TypeOrm*, vale decir, si se requiere generar la base de datos de forma manual. Sino, es preciso configurar el proyecto para generar esta migración previo a la ejecución del proyecto
