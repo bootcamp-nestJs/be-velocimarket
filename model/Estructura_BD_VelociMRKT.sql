@@ -1,4 +1,4 @@
--- CREATE DATABASE velo_db;
+CREATE DATABASE velo_db;
 USE velo_db;
 
 CREATE TABLE `Categoria` (
