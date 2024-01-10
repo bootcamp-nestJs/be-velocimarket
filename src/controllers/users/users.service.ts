@@ -31,11 +31,11 @@ export class UsersService {
     });
 
     if(findedUser && findedUser.user_name == newUser.user){
-      throw new BadRequestException(`El nombre de usuario ${newUser.user} ya existe, ingresar otro nombre de usuario`)
+      throw new BadRequestException(`El nombre de usuario ${newUser.user} ya existe, ingresar otro nombre de usuario`);
     }
 
     if(findedUser && findedUser.mail == newUser.mail){
-      throw new BadRequestException(`El correo ${newUser.mail} ya se encuentra registrado, debe ingresar otro correo.`)
+      throw new BadRequestException(`El correo ${newUser.mail} ya se encuentra registrado, debe ingresar otro correo.`);
     }
     
     try {
@@ -44,9 +44,9 @@ export class UsersService {
       await this.userRepository.save(newUserDto);
       const findUser = await this.userRepository.findOneBy({
         user_name: newUser.user
-      })
+      });
         
-      return UserMapper.toDto(findUser) ;
+      return UserMapper.toDto(findUser);
       
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
@@ -125,7 +125,7 @@ export class UsersService {
   }
   
   async removeUser(id: number): Promise<string> {
-    const user = await this.userRepository.findOneBy({id})
+    const user = await this.userRepository.findOneBy({id});
     if( !user ) throw new NotFoundException(`El usuario que esta tratando de eliminar no existe ${id}`);
     
     try {
@@ -146,16 +146,16 @@ export class UsersService {
     user.producto.forEach(producto => {
       if (producto.vendido) {
         contador += 1;
-      }})
+      }
+    });
       
-      const newValoracion = (user.valoracion + valoration.valoracion)/contador;
-      console.log((user.valoracion),(valoration.valoracion), contador);
+    const newValoracion = (user.valoracion + valoration.valoracion)/contador;
     await this.userRepository.update(valoration.userId, {valoracion: newValoracion});
     return newValoracion;
   }
 
   async uploadAvatar(id: number, file: Express.Multer.File): Promise<string>{
-    const user = await this.userRepository.findOneBy({id})
+    const user = await this.userRepository.findOneBy({id});
     if( !user ) throw new NotFoundException(`El usuario que esta tratando de eliminar no existe ${id}`);
 
     const publicUrl = await this.uploadImageService.upload(id, file);

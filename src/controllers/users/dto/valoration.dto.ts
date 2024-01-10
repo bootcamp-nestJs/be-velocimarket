@@ -1,4 +1,4 @@
-import { IsAlphanumeric, IsEmail, IsEmpty, IsInt, IsNotEmpty, IsNumber, IsPhoneNumber, IsPositive, IsString, Max, MaxLength, MinLength } from "@nestjs/class-validator";
+import { IsInt, IsNotEmpty, IsPositive, Max } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class valorateUserDto {

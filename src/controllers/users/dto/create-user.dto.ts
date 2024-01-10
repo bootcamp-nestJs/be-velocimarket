@@ -1,4 +1,4 @@
-import { IsAlphanumeric, IsEmail, IsEmpty, IsInt, IsNotEmpty, IsNumber, IsPhoneNumber, IsPositive, IsString, MaxLength, MinLength } from "@nestjs/class-validator";
+import { IsAlphanumeric, IsEmail, IsInt, IsNotEmpty, IsPhoneNumber, IsString, MaxLength, MinLength } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateUserDto {
@@ -77,10 +77,8 @@ export class CreateUserDto {
         description: "Contraseña, caracteres alfanuméricos",
         title: "Contraseña"
     })
-    // si es alfanumerico esta validación esta de más
-    // @IsString({message: "El atributo password presenta error,revise que es string"})
+    
     @MinLength(8,{message: "El atributo password presenta error, necesita mínimo 8 caracteres"})
-    // @MaxLength(20,{message: "El atributo password presenta error, necesita como máximo 12 caracteres"})
     @IsNotEmpty({message: "El atributo password presenta error, no puede ser un campo vacío"})
     @IsAlphanumeric('en-US', {message: "El atributo password presenta error, debe ser alfanumérico, sin la letra ñ"})
     readonly password: string;
@@ -94,9 +92,6 @@ export class CreateUserDto {
         title: "Teléfono"
     })
     // dejamos solo IsPhoneNumber que resume todas las validaciones anteriores
-    // @IsNumber()
-    // @IsPositive({message: "El numero de teléfono debe ser un número positivo"})
-    // @IsInt({message: "El numero de teléfono debe ser un numero entero"})
     @IsPhoneNumber('CL', {message: "Debe ser un número telefónico de Chile con 8 números"})
     @IsNotEmpty({message: "El atributo teléfono presenta error, no puede ser un campo vacío"})
     readonly telefono: string; 

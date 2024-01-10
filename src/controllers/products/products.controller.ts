@@ -4,24 +4,19 @@ import { Controller,
   Body, 
   Patch, 
   Param, 
-  Delete, 
-  ParseUUIDPipe, 
+  Delete,  
   Query, 
-  BadRequestException, 
-  InternalServerErrorException, 
   UseGuards, 
   UseInterceptors,
   Request, 
-  UploadedFile,
   UploadedFiles} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiHeader, ApiQuery } from '@nestjs/swagger';
 import { ProductDto } from './dto/product.dto';
-import { ProductMapper } from './mapper/mapper.products';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('products')
 export class ProductsController {
@@ -31,7 +26,6 @@ export class ProductsController {
     description: "Datos del producto que se va a crear",
     type: CreateProductDto
   })
-  //@ApiHeader({ name: "Prueba", description: "Id del producto", example: "1234-1234", required: true })
   @ApiCreatedResponse({ description: "El Producto se creó exitosamente", isArray: true, type: CreateProductDto})
   @ApiBadRequestResponse({ description: "Los parámetros enviados no son correctos" })
   @ApiBearerAuth('access-token')
@@ -90,7 +84,6 @@ export class ProductsController {
   @UseGuards(JwtAuthGuard)
   async findProductByUser(@Query('id') id: number, @Query("pag") pag: number, @Request() req): Promise<ProductDto[]> {
     const payload = req.user;
-    console.log(req.user.id);
     if (id!=null){
       return await this.productsService.findProductByUserId(id, pag);
     }
@@ -130,7 +123,7 @@ export class ProductsController {
   @Delete()
   async remove(@Query('id') id: number): Promise<string> {
     await this.productsService.removeProduct(id);
-    return `Producto de ID ${id} eliminado`
+    return `Producto de ID ${id} eliminado`;
   }
 
   @ApiBearerAuth('access-token')

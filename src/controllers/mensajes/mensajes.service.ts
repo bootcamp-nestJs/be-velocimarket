@@ -38,23 +38,24 @@ export class MensajesService implements IMensaje {
           product: true
         }
       });
-   console.log(await this.conversacionRepository.find())
+
       return listMensajes;
+
     } catch (error) {
       throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
 
-    async findMensajeById(id: number): Promise<MensajeDto> {
-      const msg  = await this.mensajeRepository.findOne({
-        where: {id}
-      });
-      const msgDto = MsgMapper.toDto(msg);
-      if(!msgDto){
-        throw new NotFoundException(`el mensaje con id ${id} no se encontro!`); 
-      }
-      return msgDto;
+  async findMensajeById(id: number): Promise<MensajeDto> {
+    const msg  = await this.mensajeRepository.findOne({
+      where: {id}
+    });
+    const msgDto = MsgMapper.toDto(msg);
+    if(!msgDto){
+      throw new NotFoundException(`el mensaje con id ${id} no se encontro!`); 
     }
+    return msgDto;
+  }
 
   async removeMensaje(id: number): Promise<string> {
     const msg = await this.mensajeRepository.findOneBy({id})
